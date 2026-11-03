@@ -1,18 +1,13 @@
 {
-  "name": "restaurante-la-montana",
-  "version": "2.0.0",
-  "description": "Sitio web oficial y sistema de reservas de Restaurante La Montaña (C. del Rey Francisco, 28, Madrid) - Silent Luxury Edition",
+  "name": "la-montana-restaurante",
+  "version": "1.0.0",
+  "description": "Web oficial y reservas de Restaurante La Montaña (C. del Rey Francisco, 28, Madrid)",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "ejs": "^3.1.10",
-    "express": "^4.21.2",
-    "express-session": "^1.18.1"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+    "express": "^4.21.2"
   }
 }
