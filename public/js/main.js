@@ -38,17 +38,53 @@ const LEGAL_TEXTS = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Menú móvil
+  // 1. Menú de Navegación Móvil (Drawer Desplegable con Transición Fluida)
   const mobileBtn = document.getElementById('mobile-menu-btn');
-  const mobilePanel = document.getElementById('mobile-menu-panel');
-  if (mobileBtn && mobilePanel) {
+  const mobileDrawer = document.getElementById('mobile-menu-drawer');
+  const mobileBackdrop = document.getElementById('mobile-drawer-backdrop');
+  const mobileCloseBtn = document.getElementById('mobile-drawer-close-btn');
+  const iconOpen = document.getElementById('hamburger-icon-open');
+  const iconClose = document.getElementById('hamburger-icon-close');
+
+  function setDrawerState(isOpen) {
+    if (!mobileDrawer || !mobileBackdrop) return;
+    if (isOpen) {
+      mobileDrawer.classList.add('is-open');
+      mobileBackdrop.classList.add('is-open');
+      mobileDrawer.setAttribute('aria-hidden', 'false');
+      if (mobileBtn) mobileBtn.setAttribute('aria-expanded', 'true');
+      if (iconOpen) iconOpen.classList.add('hidden');
+      if (iconClose) iconClose.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    } else {
+      mobileDrawer.classList.remove('is-open');
+      mobileBackdrop.classList.remove('is-open');
+      mobileDrawer.setAttribute('aria-hidden', 'true');
+      if (mobileBtn) mobileBtn.setAttribute('aria-expanded', 'false');
+      if (iconOpen) iconOpen.classList.remove('hidden');
+      if (iconClose) iconClose.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+  }
+
+  if (mobileBtn) {
     mobileBtn.addEventListener('click', () => {
-      mobilePanel.classList.toggle('hidden');
-    });
-    document.querySelectorAll('.mobile-nav-link').forEach((link) => {
-      link.addEventListener('click', () => mobilePanel.classList.add('hidden'));
+      const isExpanded = mobileBtn.getAttribute('aria-expanded') === 'true';
+      setDrawerState(!isExpanded);
     });
   }
+  if (mobileCloseBtn) {
+    mobileCloseBtn.addEventListener('click', () => setDrawerState(false));
+  }
+  if (mobileBackdrop) {
+    mobileBackdrop.addEventListener('click', () => setDrawerState(false));
+  }
+  document.querySelectorAll('.mobile-nav-link').forEach((link) => {
+    link.addEventListener('click', () => setDrawerState(false));
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') setDrawerState(false);
+  });
 
   // 2. Filtrado por Categorías en el Menú Físico de Lujo
   const categoryTabs = document.querySelectorAll('.lm-category-tab');
@@ -123,11 +159,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (preselectedDishes.has(dish)) {
         btn.textContent = '✓ Anotado';
         btn.className =
-          'toggle-dish-btn self-start sm:self-auto text-[10px] tracking-[0.22em] uppercase text-[#d4af37] font-medium whitespace-nowrap';
+          'toggle-dish-btn shrink-0 min-h-[34px] px-2.5 py-1 border border-[#d4af37] bg-[#d4af37]/10 text-[9px] tracking-[0.18em] uppercase text-[#d4af37] font-medium whitespace-nowrap transition-colors';
       } else {
-        btn.textContent = '+ Preseleccionar';
+        btn.textContent = '+ Anotar';
         btn.className =
-          'toggle-dish-btn self-start sm:self-auto text-[10px] tracking-[0.22em] uppercase text-neutral-500 hover:text-[#d4af37] transition-colors whitespace-nowrap';
+          'toggle-dish-btn shrink-0 min-h-[34px] px-2.5 py-1 border border-white/10 hover:border-[#d4af37]/50 text-[9px] tracking-[0.18em] uppercase text-neutral-400 hover:text-[#d4af37] transition-colors whitespace-nowrap';
       }
     });
   }
@@ -259,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <div class="flex justify-between py-1.5 border-b border-white/10">
                 <span class="text-neutral-500 uppercase tracking-widest text-[10px]">Mesa y Salón</span>
-                <span class="text-[#f4f1ea]">${r.guests} comensales · ${r.dining_area_name}</span>
+                <span class="text-[#f4f1ea]">${r.table_number ? `Mesa ${r.table_number} · ` : ''}${r.guests} comensales · ${r.dining_area_name}</span>
               </div>
               <div class="flex justify-between py-1.5">
                 <span class="text-neutral-500 uppercase tracking-widest text-[10px]">Teléfono</span>

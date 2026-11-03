@@ -3,6 +3,7 @@
  * RESTAURANTE LA MONTAÑA — SERVIDOR FULL-STACK DE PRODUCCIÓN
  * C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid | Tel: 915 47 31 11
  * Stack: Node.js + Express + EJS + express-session + SQLite (node:sqlite)
+ * Incluye Módulo Completo de Gestión de Salones, Mesas y Asignación de Reservas
  * ============================================================================
  */
 
@@ -34,8 +35,10 @@ app.use((req, res, next) => {
 });
 
 // Configuración de Seguridad y Credenciales de Administración (con respaldo por defecto)
-const ADMIN_PASSWORD = (process.env.ADMIN_PASSWORD && process.env.ADMIN_PASSWORD.trim()) || 'lamontana2026';
-const ADMIN_USER = (process.env.ADMIN_USER && process.env.ADMIN_USER.trim()) || 'admin';
+const ADMIN_PASSWORD =
+  (process.env.ADMIN_PASSWORD && process.env.ADMIN_PASSWORD.trim()) || 'lamontana2026';
+const ADMIN_USER =
+  (process.env.ADMIN_USER && process.env.ADMIN_USER.trim()) || 'admin';
 const SESSION_SECRET =
   process.env.SESSION_SECRET || 'la-montana-rey-francisco-28-secret-session-2026';
 
@@ -84,7 +87,6 @@ function requireAdminAuth(req, res, next) {
     return next();
   }
 
-  // Si es una petición AJAX / API JSON, devolver 401 con instrucción de redirección
   const acceptsJson =
     req.xhr ||
     (req.headers.accept && req.headers.accept.includes('application/json')) ||
@@ -98,12 +100,11 @@ function requireAdminAuth(req, res, next) {
     });
   }
 
-  // Redirección obligatoria a la pantalla de login si intenta entrar a /admin sin sesión
   return res.redirect('/admin/login');
 }
 
 // ============================================================================
-// RUTAS DE AUTENTICACIÓN Y PANEL DE ADMINISTRACIÓN PROTEGIDO (/admin)
+// RUTAS DE AUTENTICACIÓN Y VISTAS DEL PANEL DE ADMINISTRACIÓN (/admin)
 // ============================================================================
 
 // 1. Pantalla de Login del Administrador (GET /admin/login)
@@ -154,7 +155,6 @@ app.post('/admin/login', (req, res) => {
     return res.redirect('/admin/login?error=1');
   }
 
-  // Autenticación exitosa: registrar sesión segura y persistir antes de redirigir
   req.session.isAdmin = true;
   req.session.adminUser = (username && username.trim()) || 'Dirección La Montaña';
   req.session.loginTime = new Date().toISOString();
@@ -205,9 +205,11 @@ function handleAdminLogout(req, res) {
 app.post('/admin/logout', handleAdminLogout);
 app.get('/admin/logout', handleAdminLogout);
 
-// 4. Panel de Administración Privado (GET /admin) — ABSOLUTAMENTE PROTEGIDO
+// 4. Panel Principal de Reservas y Asignación de Mesas (GET /admin)
 app.get('/admin', requireAdminAuth, (req, res) => {
   const reservations = db.getAllReservations({});
+  const tables = db.getAllTables({});
+  const zones = db.getAllZones();
   const stats = db.getStats();
 
   res.render('admin-dashboard', {
@@ -215,23 +217,46 @@ app.get('/admin', requireAdminAuth, (req, res) => {
     adminUser: req.session.adminUser || 'Dirección La Montaña',
     loginTime: req.session.loginTime,
     reservations,
+    tables,
+    zones,
     stats,
     timeSlots: [...TIME_SLOTS.lunch, ...TIME_SLOTS.dinner]
   });
 });
 
+// 5. Vista de Mapa / Distribución y Gestión de Mesas y Espacios (GET /admin/mesas)
+app.get('/admin/mesas', requireAdminAuth, (req, res) => {
+  const zones = db.getAllZones();
+  const tables = db.getAllTables({});
+  const reservations = db.getAllReservations({ status: 'confirmed' });
+  const stats = db.getStats();
+  const tableStats = db.getTableStats();
+
+  res.render('admin-tables', {
+    restaurant: RESTAURANT_INFO,
+    adminUser: req.session.adminUser || 'Dirección La Montaña',
+    zones,
+    tables,
+    reservations,
+    stats,
+    tableStats
+  });
+});
+
 // ============================================================================
-// API PRIVADA DE ADMINISTRACIÓN (PROTEGIDA CON SESIÓN)
+// API PRIVADA DE ADMINISTRACIÓN — RESERVAS Y ASIGNACIÓN DE MESA
 // ============================================================================
 
 app.get('/api/admin/reservations', requireAdminAuth, (req, res) => {
   try {
     const { date, status, search } = req.query;
     const reservations = db.getAllReservations({ date, status, search });
+    const tables = db.getAllTables({});
     const stats = db.getStats();
     res.json({
       success: true,
       stats,
+      tables,
       total: reservations.length,
       reservations
     });
@@ -239,6 +264,31 @@ app.get('/api/admin/reservations', requireAdminAuth, (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Error al obtener las reservas desde la base de datos.'
+    });
+  }
+});
+
+// Asignar o cambiar la mesa física de una reserva (PATCH /api/admin/reservations/:id/assign-table)
+app.patch('/api/admin/reservations/:id/assign-table', requireAdminAuth, (req, res) => {
+  try {
+    const { tableId } = req.body;
+    const updated = db.assignTableToReservation(req.params.id, tableId);
+    if (!updated) {
+      return res.status(404).json({
+        success: false,
+        error: 'No se encontró la reserva o la mesa seleccionada.'
+      });
+    }
+    res.json({
+      success: true,
+      reservation: updated,
+      tables: db.getAllTables({}),
+      stats: db.getStats()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Error al vincular la mesa a la reserva.'
     });
   }
 });
@@ -259,6 +309,7 @@ app.patch('/api/admin/reservations/:id/status', requireAdminAuth, (req, res) => 
     res.json({
       success: true,
       reservation: updated,
+      tables: db.getAllTables({}),
       stats: db.getStats()
     });
   } catch (error) {
@@ -275,6 +326,7 @@ app.delete('/api/admin/reservations/:id', requireAdminAuth, (req, res) => {
     res.json({
       success: true,
       ...deleted,
+      tables: db.getAllTables({}),
       stats: db.getStats()
     });
   } catch (error) {
@@ -287,7 +339,7 @@ app.delete('/api/admin/reservations/:id', requireAdminAuth, (req, res) => {
 
 app.post('/api/admin/reservations', requireAdminAuth, (req, res) => {
   try {
-    const { date, time, guests, diningArea, name, phone, email, notes } = req.body;
+    const { date, time, guests, diningArea, tableId, name, phone, email, notes } = req.body;
     if (!date || !time || !guests || !name || !phone) {
       return res.status(400).json({
         success: false,
@@ -308,6 +360,7 @@ app.post('/api/admin/reservations', requireAdminAuth, (req, res) => {
       guests: Number(guests),
       dining_area: areaObj.id,
       dining_area_name: areaObj.name,
+      table_id: tableId || null,
       customer_name: name.trim(),
       customer_phone: phone.trim(),
       customer_email: (email && email.trim()) || 'reservas@restaurantelamontana.es',
@@ -319,6 +372,7 @@ app.post('/api/admin/reservations', requireAdminAuth, (req, res) => {
     res.status(201).json({
       success: true,
       reservation: created,
+      tables: db.getAllTables({}),
       stats: db.getStats()
     });
   } catch (error) {
@@ -330,10 +384,135 @@ app.post('/api/admin/reservations', requireAdminAuth, (req, res) => {
 });
 
 // ============================================================================
+// API PRIVADA DE ADMINISTRACIÓN — GESTIÓN DE MESAS Y ESPACIOS (CRUD)
+// ============================================================================
+
+app.get('/api/admin/tables', requireAdminAuth, (req, res) => {
+  try {
+    const { zoneId, status } = req.query;
+    const zones = db.getAllZones();
+    const tables = db.getAllTables({ zoneId, status });
+    const stats = db.getStats();
+    const tableStats = db.getTableStats();
+    res.json({
+      success: true,
+      zones,
+      tables,
+      stats,
+      tableStats
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Error al obtener la distribución de mesas y salones.'
+    });
+  }
+});
+
+app.post('/api/admin/tables', requireAdminAuth, (req, res) => {
+  try {
+    const { tableNumber, capacity, zoneId, status, locationNote, notes } = req.body;
+    if (!tableNumber || !String(tableNumber).trim()) {
+      return res.status(400).json({
+        success: false,
+        error: 'El número o código identificador de la mesa es obligatorio (ej. M-07).'
+      });
+    }
+
+    const validStatuses = ['Libre', 'Ocupada', 'Reservada', 'Mantenimiento'];
+    const cleanStatus = validStatuses.includes(status) ? status : 'Libre';
+
+    const created = db.createTable({
+      tableNumber: String(tableNumber).trim().toUpperCase(),
+      capacity: Number(capacity) || 4,
+      zoneId: zoneId || 'salon-senorial',
+      status: cleanStatus,
+      locationNote: locationNote !== undefined ? locationNote : notes || ''
+    });
+
+    res.status(201).json({
+      success: true,
+      table: created,
+      tables: db.getAllTables({}),
+      stats: db.getStats(),
+      tableStats: db.getTableStats()
+    });
+  } catch (error) {
+    const isDuplicate = error && String(error.message).includes('UNIQUE');
+    const message = isDuplicate
+      ? 'Ya existe una mesa con ese número o identificador en el restaurante.'
+      : 'Error al registrar la nueva mesa.';
+    res.status(isDuplicate ? 409 : 500).json({
+      success: false,
+      error: message,
+      message
+    });
+  }
+});
+
+app.patch('/api/admin/tables/:id', requireAdminAuth, (req, res) => {
+  try {
+    const { tableNumber, capacity, zoneId, status, locationNote, notes } = req.body;
+    const validStatuses = ['Libre', 'Ocupada', 'Reservada', 'Mantenimiento'];
+    if (status && !validStatuses.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Estado de mesa no válido. Use Libre, Ocupada, Reservada o Mantenimiento.'
+      });
+    }
+
+    const updated = db.updateTable(req.params.id, {
+      tableNumber,
+      capacity,
+      zoneId,
+      status,
+      locationNote: locationNote !== undefined ? locationNote : notes
+    });
+
+    if (!updated) {
+      return res.status(404).json({
+        success: false,
+        error: 'Mesa no encontrada.'
+      });
+    }
+
+    res.json({
+      success: true,
+      table: updated,
+      tables: db.getAllTables({}),
+      stats: db.getStats(),
+      tableStats: db.getTableStats()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Error al actualizar la mesa.'
+    });
+  }
+});
+
+app.delete('/api/admin/tables/:id', requireAdminAuth, (req, res) => {
+  try {
+    const deleted = db.deleteTable(req.params.id);
+    res.json({
+      success: true,
+      ...deleted,
+      tables: db.getAllTables({}),
+      stats: db.getStats(),
+      tableStats: db.getTableStats()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Error al eliminar la mesa.'
+    });
+  }
+});
+
+// ============================================================================
 // RUTAS PÚBLICAS WEB Y API RESTful PARA CLIENTES
 // ============================================================================
 
-// Vista Principal Pública (GET /)
 app.get('/', (req, res) => {
   res.render('index', {
     restaurant: RESTAURANT_INFO,
@@ -344,7 +523,6 @@ app.get('/', (req, res) => {
   });
 });
 
-// GET /api/menu — Lista completa de platos, categorías y precios
 app.get('/api/menu', (req, res) => {
   const { category, search } = req.query;
   let items = [...MENU_ITEMS];
@@ -373,7 +551,6 @@ app.get('/api/menu', (req, res) => {
   });
 });
 
-// GET /api/info — Datos de contacto, horarios y valoraciones
 app.get('/api/info', (req, res) => {
   res.json({
     success: true,
@@ -382,7 +559,6 @@ app.get('/api/info', (req, res) => {
   });
 });
 
-// GET /api/availability — Disponibilidad de plazas en tiempo real por fecha
 app.get('/api/availability', (req, res) => {
   const date = req.query.date || new Date().toISOString().split('T')[0];
   const allSlots = [...TIME_SLOTS.lunch, ...TIME_SLOTS.dinner];
@@ -402,7 +578,6 @@ app.get('/api/availability', (req, res) => {
   });
 });
 
-// POST /api/reservations — Recibe, valida y almacena nuevas reservas de clientes
 app.post('/api/reservations', (req, res) => {
   try {
     const {
@@ -505,7 +680,6 @@ app.post('/api/reservations', (req, res) => {
   }
 });
 
-// GET /api/reservations/:code — Consulta pública de resguardo por código
 app.get('/api/reservations/:code', (req, res) => {
   const reservation = db.getReservationByCode(req.params.code);
   if (!reservation) {
@@ -522,22 +696,22 @@ app.get('/api/reservations/:code', (req, res) => {
       reservation_time: reservation.reservation_time,
       guests: reservation.guests,
       dining_area_name: reservation.dining_area_name,
+      table_number: reservation.table_number,
       customer_name: reservation.customer_name,
       status: reservation.status
     }
   });
 });
 
-// Arranque del Servidor
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log('====================================================================');
     console.log('🍷 RESTAURANTE LA MONTAÑA — SERVIDOR ACTIVO');
     console.log('📍 C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid');
-    console.log(`🌐 Web Pública Gastronómica: http://localhost:${PORT}`);
-    console.log(`🔐 Panel Privado Protegido:  http://localhost:${PORT}/admin`);
-    console.log(`🔑 Login Administración:     http://localhost:${PORT}/admin/login`);
-    console.log(`🛡️ Contraseña Admin Activa:  ${ADMIN_PASSWORD} (configurable vía ADMIN_PASSWORD)`);
+    console.log(`🌐 Web Pública Oficial:       http://localhost:${PORT}`);
+    console.log(`🔐 Panel de Reservas:         http://localhost:${PORT}/admin`);
+    console.log(`🪑 Mapa y Gestión de Mesas:   http://localhost:${PORT}/admin/mesas`);
+    console.log(`🔑 Login Administración:      http://localhost:${PORT}/admin/login`);
     console.log('====================================================================');
   });
 }
