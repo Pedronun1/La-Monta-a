@@ -15,6 +15,7 @@ const {
   RESTAURANT_INFO,
   MENU_CATEGORIES,
   MENU_ITEMS,
+  WINE_PAIRINGS,
   TIME_SLOTS
 } = require('./data/restaurantData');
 
@@ -312,6 +313,7 @@ app.get('/', (req, res) => {
     restaurant: RESTAURANT_INFO,
     categories: MENU_CATEGORIES,
     menuItems: MENU_ITEMS,
+    winePairings: WINE_PAIRINGS,
     timeSlots: TIME_SLOTS
   });
 });

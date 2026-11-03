@@ -1,559 +1,529 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth dark">
+<html lang="es" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= restaurant.name %> — Alta Cocina Castiza & Reservas | <%= restaurant.subtitle %></title>
-  <meta name="description" content="<%= restaurant.description %>" />
+  <title>Restaurante La Montaña | Alta Cocina Clásica en Madrid desde 1943</title>
+  <meta name="description" content="Restaurante La Montaña en C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid. Alta cocina tradicional madrileña, pescados de lonja, carnes rojas maduradas y postres de autor desde 1943. Reservas: +34 915 47 31 11." />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="Restaurante La Montaña — Alta Cocina Clásica · Madrid" />
+  <meta property="og:description" content="Casa fundada en 1943 en C. del Rey Francisco, 28 (Moncloa - Aravaca, Madrid). Reserve su mesa en nuestro Salón Principal o en La Cueva Histórica Abovedada." />
+  <meta property="og:type" content="website" />
 
-  <!-- Tipografías de Alta Gastronomía: Cormorant Garamond (Serif) & Plus Jakarta Sans -->
+  <!-- Favicon Corporativo Vectorial (Monograma L.M) -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon.svg" />
+
+  <!-- Tipografías de Alta Gama: Cormorant Garamond (Serif) & Montserrat (Sans-Serif Ligera) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
 
-  <!-- Tailwind CSS con configuración de dirección de arte #09090b y #f59e0b -->
+  <!-- Tailwind CSS con Paleta Antracita (#0a0a0c) y Dorado Champán (#d4af37) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           colors: {
-            obsidian: '#09090b',
-            amber: {
-              400: '#fbbf24',
-              500: '#f59e0b',
-              600: '#d97706'
-            }
+            anthracite: '#0a0a0c',
+            surface: '#111115',
+            champagne: '#d4af37',
+            ivory: '#f4f1ea'
           },
           fontFamily: {
             serif: ["'Cormorant Garamond'", 'Georgia', 'serif'],
-            sans: ["'Plus Jakarta Sans'", 'system-ui', 'sans-serif']
+            sans: ["'Montserrat'", 'system-ui', 'sans-serif']
           }
         }
       }
     };
   </script>
 
-  <!-- Hoja de estilos de lujo y animaciones personalizadas -->
+  <!-- Estilos Propios de Alta Cocina -->
   <link rel="stylesheet" href="/css/luxury.css" />
+
+  <!-- Datos Estructurados Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FineDiningRestaurant",
+    "name": "Restaurante La Montaña",
+    "foundingDate": "1943",
+    "telephone": "+34 915 47 31 11",
+    "priceRange": "€€€",
+    "servesCuisine": "Alta Cocina Clásica Española y Madrileña",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "C. del Rey Francisco, 28",
+      "addressLocality": "Madrid",
+      "addressRegion": "Moncloa - Aravaca",
+      "postalCode": "28008",
+      "addressCountry": "ES"
+    }
+  }
+  </script>
 </head>
-<body class="bg-[#09090b] text-stone-100 font-sans antialiased selection:bg-amber-500 selection:text-stone-950">
+<body class="bg-[#0a0a0c] text-[#e5e5e5] font-sans font-light antialiased selection:bg-[#d4af37] selection:text-[#0a0a0c]">
 
   <!-- =========================================================================
-       BARRA DE NAVEGACIÓN SUPERIOR CON BLUR Y TRANSPARENCIA
+       1. CABECERA (NAVBAR) PROFESIONAL, LIMPIA Y CORPORATIVA
   ========================================================================= -->
-  <header class="backdrop-blur-md bg-stone-950/80 sticky top-0 z-50 border-b border-stone-800/80 transition-all duration-300 ease-in-out">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-      <!-- Marca y Subtítulo -->
-      <a href="#inicio" class="flex items-center gap-3.5 group">
-        <div class="w-11 h-11 rounded-full bg-stone-900 border border-amber-500/40 flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.15)] group-hover:border-amber-400 transition-all duration-300 ease-in-out">
-          <span class="font-serif text-xl font-bold text-amber-500 tracking-wider">LM</span>
-        </div>
-        <div>
-          <span class="block font-serif text-2xl sm:text-3xl font-semibold text-stone-50 tracking-wide leading-none group-hover:text-amber-400 transition-all duration-300">
-            <%= restaurant.name %>
+  <header class="lm-navbar">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 h-24 flex items-center justify-between">
+      <!-- Logotipo Corporativo: Monograma "L.M" + Nombre Tipográfico Serif -->
+      <a href="#inicio" class="flex items-center gap-4 group no-underline">
+        <span class="lm-monogram-seal group-hover:border-[#e5e5e5] transition-colors">
+          <%= restaurant.monogram %>
+        </span>
+        <div class="flex flex-col">
+          <span class="font-serif text-2xl sm:text-[26px] font-medium tracking-[0.14em] uppercase text-[#f4f1ea] leading-none">
+            La Montaña
           </span>
-          <span class="block text-[10px] uppercase tracking-[0.26em] text-amber-500/90 mt-1 font-medium">
-            <%= restaurant.subtitle %>
+          <span class="text-[9px] tracking-[0.34em] uppercase text-[#d4af37] mt-1.5 font-normal">
+            Madrid · Casa Fundada en <%= restaurant.foundedYear %>
           </span>
         </div>
       </a>
 
-      <!-- Enlaces de Navegación Desktop -->
-      <nav class="hidden lg:flex items-center gap-8 text-xs uppercase tracking-[0.18em] text-stone-300 font-medium">
-        <a href="#inicio" class="hover:text-amber-400 transition-all duration-300 ease-in-out">Inicio</a>
-        <a href="#carta" class="hover:text-amber-400 transition-all duration-300 ease-in-out">La Carta</a>
-        <a href="#espacios" class="hover:text-amber-400 transition-all duration-300 ease-in-out">La Cueva 1943</a>
-        <a href="#reservas" class="hover:text-amber-400 transition-all duration-300 ease-in-out">Reservas</a>
-        <a href="#opiniones" class="hover:text-amber-400 transition-all duration-300 ease-in-out">Críticas</a>
-        <a href="#ubicacion" class="hover:text-amber-400 transition-all duration-300 ease-in-out">Contacto</a>
+      <!-- Barra de Navegación Superior Minimalista -->
+      <nav class="hidden lg:flex items-center gap-10" aria-label="Navegación principal">
+        <a href="#inicio" class="lm-nav-link">INICIO</a>
+        <a href="#carta" class="lm-nav-link">LA CARTA</a>
+        <a href="#historia" class="lm-nav-link">HISTORIA</a>
+        <a href="#reservas" class="lm-nav-link">RESERVAS</a>
+        <a href="#contacto" class="lm-nav-link">CONTACTO</a>
       </nav>
 
-      <!-- Acciones Rápidas y Acceso Privado -->
-      <div class="hidden md:flex items-center gap-3">
-        <a
-          href="tel:<%= restaurant.contact.phoneClean %>"
-          class="px-3.5 py-2 rounded-full text-xs font-medium text-stone-300 hover:text-amber-400 border border-stone-800 hover:border-amber-500/40 bg-stone-900/60 transition-all duration-300 ease-in-out"
-        >
-          <%= restaurant.contact.phone %>
-        </a>
-
+      <!-- CTA Destacado y Acceso Privado Sutil -->
+      <div class="hidden md:flex items-center gap-5">
         <a
           href="#reservas"
-          class="btn-shine px-5 py-2.5 rounded-full text-xs uppercase tracking-[0.15em] font-semibold bg-amber-500 hover:bg-amber-400 text-stone-950 shadow-[0_0_25px_rgba(245,158,11,0.25)] hover:shadow-[0_0_35px_rgba(245,158,11,0.45)] transition-all duration-300 ease-in-out flex items-center gap-2"
+          class="lm-btn-outline"
         >
-          <span>Reservar Mesa</span>
-          <span id="nav-preselected-badge" class="hidden px-1.5 py-0.5 text-[10px] rounded-full bg-stone-950 text-amber-400 font-bold">0</span>
+          <span>RESERVAR MESA</span>
+          <span id="nav-preselected-badge" class="hidden px-1.5 py-0.5 text-[10px] bg-[#d4af37] text-[#0a0a0c] font-medium">0</span>
         </a>
 
         <a
           href="/admin"
-          class="p-2.5 rounded-full text-stone-400 hover:text-amber-400 border border-stone-800/80 hover:border-amber-500/40 bg-stone-900/50 transition-all duration-300 ease-in-out"
-          title="Acceso privado Dirección (/admin)"
-          aria-label="Panel de Administración"
+          class="text-[10px] tracking-[0.22em] uppercase text-neutral-500 hover:text-[#d4af37] transition-colors pl-2 border-l border-white/10"
+          title="Acceso Dirección"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
+          DIRECCIÓN
         </a>
       </div>
 
-      <!-- Botón Menú Móvil -->
+      <!-- Botón Menú Móvil Sobrio -->
       <button
         id="mobile-menu-btn"
         type="button"
-        class="lg:hidden p-2.5 rounded-xl border border-stone-800 bg-stone-900/80 text-stone-200 hover:text-amber-400 transition-all duration-300"
-        aria-label="Abrir menú"
+        class="lg:hidden p-2.5 border border-white/10 text-[#e5e5e5] hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+        aria-label="Abrir menú de navegación"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16M4 12h16M4 18h16" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M4 7h16M4 12h16M4 17h16" />
         </svg>
       </button>
     </div>
 
-    <!-- Menú Desplegable Móvil -->
-    <div id="mobile-menu-panel" class="hidden lg:hidden bg-stone-950/95 backdrop-blur-xl border-b border-stone-800 px-6 py-6 space-y-4">
-      <div class="flex flex-col space-y-3 text-sm uppercase tracking-[0.16em] text-stone-300">
-        <a href="#inicio" class="mobile-nav-link py-1.5 hover:text-amber-400 transition-colors">Inicio</a>
-        <a href="#carta" class="mobile-nav-link py-1.5 hover:text-amber-400 transition-colors">La Carta y Bodega</a>
-        <a href="#espacios" class="mobile-nav-link py-1.5 hover:text-amber-400 transition-colors">La Cueva de 1943</a>
-        <a href="#reservas" class="mobile-nav-link py-1.5 hover:text-amber-400 transition-colors">Reservar Mesa</a>
-        <a href="#opiniones" class="mobile-nav-link py-1.5 hover:text-amber-400 transition-colors">Opiniones</a>
-        <a href="#ubicacion" class="mobile-nav-link py-1.5 hover:text-amber-400 transition-colors">Ubicación y Horarios</a>
-        <a href="/admin" class="mobile-nav-link py-1.5 text-amber-500/90 hover:text-amber-400 transition-colors">🔒 Panel Privado (/admin)</a>
-      </div>
-      <div class="pt-3 border-t border-stone-800 flex flex-col gap-2.5">
-        <a href="#reservas" class="mobile-nav-link w-full py-3 rounded-full bg-amber-500 text-stone-950 text-center text-xs uppercase tracking-widest font-bold">
-          Reservar Mesa Ahora
-        </a>
-        <a href="tel:<%= restaurant.contact.phoneClean %>" class="w-full py-2.5 rounded-full border border-stone-800 text-stone-300 text-center text-xs">
-          Llamar: <%= restaurant.contact.phone %>
-        </a>
+    <!-- Panel de Navegación Móvil -->
+    <div id="mobile-menu-panel" class="hidden lg:hidden bg-[#0a0a0c]/98 border-b border-white/10 px-6 py-8">
+      <div class="flex flex-col space-y-4 text-center">
+        <a href="#inicio" class="mobile-nav-link text-xs tracking-[0.28em] uppercase text-[#e5e5e5] hover:text-[#d4af37] py-2">INICIO</a>
+        <a href="#carta" class="mobile-nav-link text-xs tracking-[0.28em] uppercase text-[#e5e5e5] hover:text-[#d4af37] py-2">LA CARTA</a>
+        <a href="#historia" class="mobile-nav-link text-xs tracking-[0.28em] uppercase text-[#e5e5e5] hover:text-[#d4af37] py-2">HISTORIA</a>
+        <a href="#reservas" class="mobile-nav-link text-xs tracking-[0.28em] uppercase text-[#e5e5e5] hover:text-[#d4af37] py-2">RESERVAS</a>
+        <a href="#contacto" class="mobile-nav-link text-xs tracking-[0.28em] uppercase text-[#e5e5e5] hover:text-[#d4af37] py-2">CONTACTO</a>
+        <div class="pt-4 border-t border-white/10 flex flex-col gap-3 max-w-xs mx-auto w-full">
+          <a href="#reservas" class="mobile-nav-link lm-btn-gold w-full">RESERVAR MESA</a>
+          <a href="/admin" class="mobile-nav-link text-[10px] tracking-[0.24em] uppercase text-neutral-500 hover:text-[#d4af37] py-1">ACCESO DIRECCIÓN</a>
+        </div>
       </div>
     </div>
   </header>
 
   <!-- =========================================================================
-       1. HERO SECTION IMPACTANTE (Atmósfera Oscura + Subtítulo Moncloa - Aravaca)
+       2. HERO SECTION MINIMALISTA Y ATMOSFÉRICA
   ========================================================================= -->
-  <section id="inicio" class="relative min-h-[92vh] flex items-center overflow-hidden bg-[#09090b]">
-    <!-- Fotografía atmosférica de alta cocina con gradiente multicapa -->
-    <div class="absolute inset-0 z-0">
-      <img
-        src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=2000&q=85"
-        alt="Alta cocina castiza y brasas en Restaurante La Montaña Madrid"
-        class="w-full h-full object-cover object-center opacity-30 scale-105 transition-transform duration-1000"
-      />
-      <div class="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/90 to-[#09090b]/55"></div>
-      <div class="absolute inset-0 bg-gradient-to-t from-[#09090b] via-transparent to-[#09090b]/80"></div>
-      <div class="absolute -top-40 -left-40 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
-    </div>
+  <section id="inicio" class="lm-hero">
+    <img
+      src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=2000&q=85"
+      alt="Salón del Restaurante La Montaña en C. del Rey Francisco, 28, Madrid"
+      class="lm-hero-bg"
+    />
+    <div class="lm-hero-overlay"></div>
 
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        <!-- Columna Principal del Hero -->
-        <div class="lg:col-span-7 space-y-7 animate-fade-up">
-          <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-stone-900/90 border border-amber-500/30 text-amber-400 text-[11px] uppercase tracking-[0.24em] font-medium">
-            <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-            <span><%= restaurant.subtitle %> · <%= restaurant.address.street %></span>
-          </div>
+    <div class="relative z-10 max-w-4xl mx-auto px-6 py-28 text-center">
+      <p class="text-[11px] sm:text-xs tracking-[0.36em] uppercase text-[#d4af37] font-normal mb-6">
+        <%= restaurant.subtitle %>
+      </p>
 
-          <div class="space-y-3">
-            <p class="font-serif italic text-amber-400/90 text-xl sm:text-2xl tracking-wide">
-              Casa de Comidas & Alta Tradición Castiza desde <%= restaurant.foundedYear %>
-            </p>
-            <h1 class="font-serif text-5xl sm:text-7xl lg:text-8xl font-semibold text-stone-50 tracking-tight leading-[1.02]">
-              Restaurante <br />
-              <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-500 to-amber-600">
-                <%= restaurant.name %>
-              </span>
-            </h1>
-          </div>
+      <h1 class="font-serif text-5xl sm:text-7xl lg:text-[82px] font-normal text-[#f4f1ea] tracking-[0.03em] leading-[1.06] mb-6">
+        <%= restaurant.name %>
+      </h1>
 
-          <p class="text-stone-300 text-base sm:text-lg max-w-2xl leading-relaxed font-light">
-            <%= restaurant.description %> Descubra nuestras célebres
-            <span class="text-amber-400 font-medium">croquetas cremosas de bellota, huevos camperos trufados, verdinas con carabineros, oreja crujiente y carnes maduradas a la brasa</span>.
-          </p>
-
-          <!-- Botones CTA con bordes redondeados y efecto de brillo -->
-          <div class="flex flex-wrap items-center gap-4 pt-2">
-            <a
-              href="#reservas"
-              class="btn-shine px-8 py-4 rounded-full bg-amber-500 hover:bg-amber-400 text-stone-950 font-semibold text-xs sm:text-sm uppercase tracking-[0.18em] shadow-[0_0_30px_rgba(245,158,11,0.3)] hover:shadow-[0_0_40px_rgba(245,158,11,0.5)] transition-all duration-300 ease-in-out transform hover:-translate-y-0.5"
-            >
-              Reservar Mesa
-            </a>
-            <a
-              href="#carta"
-              class="px-8 py-4 rounded-full bg-stone-900/80 hover:bg-stone-800/90 text-stone-100 hover:text-amber-400 border border-stone-700/80 hover:border-amber-500/50 font-semibold text-xs sm:text-sm uppercase tracking-[0.18em] transition-all duration-300 ease-in-out transform hover:-translate-y-0.5"
-            >
-              Explorar La Carta
-            </a>
-          </div>
-
-          <!-- Métricas de Prestigio -->
-          <div class="grid grid-cols-3 gap-6 pt-6 border-t border-stone-800/80 max-w-xl">
-            <div>
-              <span class="font-serif text-3xl sm:text-4xl font-semibold text-amber-500">★ <%= restaurant.ratings.score %></span>
-              <span class="block text-[11px] uppercase tracking-widest text-stone-400 mt-1"><%= restaurant.ratings.totalReviews %> Reseñas Google</span>
-            </div>
-            <div>
-              <span class="font-serif text-3xl sm:text-4xl font-semibold text-amber-500"><%= restaurant.foundedYear %></span>
-              <span class="block text-[11px] uppercase tracking-widest text-stone-400 mt-1">Legado en Argüelles</span>
-            </div>
-            <div>
-              <span class="font-serif text-3xl sm:text-4xl font-semibold text-amber-500">Cueva</span>
-              <span class="block text-[11px] uppercase tracking-widest text-stone-400 mt-1">Bodega Histórica</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Columna Derecha: Tarjeta Glassmorphism de Horarios y Ubicación -->
-        <div class="lg:col-span-5">
-          <div class="bg-stone-950/85 backdrop-blur-xl border border-stone-800 hover:border-amber-500/30 rounded-3xl p-7 sm:p-9 shadow-2xl transition-all duration-300 ease-in-out">
-            <div class="flex items-center justify-between border-b border-stone-800/90 pb-5 mb-6">
-              <div>
-                <span class="text-[10px] uppercase tracking-[0.25em] text-amber-500 font-semibold block">
-                  Horarios Oficiales
-                </span>
-                <h2 class="font-serif text-2xl sm:text-3xl font-semibold text-stone-50 mt-1">
-                  Servicio de Sala y Cocina
-                </h2>
-              </div>
-              <span class="px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
-                Madrid · 28008
-              </span>
-            </div>
-
-            <div class="space-y-3 text-sm">
-              <% restaurant.hours.forEach(function(h) { %>
-                <div class="flex items-center justify-between py-2.5 px-4 rounded-2xl border <%= h.open ? 'bg-stone-900/60 border-stone-800/80 text-stone-200' : 'bg-stone-900/30 border-stone-800/40 text-stone-500' %>">
-                  <span class="font-medium"><%= h.day %></span>
-                  <span class="<%= h.open ? 'text-amber-400 font-medium' : 'text-stone-500 italic' %> text-xs sm:text-sm">
-                    <%= h.shifts %>
-                  </span>
-                </div>
-              <% }); %>
-            </div>
-
-            <div class="mt-7 pt-6 border-t border-stone-800/90 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <span class="text-[11px] uppercase tracking-widest text-stone-400 block">Atención Telefónica y Grupos</span>
-                <a href="tel:<%= restaurant.contact.phoneClean %>" class="font-serif text-2xl font-semibold text-amber-400 hover:text-amber-300 transition-colors">
-                  <%= restaurant.contact.phone %>
-                </a>
-              </div>
-              <a
-                href="#ubicacion"
-                class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-stone-300 hover:text-amber-400 font-semibold transition-colors"
-              >
-                <span>Cómo llegar</span>
-                <span>→</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- =========================================================================
-       2. SECCIÓN DE CARTA INTERACTIVA, BODEGA Y PRECIOS
-  ========================================================================= -->
-  <section id="carta" class="py-24 bg-[#09090b] border-t border-stone-900">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Encabezado Editorial -->
-      <div class="text-center max-w-3xl mx-auto mb-14 space-y-3">
-        <span class="text-[11px] uppercase tracking-[0.28em] text-amber-500 font-semibold block">
-          Propuesta Gastronómica · Producto de Temporada
-        </span>
-        <h2 class="font-serif text-4xl sm:text-6xl font-semibold text-stone-50">
-          Nuestra Carta & Bodega
-        </h2>
-        <p class="text-stone-400 text-sm sm:text-base font-light leading-relaxed">
-          Cada plato rinde tributo a la cocina castiza madrileña y norteña con ejecuciones limpias,
-          materias primas con denominación de origen y precios transparentes (IVA incluido).
-        </p>
+      <div class="lm-divider-ornament">
+        <span class="lm-diamond"></span>
       </div>
 
-      <!-- Controles de Filtrado por Categorías (Entrantes, Principales, Postres, Vinos) + Buscador -->
-      <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 mb-12 bg-stone-950/90 p-3.5 rounded-2xl border border-stone-800/90">
-        <div class="flex flex-wrap items-center gap-2" id="menu-category-tabs">
-          <button
-            type="button"
-            data-category="all"
-            class="menu-tab-btn px-5 py-2.5 rounded-xl text-xs uppercase tracking-[0.16em] font-semibold transition-all duration-300 ease-in-out bg-amber-500 text-stone-950 shadow-[0_0_20px_rgba(245,158,11,0.25)]"
-          >
-            Toda la Carta (<%= menuItems.length %>)
-          </button>
-          <% categories.forEach(function(cat) { %>
-            <button
-              type="button"
-              data-category="<%= cat.id %>"
-              class="menu-tab-btn px-5 py-2.5 rounded-xl text-xs uppercase tracking-[0.16em] font-semibold transition-all duration-300 ease-in-out bg-stone-900/80 text-stone-300 hover:text-amber-400 border border-stone-800 hover:border-amber-500/40"
-            >
-              <%= cat.label %>
-            </button>
-          <% }); %>
-        </div>
+      <p class="font-serif italic text-xl sm:text-2xl text-[#e5e5e5]/90 max-w-2xl mx-auto font-normal leading-relaxed mt-6 mb-4">
+        “<%= restaurant.tagline %>”
+      </p>
 
-        <div class="relative min-w-[260px]">
-          <input
-            id="menu-search-input"
-            type="text"
-            placeholder="Buscar plato, trufa, ibérico, vino..."
-            class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-stone-900/90 border border-stone-800 text-sm text-stone-100 placeholder-stone-500 focus:outline-none focus:border-amber-500 transition-all duration-300 ease-in-out"
-          />
-          <svg class="w-4 h-4 text-stone-500 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
-      </div>
+      <p class="text-xs sm:text-sm text-neutral-400 max-w-xl mx-auto leading-relaxed font-light mb-12">
+        <%= restaurant.description %>
+      </p>
 
-      <!-- Barra de Platos Preseleccionados para la Reserva -->
-      <div id="preselected-bar" class="hidden mb-10 p-5 rounded-2xl bg-stone-900/90 border border-amber-500/40 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="text-xs uppercase tracking-widest text-amber-400 font-semibold mr-2">
-            Selección para su mesa:
-          </span>
-          <div id="preselected-chips" class="flex flex-wrap gap-2"></div>
-        </div>
-        <a
-          href="#reservas"
-          class="px-5 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-stone-950 text-xs uppercase tracking-widest font-bold shrink-0 transition-all duration-300"
-        >
-          Confirmar en mi Reserva →
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-5">
+        <a href="#reservas" class="lm-btn-gold min-w-[220px]">
+          RESERVAR MESA
+        </a>
+        <a href="#carta" class="lm-btn-outline min-w-[220px]">
+          CONSULTAR LA CARTA
         </a>
       </div>
 
-      <!-- Grid de Tarjetas de Platos -->
-      <div id="menu-items-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-        <% menuItems.forEach(function(item) { %>
-          <article
-            data-category="<%= item.category %>"
-            data-name="<%= item.name.toLowerCase() %>"
-            data-desc="<%= item.description.toLowerCase() %>"
-            class="menu-card-item luxury-card bg-stone-950/90 rounded-2xl overflow-hidden border border-stone-800 hover:border-amber-500/40 flex flex-col justify-between group"
-          >
-            <div>
-              <!-- Fotografía del Plato -->
-              <div class="relative h-56 overflow-hidden bg-stone-900">
-                <img
-                  src="<%= item.image %>"
-                  alt="<%= item.name %>"
-                  loading="lazy"
-                  class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out opacity-90 group-hover:opacity-100"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/20 to-transparent"></div>
-
-                <!-- Etiqueta Elegante de Categoría -->
-                <span class="absolute top-3.5 left-3.5 px-3 py-1 rounded-full text-[10px] uppercase tracking-[0.2em] font-semibold bg-stone-950/85 text-amber-400 border border-amber-500/30 backdrop-blur-md">
-                  <%= item.category %>
-                </span>
-
-                <% if (item.tag) { %>
-                  <span class="absolute top-3.5 right-3.5 px-3 py-1 rounded-full text-[10px] uppercase tracking-wider font-medium bg-stone-900/85 text-stone-300 border border-stone-700/80 backdrop-blur-md">
-                    <%= item.tag %>
-                  </span>
-                <% } %>
-
-                <!-- Precio Destacado en Ámbar -->
-                <div class="absolute bottom-3.5 right-4 bg-stone-950/90 backdrop-blur-md border border-amber-500/40 px-4 py-1.5 rounded-full shadow-lg">
-                  <span class="font-serif text-2xl font-bold text-amber-500">
-                    <%= item.price.toFixed(2).replace('.', ',') %> €
-                  </span>
-                </div>
-              </div>
-
-              <!-- Descripción del Plato -->
-              <div class="p-6">
-                <h3 class="font-serif text-2xl font-semibold text-stone-100 group-hover:text-amber-400 transition-colors duration-300 leading-snug">
-                  <%= item.name %>
-                </h3>
-                <p class="text-stone-400 text-sm font-light mt-2.5 leading-relaxed">
-                  <%= item.description %>
-                </p>
-              </div>
-            </div>
-
-            <!-- Pie de Tarjeta: Alérgenos y Botón de Selección -->
-            <div class="px-6 pb-6 pt-3 border-t border-stone-900 flex items-center justify-between gap-3">
-              <span class="text-[11px] text-stone-500 tracking-wide">
-                <%= item.allergens %>
-              </span>
-              <button
-                type="button"
-                data-dish="<%= item.name %>"
-                class="toggle-dish-btn px-3.5 py-1.5 rounded-full text-[11px] uppercase tracking-wider font-semibold border border-stone-800 hover:border-amber-500/50 bg-stone-900/70 hover:bg-amber-500 hover:text-stone-950 text-stone-300 transition-all duration-300 ease-in-out"
-              >
-                + Añadir a Reserva
-              </button>
-            </div>
-          </article>
-        <% }); %>
+      <!-- Pie sutil del Hero -->
+      <div class="mt-20 pt-8 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-6 text-[11px] tracking-[0.2em] uppercase text-neutral-400">
+        <div>
+          <span class="text-[#d4af37] block mb-1">UBICACIÓN</span>
+          <span>C. del Rey Francisco, 28 · 28008 Madrid</span>
+        </div>
+        <div>
+          <span class="text-[#d4af37] block mb-1">RESERVAS Y SALA</span>
+          <a href="tel:<%= restaurant.contact.phoneClean %>" class="hover:text-[#f4f1ea] transition-colors"><%= restaurant.contact.phone %></a>
+        </div>
+        <div>
+          <span class="text-[#d4af37] block mb-1">SERVICIO</span>
+          <span>Martes a Domingo · Lunes Cerrado</span>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- =========================================================================
-       3. SECCIÓN DE ESPACIOS Y BODEGA HISTÓRICA (LA CUEVA DE 1943)
+       3. SECCIÓN DE CARTA Y PRECIOS FORMAL (FORMATO MENÚ FÍSICO DE LUJO)
   ========================================================================= -->
-  <section id="espacios" class="py-24 bg-stone-950/70 border-t border-stone-900">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
-        <span class="text-[11px] uppercase tracking-[0.28em] text-amber-500 font-semibold block">
-          Arquitectura & Atmósfera · C. del Rey Francisco, 28
+  <section id="carta" class="py-28 sm:py-36 bg-[#0a0a0c] border-t border-white/10">
+    <div class="max-w-5xl mx-auto px-6 lg:px-10">
+      <!-- Encabezado de Sección -->
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="text-[10px] tracking-[0.36em] uppercase text-[#d4af37] block mb-3">
+          PROPUESTA GASTRONÓMICA DE TEMPORADA
         </span>
-        <h2 class="font-serif text-4xl sm:text-5xl font-semibold text-stone-50">
-          Nuestros Espacios Gastronómicos
+        <h2 class="font-serif text-4xl sm:text-6xl font-normal text-[#f4f1ea] tracking-wide">
+          La Carta
         </h2>
-        <p class="text-stone-400 text-sm sm:text-base font-light">
-          Tres ambientes diferenciados donde disfrutar desde un aperitivo informal hasta una cena
-          privada bajo nuestra bóveda histórica de ladrillo de 1943.
+        <div class="lm-divider-ornament">
+          <span class="lm-diamond"></span>
+        </div>
+        <p class="text-xs sm:text-sm text-neutral-400 font-light mt-4">
+          Cocina de raíz elaborada diariamente con piezas salvajes de lonja del Cantábrico,
+          hortalizas de temporada y cortes nobles de vacuno mayor madurados en cámara propia.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <% restaurant.diningAreas.forEach(function(area) { %>
-          <div class="luxury-card bg-[#09090b] border border-stone-800 hover:border-amber-500/40 rounded-3xl p-8 flex flex-col justify-between">
-            <div class="space-y-4">
-              <div class="flex items-center justify-between">
-                <span class="text-[10px] uppercase tracking-[0.22em] text-amber-500 font-semibold px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">
-                  <%= area.capacity %>
-                </span>
-                <span class="text-amber-500/60 font-serif italic text-lg">La Montaña</span>
+      <!-- Pestañas Minimalistas de Categorías -->
+      <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-4 border-b border-white/10 mb-14 pb-1" id="menu-category-tabs">
+        <button type="button" data-category="all" class="lm-category-tab active">
+          CARTA COMPLETA
+        </button>
+        <% categories.forEach(function(cat) { %>
+          <button type="button" data-category="<%= cat.id %>" class="lm-category-tab">
+            <%= cat.title.toUpperCase() %>
+          </button>
+        <% }); %>
+      </div>
+
+      <!-- Barra discreta de platos seleccionados para la reserva -->
+      <div id="preselected-bar" class="hidden mb-10 px-6 py-4 bg-[#111115] border border-[#d4af37]/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <span class="tracking-[0.2em] uppercase text-[#d4af37] text-[10px] mr-2">PREFERENCIAS ANOTADAS:</span>
+          <div id="preselected-chips" class="flex flex-wrap gap-2"></div>
+        </div>
+        <a href="#reservas" class="text-[10px] tracking-[0.24em] uppercase text-[#d4af37] hover:text-[#f4f1ea] shrink-0">
+          VINCULAR A MI RESERVA →
+        </a>
+      </div>
+
+      <!-- Hoja Encuadernada de Menú Físico de Lujo -->
+      <div class="lm-menu-paper px-6 sm:px-14 lg:px-20 py-14 sm:py-20">
+        <!-- Sello Superior de la Carta -->
+        <div class="text-center pb-12 mb-12 border-b border-white/10">
+          <span class="font-serif text-sm tracking-[0.3em] uppercase text-[#d4af37] block">
+            RESTAURANTE LA MONTAÑA · MADRID
+          </span>
+          <p class="font-serif italic text-neutral-400 text-base mt-1">
+            Calle del Rey Francisco, número 28 · Barrio de Argüelles - Moncloa
+          </p>
+        </div>
+
+        <!-- Bloques de Categorías (Entrantes, Pescados, Carnes rojas maduradas, Postres de autor) -->
+        <div class="space-y-16" id="formal-menu-container">
+          <% categories.forEach(function(cat) { %>
+            <div class="menu-category-section" data-section-category="<%= cat.id %>">
+              <div class="mb-8 text-center sm:text-left border-b border-[#d4af37]/25 pb-4 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+                <h3 class="font-serif text-3xl sm:text-4xl font-normal text-[#f4f1ea] tracking-wide">
+                  <%= cat.title %>
+                </h3>
+                <p class="font-serif italic text-sm sm:text-base text-[#d4af37]/85">
+                  <%= cat.subtitle %>
+                </p>
               </div>
-              <h3 class="font-serif text-2xl sm:text-3xl font-semibold text-stone-100">
+
+              <div class="divide-y divide-white/5">
+                <% menuItems.filter(function(i) { return i.category === cat.id; }).forEach(function(dish) { %>
+                  <div class="lm-menu-row group">
+                    <!-- Línea Principal: Nombre del Plato + Línea Punteada + Precio Exacto -->
+                    <div class="flex items-baseline justify-between">
+                      <div class="flex flex-wrap items-baseline gap-3">
+                        <h4 class="font-serif text-xl sm:text-2xl font-normal text-[#f4f1ea] group-hover:text-[#d4af37] transition-colors">
+                          <%= dish.name %>
+                        </h4>
+                        <% if (dish.highlight) { %>
+                          <span class="text-[9px] tracking-[0.22em] uppercase px-2 py-0.5 border border-[#d4af37]/35 text-[#d4af37]">
+                            <%= dish.highlight %>
+                          </span>
+                        <% } %>
+                      </div>
+
+                      <span class="lm-menu-leaderLine" aria-hidden="true"></span>
+
+                      <span class="font-serif text-xl sm:text-2xl font-medium text-[#d4af37] whitespace-nowrap">
+                        <%= dish.price.toFixed(2).replace('.', ',') %> €
+                      </span>
+                    </div>
+
+                    <!-- Segunda Línea: Descripción Corta y Botón Sutil de Selección -->
+                    <div class="mt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <p class="text-xs sm:text-[13px] text-neutral-400 font-light leading-relaxed max-w-2xl">
+                        <%= dish.description %>
+                      </p>
+                      <button
+                        type="button"
+                        data-dish="<%= dish.name %>"
+                        class="toggle-dish-btn self-start sm:self-auto text-[10px] tracking-[0.22em] uppercase text-neutral-500 hover:text-[#d4af37] transition-colors whitespace-nowrap"
+                      >
+                        + Preseleccionar
+                      </button>
+                    </div>
+                  </div>
+                <% }); %>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+
+        <!-- Selección Resumida de Bodega Histórica -->
+        <div class="mt-20 pt-12 border-t border-white/10">
+          <div class="text-center mb-8">
+            <span class="text-[10px] tracking-[0.32em] uppercase text-[#d4af37] block">
+              CAVA SUBTERRÁNEA DE 1943
+            </span>
+            <h3 class="font-serif text-2xl sm:text-3xl font-normal text-[#f4f1ea] mt-1">
+              Grandes Añadas & Selección del Sumiller
+            </h3>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-xs">
+            <% winePairings.forEach(function(wine) { %>
+              <div class="flex items-baseline justify-between py-2 border-b border-white/5">
+                <span class="font-serif text-base sm:text-lg text-[#e5e5e5]"><%= wine.name %></span>
+                <span class="font-serif text-base sm:text-lg text-[#d4af37] ml-4 whitespace-nowrap"><%= wine.price %></span>
+              </div>
+            <% }); %>
+          </div>
+        </div>
+
+        <!-- Nota Legal de Carta -->
+        <div class="mt-14 pt-8 border-t border-white/10 text-center text-[11px] tracking-[0.14em] text-neutral-500 uppercase">
+          Todos los precios están expresados en Euros e incluyen el 10% de IVA · Servicio de pan de masa madre y AOVE temprano (3,50 € por comensal)
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       4. SECCIÓN DE HISTORIA, ARQUITECTURA Y SALONES PRIVADOS (DESDE 1943)
+  ========================================================================= -->
+  <section id="historia" class="py-28 sm:py-36 bg-[#0d0d10] border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <!-- Narrativa Histórica -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-14 items-center mb-24">
+        <div class="lg:col-span-6 space-y-6">
+          <span class="text-[10px] tracking-[0.36em] uppercase text-[#d4af37] block">
+            PATRIMONIO GASTRONÓMICO DE MADRID · 1943
+          </span>
+          <h2 class="font-serif text-4xl sm:text-5xl font-normal text-[#f4f1ea] leading-tight">
+            <%= restaurant.heritage.title %>
+          </h2>
+          <p class="font-serif italic text-xl text-[#d4af37]/90 leading-relaxed">
+            <%= restaurant.heritage.lead %>
+          </p>
+          <% restaurant.heritage.paragraphs.forEach(function(p) { %>
+            <p class="text-xs sm:text-sm text-neutral-300 font-light leading-relaxed">
+              <%= p %>
+            </p>
+          <% }); %>
+        </div>
+
+        <div class="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div class="border border-white/10 bg-[#0a0a0c] p-3">
+            <img
+              src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=900&q=85"
+              alt="Salón clásico del Restaurante La Montaña"
+              class="w-full h-80 object-cover opacity-85"
+              loading="lazy"
+            />
+            <p class="font-serif italic text-xs text-neutral-400 text-center pt-3 pb-1">
+              Salón Principal en Calle del Rey Francisco, 28
+            </p>
+          </div>
+          <div class="border border-white/10 bg-[#0a0a0c] p-3 sm:mt-10">
+            <img
+              src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=900&q=85"
+              alt="Bodega y Cueva Histórica Abovedada de 1943"
+              class="w-full h-80 object-cover opacity-85"
+              loading="lazy"
+            />
+            <p class="font-serif italic text-xs text-neutral-400 text-center pt-3 pb-1">
+              Cueva Histórica Abovedada & Botellero Subterráneo
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Los Tres Espacios del Restaurante -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-12 border-t border-white/10">
+        <% restaurant.diningAreas.forEach(function(area, idx) { %>
+          <div class="bg-[#0a0a0c] border border-white/10 hover:border-[#d4af37]/40 p-8 sm:p-10 transition-colors flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-[10px] tracking-[0.26em] uppercase text-[#d4af37] mb-4">
+                <span>ESPACIO 0<%= idx + 1 %></span>
+                <span><%= area.capacity %></span>
+              </div>
+              <h3 class="font-serif text-2xl sm:text-3xl font-normal text-[#f4f1ea] mb-3">
                 <%= area.name %>
               </h3>
-              <p class="text-stone-400 text-sm font-light leading-relaxed">
+              <p class="text-xs sm:text-sm text-neutral-400 font-light leading-relaxed">
                 <%= area.description %>
               </p>
             </div>
-            <div class="mt-8 pt-4 border-t border-stone-900">
+            <div class="mt-8 pt-5 border-t border-white/5">
               <a
                 href="#reservas"
                 data-select-area="<%= area.id %>"
-                class="select-area-link inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-amber-400 hover:text-amber-300 font-semibold transition-colors"
+                class="select-area-link text-[10px] tracking-[0.26em] uppercase text-[#e5e5e5] hover:text-[#d4af37] transition-colors"
               >
-                <span>Reservar en este salón</span>
-                <span>→</span>
+                SOLICITAR MESA EN ESTE SALÓN →
               </a>
             </div>
           </div>
         <% }); %>
       </div>
+
+      <!-- Citas de la Crítica Gastronómica -->
+      <div class="mt-20 grid grid-cols-1 md:grid-cols-2 gap-10 pt-14 border-t border-white/10">
+        <% restaurant.ratings.quotes.forEach(function(q) { %>
+          <blockquote class="bg-[#0a0a0c] border border-white/10 p-8 sm:p-10">
+            <p class="font-serif italic text-xl sm:text-2xl text-[#f4f1ea] leading-relaxed mb-6">
+              “<%= q.quote %>”
+            </p>
+            <footer class="text-[11px] tracking-[0.22em] uppercase text-[#d4af37]">
+              — <%= q.author %> <span class="text-neutral-500">· <%= q.publication %></span>
+            </footer>
+          </blockquote>
+        <% }); %>
+      </div>
     </div>
   </section>
 
   <!-- =========================================================================
-       4. FORMULARIO DE RESERVA AVANZADO (Inputs focus:border-amber-500)
+       5. SISTEMA DE RESERVAS DE MESA FORMAL Y EXCLUSIVO
   ========================================================================= -->
-  <section id="reservas" class="py-24 bg-[#09090b] border-t border-stone-900 relative overflow-hidden">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-      <div class="text-center max-w-2xl mx-auto mb-14 space-y-3">
-        <span class="text-[11px] uppercase tracking-[0.28em] text-amber-500 font-semibold block">
-          Confirmación Inmediata Online
+  <section id="reservas" class="py-28 sm:py-36 bg-[#0a0a0c] border-t border-white/10">
+    <div class="max-w-4xl mx-auto px-6 lg:px-10">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="text-[10px] tracking-[0.36em] uppercase text-[#d4af37] block mb-3">
+          ATENCIÓN DE SALA & RESERVAS
         </span>
-        <h2 class="font-serif text-4xl sm:text-6xl font-semibold text-stone-50">
+        <h2 class="font-serif text-4xl sm:text-6xl font-normal text-[#f4f1ea]">
           Reservar una Mesa
         </h2>
-        <p class="text-stone-400 text-sm sm:text-base font-light">
-          Seleccione fecha, turno y número de comensales. Nuestro sistema verifica la disponibilidad
-          en tiempo real y emite su código de reserva al instante.
+        <div class="lm-divider-ornament">
+          <span class="lm-diamond"></span>
+        </div>
+        <p class="text-xs sm:text-sm text-neutral-400 font-light mt-4">
+          Para reservas de hasta 12 comensales, complete el siguiente formulario con confirmación
+          inmediata. Para grupos privados o eventos corporativos, contacte directamente con nuestro
+          Maître en el <a href="tel:<%= restaurant.contact.phoneClean %>" class="text-[#d4af37] hover:underline"><%= restaurant.contact.phone %></a>.
         </p>
       </div>
 
-      <!-- Contenedor Principal del Formulario -->
-      <div class="bg-stone-950/90 border border-stone-800 rounded-3xl p-6 sm:p-10 lg:p-12 shadow-2xl">
-        <!-- Vista de Confirmación Exitosa (Oculta inicialmente) -->
-        <div id="reservation-success-box" class="hidden text-center py-8 space-y-6 animate-fade-up">
-          <div class="w-16 h-16 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-400 flex items-center justify-center mx-auto text-3xl">
-            ✓
+      <div class="bg-[#111115] border border-white/10 p-8 sm:p-14 shadow-2xl">
+        <!-- Tarjeta de Confirmación tras enviar la reserva -->
+        <div id="reservation-success-box" class="hidden py-10 text-center space-y-6">
+          <div class="w-14 h-14 border border-[#d4af37] text-[#d4af37] flex items-center justify-center mx-auto font-serif text-2xl">
+            L.M
           </div>
-          <div class="space-y-2">
-            <span class="text-xs uppercase tracking-[0.25em] text-amber-400 font-semibold block">
-              Reserva Confirmada en Base de Datos
+          <div>
+            <span class="text-[10px] tracking-[0.3em] uppercase text-[#d4af37] block">
+              CONFIRMACIÓN OFICIAL DE SALA
             </span>
-            <h3 id="res-confirm-title" class="font-serif text-3xl sm:text-4xl font-semibold text-stone-50">
-              ¡Le esperamos en La Montaña!
+            <h3 class="font-serif text-3xl sm:text-4xl font-normal text-[#f4f1ea] mt-2">
+              Su mesa ha quedado reservada
             </h3>
-            <p class="text-stone-400 text-sm max-w-md mx-auto">
-              Guarde su código oficial de reserva para cualquier consulta a su llegada a Calle del Rey Francisco, 28.
-            </p>
           </div>
 
-          <div class="inline-block bg-[#09090b] border border-amber-500/40 rounded-2xl px-8 py-4">
-            <span class="text-[10px] uppercase tracking-[0.25em] text-stone-400 block">Código Oficial</span>
-            <span id="res-confirm-code" class="font-mono text-2xl font-bold text-amber-500 tracking-wider">LM-2026-0000</span>
+          <div class="inline-block bg-[#0a0a0c] border border-[#d4af37]/50 px-10 py-5">
+            <span class="text-[9px] tracking-[0.3em] uppercase text-neutral-400 block mb-1">
+              LOCALIZADOR DE RESERVA
+            </span>
+            <span id="res-confirm-code" class="font-serif text-2xl sm:text-3xl text-[#d4af37] tracking-[0.15em]">
+              LM-2026-0000
+            </span>
           </div>
 
-          <div id="res-confirm-details" class="max-w-lg mx-auto bg-[#09090b] border border-stone-800 rounded-2xl p-6 text-left text-sm space-y-2 text-stone-300"></div>
+          <div id="res-confirm-details" class="max-w-lg mx-auto bg-[#0a0a0c] border border-white/10 p-6 text-left text-xs space-y-2.5 text-neutral-300"></div>
 
           <div class="pt-4">
-            <button
-              id="new-reservation-btn"
-              type="button"
-              class="px-7 py-3 rounded-full bg-stone-900 hover:bg-stone-800 text-amber-400 border border-amber-500/30 text-xs uppercase tracking-widest font-semibold transition-all duration-300"
-            >
-              Realizar otra reserva
+            <button id="new-reservation-btn" type="button" class="lm-btn-outline">
+              REALIZAR UNA NUEVA RESERVA
             </button>
           </div>
         </div>
 
-        <!-- Formulario Interactivo -->
-        <form id="reservation-form" class="space-y-7" novalidate>
-          <div id="reservation-error-alert" class="hidden p-4 rounded-2xl bg-red-950/70 border border-red-500/40 text-red-200 text-sm"></div>
+        <!-- Formulario Formal -->
+        <form id="reservation-form" class="space-y-8" novalidate>
+          <div id="reservation-error-alert" class="hidden p-4 bg-red-950/50 border border-red-500/40 text-red-200 text-xs tracking-wide"></div>
 
-          <!-- Fila 1: Fecha, Hora y Comensales -->
+          <!-- Fila 1: Fecha, Turno Horario y Número de Comensales -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div>
-              <label for="res-date" class="block text-[11px] uppercase tracking-[0.18em] text-stone-300 font-semibold mb-2.5">
-                Fecha de Reserva *
-              </label>
-              <input
-                id="res-date"
-                name="date"
-                type="date"
-                required
-                class="w-full px-4 py-3.5 rounded-xl bg-[#09090b] border border-stone-800 text-stone-100 text-sm focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all duration-300 ease-in-out"
-              />
+              <label for="res-date" class="lm-label">Fecha *</label>
+              <input id="res-date" name="date" type="date" required class="lm-input" />
             </div>
 
             <div>
-              <label for="res-time" class="block text-[11px] uppercase tracking-[0.18em] text-stone-300 font-semibold mb-2.5">
-                Turno Horario *
-              </label>
-              <select
-                id="res-time"
-                name="time"
-                required
-                class="w-full px-4 py-3.5 rounded-xl bg-[#09090b] border border-stone-800 text-stone-100 text-sm focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all duration-300 ease-in-out"
-              >
-                <optgroup label="Turno de Almuerzo">
+              <label for="res-time" class="lm-label">Hora de Llegada *</label>
+              <select id="res-time" name="time" required class="lm-input">
+                <optgroup label="Servicio de Almuerzo">
                   <% timeSlots.lunch.forEach(function(t) { %>
-                    <option value="<%= t %>" <%= t === '14:00' ? 'selected' : '' %>><%= t %> h (Comida)</option>
+                    <option value="<%= t %>" <%= t === '14:00' ? 'selected' : '' %>><%= t %> h</option>
                   <% }); %>
                 </optgroup>
-                <optgroup label="Turno de Cena">
+                <optgroup label="Servicio de Cena">
                   <% timeSlots.dinner.forEach(function(t) { %>
-                    <option value="<%= t %>"><%= t %> h (Cena)</option>
+                    <option value="<%= t %>"><%= t %> h</option>
                   <% }); %>
                 </optgroup>
               </select>
             </div>
 
             <div>
-              <label for="res-guests" class="block text-[11px] uppercase tracking-[0.18em] text-stone-300 font-semibold mb-2.5">
-                Comensales *
-              </label>
-              <select
-                id="res-guests"
-                name="guests"
-                required
-                class="w-full px-4 py-3.5 rounded-xl bg-[#09090b] border border-stone-800 text-stone-100 text-sm focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all duration-300 ease-in-out"
-              >
+              <label for="res-guests" class="lm-label">Comensales *</label>
+              <select id="res-guests" name="guests" required class="lm-input">
                 <% [1, 2, 3, 4, 5, 6, 7, 8, 10, 12].forEach(function(n) { %>
                   <option value="<%= n %>" <%= n === 2 ? 'selected' : '' %>>
                     <%= n %> <%= n === 1 ? 'Comensal' : 'Comensales' %>
@@ -563,23 +533,17 @@
             </div>
           </div>
 
-          <!-- Indicador dinámico de disponibilidad para la fecha elegida -->
-          <div id="availability-status-bar" class="px-4 py-2.5 rounded-xl bg-[#09090b] border border-stone-800/90 flex items-center justify-between text-xs text-stone-400">
-            <span id="availability-text">Consultando disponibilidad en tiempo real...</span>
-            <span class="text-amber-500 font-medium">Confirmación inmediata</span>
+          <!-- Estado de Disponibilidad en Tiempo Real -->
+          <div class="px-5 py-3 bg-[#0a0a0c] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-neutral-400">
+            <span id="availability-text">Consultando disponibilidad de sala...</span>
+            <span class="text-[10px] tracking-[0.2em] uppercase text-[#d4af37]">CONFIRMACIÓN INMEDIATA</span>
           </div>
 
-          <!-- Fila 2: Salón Preferido, Nombre, Teléfono y Email -->
+          <!-- Fila 2: Salón Preferido y Datos del Titular -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label for="res-area" class="block text-[11px] uppercase tracking-[0.18em] text-stone-300 font-semibold mb-2.5">
-                Espacio Preferido *
-              </label>
-              <select
-                id="res-area"
-                name="diningArea"
-                class="w-full px-4 py-3.5 rounded-xl bg-[#09090b] border border-stone-800 text-stone-100 text-sm focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all duration-300 ease-in-out"
-              >
+              <label for="res-area" class="lm-label">Salón o Espacio Preferido *</label>
+              <select id="res-area" name="diningArea" class="lm-input">
                 <% restaurant.diningAreas.forEach(function(a) { %>
                   <option value="<%= a.id %>"><%= a.name %></option>
                 <% }); %>
@@ -587,70 +551,71 @@
             </div>
 
             <div>
-              <label for="res-name" class="block text-[11px] uppercase tracking-[0.18em] text-stone-300 font-semibold mb-2.5">
-                Nombre y Apellidos *
-              </label>
+              <label for="res-name" class="lm-label">Nombre y Apellidos del Titular *</label>
               <input
                 id="res-name"
                 name="name"
                 type="text"
                 required
-                placeholder="Ej. Carlos Mendoza"
-                class="w-full px-4 py-3.5 rounded-xl bg-[#09090b] border border-stone-800 text-stone-100 placeholder-stone-600 text-sm focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all duration-300 ease-in-out"
+                placeholder="Nombre completo"
+                class="lm-input"
               />
             </div>
 
             <div>
-              <label for="res-phone" class="block text-[11px] uppercase tracking-[0.18em] text-stone-300 font-semibold mb-2.5">
-                Teléfono Móvil *
-              </label>
+              <label for="res-phone" class="lm-label">Teléfono de Contacto *</label>
               <input
                 id="res-phone"
                 name="phone"
                 type="tel"
                 required
                 placeholder="+34 600 000 000"
-                class="w-full px-4 py-3.5 rounded-xl bg-[#09090b] border border-stone-800 text-stone-100 placeholder-stone-600 text-sm focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all duration-300 ease-in-out"
+                class="lm-input"
               />
             </div>
 
             <div>
-              <label for="res-email" class="block text-[11px] uppercase tracking-[0.18em] text-stone-300 font-semibold mb-2.5">
-                Correo Electrónico *
-              </label>
+              <label for="res-email" class="lm-label">Correo Electrónico *</label>
               <input
                 id="res-email"
                 name="email"
                 type="email"
                 required
-                placeholder="cliente@dominio.es"
-                class="w-full px-4 py-3.5 rounded-xl bg-[#09090b] border border-stone-800 text-stone-100 placeholder-stone-600 text-sm focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all duration-300 ease-in-out"
+                placeholder="correo@ejemplo.es"
+                class="lm-input"
               />
             </div>
           </div>
 
-          <!-- Comentarios o Alergias -->
+          <!-- Observaciones / Alergias -->
           <div>
-            <label for="res-notes" class="block text-[11px] uppercase tracking-[0.18em] text-stone-300 font-semibold mb-2.5">
-              Alergias, Intolerancias o Peticiones Especiales
-            </label>
+            <label for="res-notes" class="lm-label">Alergias, Intolerancias o Preferencias de Sala</label>
             <textarea
               id="res-notes"
               name="notes"
               rows="3"
-              placeholder="Indíquenos si algún comensal presenta alergias (gluten, frutos secos, lactosa, marisco) o si celebran una ocasión especial..."
-              class="w-full px-4 py-3.5 rounded-xl bg-[#09090b] border border-stone-800 text-stone-100 placeholder-stone-600 text-sm focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all duration-300 ease-in-out"
+              placeholder="Indíquenos si algún comensal presenta alergias alimentarias o si desea transmitir alguna indicación a nuestro equipo de sala y sumillería."
+              class="lm-input"
             ></textarea>
           </div>
 
-          <!-- Botón de Envío con Animación de Carga Suave -->
-          <button
-            id="res-submit-btn"
-            type="submit"
-            class="btn-shine w-full py-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs sm:text-sm uppercase tracking-[0.2em] shadow-[0_0_30px_rgba(245,158,11,0.25)] hover:shadow-[0_0_40px_rgba(245,158,11,0.45)] transition-all duration-300 ease-in-out flex items-center justify-center gap-3"
-          >
-            <span id="res-submit-spinner" class="hidden spinner-amber"></span>
-            <span id="res-submit-text">Confirmar Reserva de Mesa</span>
+          <!-- Aceptación RGPD -->
+          <div class="flex items-start gap-3 text-xs text-neutral-400">
+            <input
+              id="res-privacy"
+              type="checkbox"
+              checked
+              required
+              class="mt-1 accent-[#d4af37]"
+            />
+            <label for="res-privacy" class="leading-relaxed">
+              He leído y acepto la <button type="button" data-open-legal="privacidad" class="text-[#d4af37] underline hover:text-[#f4f1ea]">Política de Privacidad</button> y las condiciones de reserva de <%= restaurant.legalName %>.
+            </label>
+          </div>
+
+          <button id="res-submit-btn" type="submit" class="lm-btn-gold w-full py-4">
+            <span id="res-submit-spinner" class="hidden lm-spinner"></span>
+            <span id="res-submit-text">CONFIRMAR RESERVA DE MESA</span>
           </button>
         </form>
       </div>
@@ -658,86 +623,81 @@
   </section>
 
   <!-- =========================================================================
-       5. SECCIÓN DE OPINIONES Y RESEÑAS DESTACADAS
+       6. HORARIOS, UBICACIÓN Y CONTACTO ESTILIZADOS
   ========================================================================= -->
-  <section id="opiniones" class="py-24 bg-stone-950/70 border-t border-stone-900">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-3xl mx-auto mb-16 space-y-3">
-        <span class="text-[11px] uppercase tracking-[0.28em] text-amber-500 font-semibold block">
-          Excelencia Valorada en Google Maps (<%= restaurant.ratings.score %> ★)
+  <section id="contacto" class="py-28 sm:py-36 bg-[#0d0d10] border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="text-[10px] tracking-[0.36em] uppercase text-[#d4af37] block mb-3">
+          ENCUÉNTRENOS EN MONCLOA - ARAVACA
         </span>
-        <h2 class="font-serif text-4xl sm:text-5xl font-semibold text-stone-50">
-          La Experiencia de Nuestros Comensales
+        <h2 class="font-serif text-4xl sm:text-6xl font-normal text-[#f4f1ea]">
+          Horarios & Ubicación
         </h2>
+        <div class="lm-divider-ornament">
+          <span class="lm-diamond"></span>
+        </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <% restaurant.ratings.reviews.forEach(function(rev) { %>
-          <article class="luxury-card bg-[#09090b] border border-stone-800 hover:border-amber-500/40 rounded-3xl p-8 flex flex-col justify-between">
-            <div class="space-y-4">
-              <div class="flex items-center justify-between">
-                <span class="text-amber-500 tracking-widest text-sm">★★★★★</span>
-                <span class="text-xs text-stone-500"><%= rev.date %></span>
-              </div>
-              <p class="font-serif italic text-xl text-stone-200 leading-relaxed">
-                “<%= rev.comment %>”
-              </p>
-            </div>
-            <div class="mt-6 pt-5 border-t border-stone-900">
-              <p class="font-semibold text-stone-100 text-sm"><%= rev.author %></p>
-              <p class="text-xs text-stone-500 mt-0.5"><%= rev.role %></p>
-              <p class="text-[11px] text-amber-500/90 mt-2 font-medium">✦ <%= rev.dish %></p>
-            </div>
-          </article>
-        <% }); %>
-      </div>
-    </div>
-  </section>
-
-  <!-- =========================================================================
-       6. INFORMACIÓN DE CONTACTO Y MAPA EN MONCLOA - ARAVACA
-  ========================================================================= -->
-  <section id="ubicacion" class="py-24 bg-[#09090b] border-t border-stone-900">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
-        <!-- Detalles de Dirección y Transporte -->
-        <div class="lg:col-span-5 bg-stone-950 border border-stone-800 rounded-3xl p-8 sm:p-10 flex flex-col justify-between space-y-8">
-          <div class="space-y-6">
+        <!-- Panel Informativo de Sala, Cocina y Contacto -->
+        <div class="lg:col-span-5 bg-[#0a0a0c] border border-white/10 p-8 sm:p-12 flex flex-col justify-between space-y-10">
+          <div class="space-y-8">
+            <!-- Dirección -->
             <div>
-              <span class="text-[11px] uppercase tracking-[0.25em] text-amber-500 font-semibold block">
-                Ubicación Oficial
+              <span class="text-[10px] tracking-[0.28em] uppercase text-[#d4af37] block mb-2">
+                DIRECCIÓN
               </span>
-              <h2 class="font-serif text-3xl sm:text-4xl font-semibold text-stone-50 mt-2">
+              <h3 class="font-serif text-2xl sm:text-3xl font-normal text-[#f4f1ea]">
                 <%= restaurant.address.street %>
-              </h2>
-              <p class="text-stone-400 text-sm mt-1">
+              </h3>
+              <p class="text-xs sm:text-sm text-neutral-400 mt-1">
                 <%= restaurant.address.postalCode %> <%= restaurant.address.city %> · <%= restaurant.address.district %> (<%= restaurant.address.neighborhood %>)
               </p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              <div class="p-4 rounded-2xl bg-[#09090b] border border-stone-800">
-                <span class="text-[10px] uppercase tracking-widest text-stone-500 block">Teléfono de Sala</span>
-                <a href="tel:<%= restaurant.contact.phoneClean %>" class="font-serif text-2xl font-semibold text-amber-400 hover:text-amber-300 mt-1 block">
+            <!-- Horarios de Sala y Cocina -->
+            <div>
+              <span class="text-[10px] tracking-[0.28em] uppercase text-[#d4af37] block mb-4">
+                HORARIO DE SALA Y COCINA
+              </span>
+              <div class="divide-y divide-white/10 border-y border-white/10 text-xs">
+                <% restaurant.hours.forEach(function(h) { %>
+                  <div class="py-3 flex items-center justify-between gap-4">
+                    <span class="text-[#e5e5e5] font-normal"><%= h.day %></span>
+                    <span class="<%= h.status === 'open' ? 'text-[#d4af37]' : 'text-neutral-500 italic' %>">
+                      <%= h.schedule %>
+                    </span>
+                  </div>
+                <% }); %>
+              </div>
+            </div>
+
+            <!-- Teléfono y Correo -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <span class="text-[10px] tracking-[0.26em] uppercase text-neutral-500 block mb-1">
+                  TELÉFONO DE RESERVAS
+                </span>
+                <a href="tel:<%= restaurant.contact.phoneClean %>" class="font-serif text-2xl text-[#d4af37] hover:text-[#f4f1ea] transition-colors">
                   <%= restaurant.contact.phone %>
                 </a>
               </div>
-              <div class="p-4 rounded-2xl bg-[#09090b] border border-stone-800">
-                <span class="text-[10px] uppercase tracking-widest text-stone-500 block">Reservas & Eventos</span>
-                <a href="mailto:<%= restaurant.contact.email %>" class="text-xs font-medium text-stone-200 hover:text-amber-400 mt-2 block truncate">
+              <div>
+                <span class="text-[10px] tracking-[0.26em] uppercase text-neutral-500 block mb-1">
+                  CORREO DE SALA
+                </span>
+                <a href="mailto:<%= restaurant.contact.email %>" class="text-xs text-[#e5e5e5] hover:text-[#d4af37] transition-colors break-all">
                   <%= restaurant.contact.email %>
                 </a>
               </div>
             </div>
 
-            <div class="space-y-3 pt-2">
-              <span class="text-[11px] uppercase tracking-[0.2em] text-stone-400 font-semibold block">
-                Accesos y Transporte Público
-              </span>
-              <% restaurant.address.transport.forEach(function(item) { %>
-                <div class="flex items-center justify-between py-2 px-3.5 rounded-xl bg-[#09090b] border border-stone-800/80 text-xs">
-                  <span class="text-amber-400 font-semibold"><%= item.label %></span>
-                  <span class="text-stone-400"><%= item.detail %></span>
+            <!-- Accesos y Aparcacoches -->
+            <div class="space-y-2.5 pt-2">
+              <% restaurant.address.accessDetails.forEach(function(acc) { %>
+                <div class="text-xs text-neutral-400">
+                  <strong class="text-[#e5e5e5] font-normal"><%= acc.label %>:</strong> <%= acc.detail %>
                 </div>
               <% }); %>
             </div>
@@ -747,18 +707,18 @@
             href="<%= restaurant.address.googleMapsUrl %>"
             target="_blank"
             rel="noopener noreferrer"
-            class="btn-shine w-full py-4 rounded-full bg-amber-500 hover:bg-amber-400 text-stone-950 text-center text-xs uppercase tracking-[0.2em] font-bold transition-all duration-300 block"
+            class="lm-btn-outline w-full text-center"
           >
-            Abrir en Google Maps ↗
+            CÓMO LLEGAR EN GOOGLE MAPS ↗
           </a>
         </div>
 
-        <!-- Mapa Interactivo de Google Maps -->
-        <div class="lg:col-span-7 rounded-3xl overflow-hidden border border-stone-800 min-h-[450px] bg-stone-950 shadow-2xl">
+        <!-- Mapa Integrado -->
+        <div class="lg:col-span-7 border border-white/10 bg-[#0a0a0c] min-h-[480px] overflow-hidden">
           <iframe
-            title="Mapa de Restaurante La Montaña en C. del Rey Francisco, 28, Moncloa - Aravaca, Madrid"
+            title="Ubicación exacta del Restaurante La Montaña en C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid"
             src="<%= restaurant.address.googleMapsEmbedUrl %>"
-            class="w-full h-full min-h-[450px] border-0 opacity-90 hover:opacity-100 transition-opacity duration-500"
+            class="w-full h-full min-h-[480px] border-0 lm-map-frame"
             loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"
           ></iframe>
@@ -768,24 +728,142 @@
   </section>
 
   <!-- =========================================================================
-       PIE DE PÁGINA (FOOTER)
+       7. PIE DE PÁGINA CORPORATIVO CON AVISO LEGAL, PRIVACIDAD Y COOKIES
   ========================================================================= -->
-  <footer class="bg-stone-950 border-t border-stone-900 py-12 text-stone-500 text-xs">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-      <div class="flex items-center gap-3">
-        <span class="font-serif text-2xl font-semibold text-stone-200"><%= restaurant.name %></span>
-        <span class="text-stone-700">|</span>
-        <span><%= restaurant.address.fullAddress %></span>
+  <footer class="bg-[#070709] border-t border-white/10 pt-16 pb-12 text-xs text-neutral-500">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-white/10">
+        <!-- Columna Marca -->
+        <div class="md:col-span-5 space-y-4">
+          <div class="flex items-center gap-3.5">
+            <span class="lm-monogram-seal"><%= restaurant.monogram %></span>
+            <div>
+              <span class="font-serif text-xl uppercase tracking-[0.16em] text-[#f4f1ea] block">
+                <%= restaurant.name %>
+              </span>
+              <span class="text-[9px] tracking-[0.28em] uppercase text-[#d4af37]">
+                CASA FUNDADA EN <%= restaurant.foundedYear %>
+              </span>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-400 max-w-sm leading-relaxed font-light">
+            <%= restaurant.legalName %> · CIF <%= restaurant.cif %><br />
+            <%= restaurant.address.fullAddress %><br />
+            Teléfono: <%= restaurant.contact.phone %>
+          </p>
+        </div>
+
+        <!-- Columna Secciones -->
+        <div class="md:col-span-3 space-y-2.5">
+          <span class="text-[10px] tracking-[0.26em] uppercase text-[#d4af37] block mb-3">
+            NAVEGACIÓN
+          </span>
+          <ul class="space-y-2 text-[11px] tracking-[0.16em] uppercase">
+            <li><a href="#inicio" class="hover:text-[#f4f1ea] transition-colors">Inicio</a></li>
+            <li><a href="#carta" class="hover:text-[#f4f1ea] transition-colors">La Carta</a></li>
+            <li><a href="#historia" class="hover:text-[#f4f1ea] transition-colors">Historia (1943)</a></li>
+            <li><a href="#reservas" class="hover:text-[#f4f1ea] transition-colors">Reservas de Mesa</a></li>
+            <li><a href="#contacto" class="hover:text-[#f4f1ea] transition-colors">Contacto y Sala</a></li>
+            <li><a href="/admin" class="hover:text-[#d4af37] transition-colors">Acceso Dirección</a></li>
+          </ul>
+        </div>
+
+        <!-- Columna Marco Normativo Español (LSSI-CE, RGPD y Cookies) -->
+        <div class="md:col-span-4 space-y-2.5">
+          <span class="text-[10px] tracking-[0.26em] uppercase text-[#d4af37] block mb-3">
+            INFORMACIÓN LEGAL Y PRIVACIDAD
+          </span>
+          <ul class="space-y-2 text-xs">
+            <li>
+              <button type="button" data-open-legal="aviso-legal" class="hover:text-[#f4f1ea] transition-colors text-left">
+                Aviso Legal y Condiciones de Uso (LSSI-CE)
+              </button>
+            </li>
+            <li>
+              <button type="button" data-open-legal="privacidad" class="hover:text-[#f4f1ea] transition-colors text-left">
+                Política de Privacidad y Protección de Datos (RGPD / LOPDGDD)
+              </button>
+            </li>
+            <li>
+              <button type="button" data-open-legal="cookies" class="hover:text-[#f4f1ea] transition-colors text-left">
+                Política de Cookies (Guía AEPD)
+              </button>
+            </li>
+            <li>
+              <button type="button" id="reopen-cookie-banner-btn" class="text-[#d4af37] hover:underline text-left">
+                Configurar Preferencias de Cookies
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
-      <div class="flex items-center gap-6">
-        <a href="#carta" class="hover:text-amber-400 transition-colors">Carta</a>
-        <a href="#reservas" class="hover:text-amber-400 transition-colors">Reservas</a>
-        <a href="/admin" class="text-stone-400 hover:text-amber-400 transition-colors">Acceso Dirección (/admin)</a>
+
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-neutral-500">
+        <p>© <%= new Date().getFullYear() %> <%= restaurant.legalName %> Todos los derechos reservados.</p>
+        <p class="tracking-[0.14em] uppercase">C. del Rey Francisco, 28 · Moncloa - Aravaca · 28008 Madrid</p>
       </div>
     </div>
   </footer>
 
-  <!-- Script Cliente para Filtrado de Carta, Disponibilidad y Envío de Reserva -->
+  <!-- =========================================================================
+       BANNER DE CONSENTIMIENTO DE COOKIES (NORMATIVA AEPD / RGPD)
+  ========================================================================= -->
+  <div
+    id="cookie-consent-banner"
+    class="hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0e0e12]/95 backdrop-blur-xl border-t border-[#d4af37]/35 px-6 py-5 shadow-2xl"
+    role="dialog"
+    aria-label="Aviso de privacidad y cookies"
+  >
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+      <div class="space-y-1 max-w-3xl">
+        <span class="text-[10px] tracking-[0.28em] uppercase text-[#d4af37] block">
+          PRIVACIDAD Y GESTIÓN DE COOKIES
+        </span>
+        <p class="text-xs text-neutral-300 font-light leading-relaxed">
+          En <strong><%= restaurant.name %></strong> utilizamos cookies técnicas estrictamente necesarias para el funcionamiento del sistema de reservas y, previo consentimiento, cookies de análisis para mejorar su experiencia. Puede consultar nuestra
+          <button type="button" data-open-legal="cookies" class="text-[#d4af37] underline">Política de Cookies</button> y
+          <button type="button" data-open-legal="privacidad" class="text-[#d4af37] underline">Política de Privacidad</button>.
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-3 shrink-0">
+        <button id="cookie-reject-btn" type="button" class="lm-btn-outline py-2.5 px-5 text-[10px]">
+          SOLO NECESARIAS
+        </button>
+        <button id="cookie-accept-btn" type="button" class="lm-btn-gold py-2.5 px-6 text-[10px]">
+          ACEPTAR TODAS
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL JURÍDICO (AVISO LEGAL, PRIVACIDAD Y POLÍTICA DE COOKIES)
+  ========================================================================= -->
+  <div
+    id="legal-modal-backdrop"
+    class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div class="bg-[#111115] border border-white/15 max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl">
+      <div class="px-8 py-6 border-b border-white/10 flex items-center justify-between">
+        <div>
+          <span class="text-[9px] tracking-[0.3em] uppercase text-[#d4af37] block">
+            MARCO NORMATIVO ESPAÑOL · <%= restaurant.legalName %>
+          </span>
+          <h3 id="legal-modal-title" class="font-serif text-2xl sm:text-3xl text-[#f4f1ea] mt-1">
+            Aviso Legal
+          </h3>
+        </div>
+        <button id="close-legal-modal-btn" type="button" class="text-neutral-400 hover:text-[#f4f1ea] text-sm tracking-widest uppercase">
+          CERRAR ✕
+        </button>
+      </div>
+      <div id="legal-modal-body" class="p-8 overflow-y-auto text-xs sm:text-sm text-neutral-300 space-y-4 leading-relaxed font-light"></div>
+    </div>
+  </div>
+
+  <!-- Controlador Frontend -->
   <script src="/js/main.js"></script>
 </body>
 </html>

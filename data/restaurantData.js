@@ -1,327 +1,307 @@
 /**
- * RESTAURANTE LA MONTAÑA — CATÁLOGO GASTRONÓMICO, BODEGA Y DATOS OFICIALES
- * Ubicación: C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid
- * Teléfono: +34 915 47 31 11
+ * RESTAURANTE LA MONTAÑA — ALTA COCINA CLÁSICA EN MADRID (DESDE 1943)
+ * C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid | Tel: +34 915 47 31 11
  */
 
 const RESTAURANT_INFO = {
-  name: "La Montaña",
-  legalName: "Restaurante Gastronómico Castizo La Montaña S.L.",
-  subtitle: "Moncloa - Aravaca, Madrid",
-  tagline: "Alta tradición castiza, producto de temporada y brasas en el corazón de Argüelles",
+  name: "Restaurante La Montaña",
+  shortName: "La Montaña",
+  monogram: "L.M",
+  legalName: "Restaurante Clásico La Montaña S.L.",
+  cif: "B-82941038",
+  subtitle: "C. del Rey Francisco, 28 · Moncloa - Aravaca · Madrid",
+  tagline: "Alta Cocina Tradicional & Legado Gastronómico desde 1943",
   description:
-    "Fundado sobre la herencia de las grandes casas de comidas madrileñas de 1943 en la Calle del Rey Francisco, 28. Una propuesta donde la cocina de raíz, el producto noble y una atmósfera íntima se encuentran en Moncloa - Aravaca.",
+    "Fundado en 1943 en el señorial barrio de Argüelles, Restaurante La Montaña preserva la excelencia de las grandes casas de comidas de Madrid. Producto de lonja y dehesa, fuego lento, mantelería de hilo y una bodega histórica bajo bóveda de ladrillo.",
   foundedYear: 1943,
-  priceRange: "28 € – 45 € por comensal",
+  priceRange: "45 € – 75 €",
   address: {
     street: "C. del Rey Francisco, 28",
     district: "Moncloa - Aravaca",
-    neighborhood: "Argüelles · Pintor Rosales",
+    neighborhood: "Argüelles · Paseo del Pintor Rosales",
     postalCode: "28008",
     city: "Madrid",
     country: "España",
     fullAddress: "C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid",
     googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=Calle+del+Rey+Francisco+28+28008+Madrid",
     googleMapsEmbedUrl: "https://www.google.com/maps?q=Calle+del+Rey+Francisco,+28,+28008+Madrid&output=embed",
-    transport: [
-      { label: "Metro Ventura Rodríguez", detail: "Línea 3 · a 3 min a pie" },
-      { label: "Metro Argüelles", detail: "Líneas 3, 4 y 6 · a 5 min a pie" },
-      { label: "Autobuses EMT", detail: "Líneas 1, 2, 44, 74, C1 y C2" },
-      { label: "Entorno", detail: "Junto al Paseo del Pintor Rosales y Templo de Debod" }
+    accessDetails: [
+      { label: "Servicio de Aparcacoches", detail: "Concertado en Parking Marqués de Urquijo (a 120 metros)" },
+      { label: "Metro Cercano", detail: "Ventura Rodríguez (Línea 3) y Argüelles (Líneas 3, 4 y 6)" },
+      { label: "Entorno", detail: "A dos minutos a pie del Paseo del Pintor Rosales y Templo de Debod" }
     ]
   },
   contact: {
     phone: "+34 915 47 31 11",
     phoneClean: "+34915473111",
     email: "reservas@restaurantelamontana.es",
-    instagram: "@lamontana.madrid"
+    pressEmail: "direccion@restaurantelamontana.es"
   },
   hours: [
-    { day: "Lunes", open: false, shifts: "Cerrado por descanso semanal" },
-    { day: "Martes a Jueves", open: true, shifts: "13:00 – 16:30 h  ·  20:30 – 23:30 h" },
-    { day: "Viernes y Sábado", open: true, shifts: "13:00 – 17:00 h  ·  20:30 – 00:00 h" },
-    { day: "Domingo", open: true, shifts: "13:00 – 17:00 h  ·  20:30 – 23:00 h" }
+    { day: "Martes a Sábado · Almuerzos", schedule: "13:30 – 16:00 h", status: "open" },
+    { day: "Martes a Sábado · Cenas", schedule: "20:30 – 23:30 h", status: "open" },
+    { day: "Domingos · Servicio de Mediodía", schedule: "13:30 – 16:30 h", status: "open" },
+    { day: "Domingos Noche y Lunes", schedule: "Cerrado por descanso de sala", status: "closed" }
   ],
+  heritage: {
+    yearsOfHistory: 83,
+    title: "Ocho décadas de alta tradición madrileña en Rey Francisco, 28",
+    lead: "Desde que abrió sus puertas en 1943, La Montaña ha sido punto de encuentro de familias, escritores, diplomáticos y amantes de la buena mesa en Moncloa - Aravaca.",
+    paragraphs: [
+      "Nuestra filosofía culinaria rechaza el artificio innecesario para centrarse en la pureza de la materia prima: verduras de temporada de la ribera del Ebro, pescados salvajes seleccionados cada madrugada del Cantábrico y cortes nobles de vacuno mayor madurados en cámara propia.",
+      "El restaurante se articula en dos espacios de carácter único: el Salón Principal en planta calle, vestido con lino blanco y maderas nobles, y nuestra emblemática Cueva Abovedada de Ladrillo del siglo pasado, un refugio de silencio y sobriedad ideal para veladas íntimas y recepciones privadas."
+    ]
+  },
   diningAreas: [
     {
       id: "salon-principal",
-      name: "Salón Gastronómico Principal",
-      description: "Mesas vestidas, iluminación cálida y madera noble en nuestra planta calle de Rey Francisco, 28.",
-      capacity: "Hasta 45 plazas"
+      name: "Salón Principal de Planta Calle",
+      description: "Luz natural tamizada, mantelería de hilo egipcio y separación generosa entre mesas para una privacidad absoluta.",
+      capacity: "Hasta 42 comensales"
     },
     {
-      id: "cueva-historica",
-      name: "Cueva Abovedada de Ladrillo (1943)",
-      description: "Bodega subterránea histórica de ladrillo visto, íntima y reservada para veladas especiales y grupos.",
-      capacity: "Hasta 36 plazas"
+      id: "cueva-boveda",
+      name: "La Cueva Histórica Abovedada (1943)",
+      description: "Salón subterráneo de ladrillo visto centenario y acústica envolvente, junto a nuestro botellero histórico.",
+      capacity: "Hasta 32 comensales"
     },
     {
-      id: "barra-castiza",
-      name: "Barra de Mármol & Mesas Altas",
-      description: "Espacio gastronómico informal para tapeo de autor, raciones al centro y vinos por copa.",
-      capacity: "Hasta 20 plazas"
+      id: "reservado-privado",
+      name: "Reservado Privado Rey Francisco",
+      description: "Mesa imperial privada para almuerzos ejecutivos, consejos de administración o celebraciones familiares discretas.",
+      capacity: "De 6 a 14 comensales"
     }
   ],
   ratings: {
     score: "4.7",
     totalReviews: 684,
-    reviews: [
+    quotes: [
       {
+        quote: "Una lección de clasicismo y elegancia en pleno Argüelles. Sus verdinas con carabineros y el punto del solomillo recuerdan por qué los clásicos nunca pasan de moda.",
         author: "Carlos R. Mendoza",
-        role: "Local Guide · Madrid",
-        rating: 5,
-        date: "Hace 5 días",
-        dish: "Croquetas de Jamón Ibérico & Huevos Trufados",
-        comment:
-          "Una joya gastronómica en la calle Rey Francisco. La atmósfera íntima del local, el servicio impecable de sala y unas croquetas de ibérico de bellota que se deshacen en boca. Los huevos camperos trufados son obligatorios."
+        publication: "Crónica Gastronómica de Madrid"
       },
       {
+        quote: "El servicio de sala conserva esa cortesía silenciosa y precisa de los grandes restaurantes europeos. Imprescindible su torrija caramelizada de brioche.",
         author: "Elena Valdés Gómez",
-        role: "Crítica Gastronómica & Sommelier",
-        rating: 5,
-        date: "Hace 2 semanas",
-        dish: "Verdinas con Carabineros & Pago de Carraovejas",
-        comment:
-          "Equilibrio magistral entre la casa de comidas madrileña fundada en 1943 y una puesta en escena contemporánea de primer nivel. La cueva abovedada de ladrillo tiene un encanto único en todo Moncloa-Argüelles."
-      },
-      {
-        author: "Javier Santamaría",
-        role: "Cliente Verificado",
-        rating: 5,
-        date: "Hace 3 semanas",
-        dish: "Oreja Crujiente, Cazón en Adobo & Torrija de Brioche",
-        comment:
-          "Reservamos mesa online y todo funcionó a la perfección. Producto de primera, punto exacto en cada plato y una torrija caramelizada con helado de vainilla Bourbon que justifica por sí sola la visita."
+        publication: "Sommelier & Guía de Mesa"
       }
     ]
   }
 };
 
 const MENU_CATEGORIES = [
-  { id: "Entrantes", label: "Entrantes", subtitle: "Raciones de autor y clásicos castizos para compartir" },
-  { id: "Principales", label: "Principales", subtitle: "Cuchara histórica, carnes maduradas y brasas" },
-  { id: "Postres", label: "Postres", subtitle: "Repostería artesana elaborada a diario en nuestro obrador" },
-  { id: "Vinos", label: "Vinos", subtitle: "Selección de nuestra bodega subterránea por copa y botella" }
+  {
+    id: "Entrantes",
+    title: "Entrantes",
+    subtitle: "Preludios de temporada, fondos de cocción lenta y clásicos de nuestra casa"
+  },
+  {
+    id: "Pescados",
+    title: "Pescados",
+    subtitle: "Piezas salvajes de lonja del Cantábrico y recetas marineras de precisión"
+  },
+  {
+    id: "Carnes rojas maduradas",
+    title: "Carnes Rojas Maduradas",
+    subtitle: "Cortes seleccionados de vacuno mayor a la brasa de encina y guisos históricos"
+  },
+  {
+    id: "Postres de autor",
+    title: "Postres de Autor",
+    subtitle: "Repostería fina elaborada al momento en nuestro obrador"
+  }
 ];
 
 const MENU_ITEMS = [
   // =========================================================================
-  // ENTRANTES (Raciones Castizas & Picoteo de Autor)
+  // 1. ENTRANTES
   // =========================================================================
   {
-    id: "croquetas-iberico-bellota",
+    id: "croquetas-jamon-bellota",
     category: "Entrantes",
-    name: "Croquetas Cremosas de Jamón Ibérico 100% Bellota",
-    description:
-      "Bechamel sedosa infusionada en hueso de jamón ibérico de Guijuelo durante 4 horas, abundante viruta cortada a cuchillo y cobertura panko dorada al momento. (8 unidades).",
-    price: 14.50,
-    tag: "Estrella de la Casa",
-    allergens: "Gluten · Lácteos · Huevo",
-    image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?auto=format&fit=crop&w=900&q=85"
+    name: "Croquetas de Jamón Ibérico de Bellota 100%",
+    description: "Bechamel etérea infusionada en hueso de jamón de Guijuelo y velo de panceta curada (6 piezas).",
+    price: 16.00,
+    highlight: "Clásico desde 1943"
   },
   {
     id: "huevos-camperos-trufados",
     category: "Entrantes",
-    name: "Huevos Camperos Trufados con Patata Agria y Velo Ibérico",
-    description:
-      "Huevos de corral fritos con puntilla crujiente sobre cama de patatas panaderas confitadas, emulsión de trufa negra Melanosporum y lascas de presa ibérica curada.",
-    price: 16.50,
-    tag: "Imprescindible",
-    allergens: "Huevo · Sin Gluten",
-    image: "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=85"
+    name: "Huevos de Caserío Trufados con Patata Confitada y Tuber Melanosporum",
+    description: "Yema templada sobre milhojas de patata agria, jugo reducido de ave y trufa negra laminada en mesa.",
+    price: 21.00,
+    highlight: "Temporada"
   },
   {
-    id: "oreja-plancha-crujiente",
+    id: "verdinas-llanes-carabineros",
     category: "Entrantes",
-    name: "Oreja a la Plancha Crujiente al Ajillo y Pimentón de la Vera",
-    description:
-      "Confitada a baja temperatura durante 6 horas y marcada en plancha de hierro fundido hasta lograr un exterior extracrujiente, terminada con majado de ajo morado y perejil fresco.",
-    price: 13.90,
-    tag: "Tradición Castiza",
-    allergens: "Sin Gluten",
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=85"
+    name: "Verdinas de Llanes Estofadas con Carabinero de Huelva",
+    description: "Cuchara histórica de la casa ligada con el coral del propio crustáceo a la brasa y manzanilla pasada.",
+    price: 26.50,
+    highlight: "Plato Insignia"
   },
   {
-    id: "cazon-adobo-artesano",
+    id: "oreja-confitada-crujiente",
     category: "Entrantes",
-    name: "Cazón en Adobo Tradicional con Emulsión de Limón Asado",
-    description:
-      "Dados de cazón fresco marinados 24 horas en adobo de orégano silvestre y vinagre viejo de Jerez, fritos en harina de garbanzo de molienda fina con alioli cítrico.",
-    price: 14.80,
-    tag: "Fritura Limpia",
-    allergens: "Pescado · Gluten · Huevo",
-    image: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=900&q=85"
+    name: "Terrina Crujiente de Oreja Ibérica Confitada al Pimentón de la Vera",
+    description: "Confitada 12 horas a baja temperatura, marcada al hierro con emulsión de ajo negro y perejil.",
+    price: 17.50,
+    highlight: null
   },
   {
-    id: "ensalada-ventresca-tomate-rosa",
+    id: "tomate-rosa-ventresca",
     category: "Entrantes",
-    name: "Tomate Rosa de Barbastro con Ventresca del Cantábrico",
-    description:
-      "Gajos carnosos de tomate rosa seleccionado, lascas de ventresca de bonito del norte en AOVE arbequina, pimientos de cristal asados al sarmiento y cebolleta tierna.",
-    price: 16.20,
-    tag: "Huerta & Mar",
-    allergens: "Pescado · Sin Gluten",
-    image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=900&q=85"
+    name: "Corazón de Tomate Rosa de Barbastro con Ventresca de Bonito del Norte",
+    description: "Lomos de ventresca en conserva artesana, cebolleta tierna, pimiento de cristal al sarmiento y AOVE temprano.",
+    price: 19.50,
+    highlight: null
   },
   {
-    id: "patatas-revolconas-torreznos",
+    id: "alcachofas-tudela-foie",
     category: "Entrantes",
-    name: "Patatas Revolconas al Pimentón con Torreznos de Soria",
-    description:
-      "Cremoso rústico de patata vieja machacada con sofrito de ajos confitados y pimentón ahumado D.O., coronado con torreznos de Soria de corteza suflada.",
-    price: 13.50,
-    tag: "Clásico de Barra",
-    allergens: "Sin Gluten",
-    image: "https://images.unsplash.com/photo-1518013431117-eb1465fa5752?auto=format&fit=crop&w=900&q=85"
+    name: "Flores de Alcachofa de Tudela a la Brasa con Foie Fresco y Cecina de León",
+    description: "Confitadas en aceite arbequina, marcadas al carbón con virutas de foie micuit y sal de Añana.",
+    price: 22.00,
+    highlight: null
   },
 
   // =========================================================================
-  // PRINCIPALES (Cuchara Histórica, Brasas & Carnes Maduradas)
+  // 2. PESCADOS
   // =========================================================================
-  {
-    id: "verdinas-con-carabineros",
-    category: "Principales",
-    name: "Verdinas de Llanes Estofadas con Carabineros de Huelva",
-    description:
-      "Nuestro plato de cuchara más emblemático: verdinas mantecosas guisadas lentamente en fondo de coral de carabinero a la brasa y toque de manzanilla de Sanlúcar.",
-    price: 24.50,
-    tag: "Receta Histórica 1943",
-    allergens: "Crustáceos · Sin Gluten",
-    image: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=85"
-  },
-  {
-    id: "solomillo-vaca-madurada-foie",
-    category: "Principales",
-    name: "Solomillo de Vaca Rubia Gallega a la Brasa con Foie y PX",
-    description:
-      "Centro de solomillo marcado al carbón de encina, escalope de foie micuit caramelizado, reducción de Pedro Ximénez añejo y milhojas de patata trufada.",
-    price: 26.90,
-    tag: "Especialidad Brasa",
-    allergens: "Lácteos · Sulfitos · Sin Gluten",
-    image: "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=85"
-  },
-  {
-    id: "rabo-de-toro-estofado",
-    category: "Principales",
-    name: "Rabo de Toro Deshuesado al Vino Tinto Reserva",
-    description:
-      "Estofado tradicional cordobés-madrileño cocinado durante 7 horas a fuego lento hasta desprenderse del hueso, glaseado en su propio jugo con parmentier cremoso.",
-    price: 22.00,
-    tag: "Guiso Tradicional",
-    allergens: "Lácteos · Sulfitos",
-    image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=85"
-  },
-  {
-    id: "callos-a-la-madrilena",
-    category: "Principales",
-    name: "Callos a la Madrileña en Cazuela de Barro",
-    description:
-      "Elaborados según el recetario clásico de La Montaña con pata, morro, chorizo y morcilla asturiana ahumada, con salsa gelatinosa y un sutil picante.",
-    price: 18.50,
-    tag: "Sello Castizo",
-    allergens: "Sin Gluten",
-    image: "https://images.unsplash.com/photo-1574484284002-952d92456975?auto=format&fit=crop&w=900&q=85"
-  },
-  {
-    id: "hamburguesa-la-montana-trufada",
-    category: "Principales",
-    name: "Burger Gourmet 'La Montaña' 220g Vaca Madurada & Trufa",
-    description:
-      "Carne seleccionada de chuleta madurada 45 días a la parrilla, queso Comté fundido, papada ibérica crujiente, yema curada y mayonesa de trufa negra en brioche artesano.",
-    price: 17.50,
-    tag: "Parrilla de Carbón",
-    allergens: "Gluten · Lácteos · Huevo",
-    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=85"
-  },
   {
     id: "cocochas-merluza-pilpil",
-    category: "Principales",
-    name: "Cocochas de Merluza de Pincho del Cantábrico al Pil-Pil",
-    description:
-      "Confitadas suavemente en aceite de oliva virgen extra con láminas de ajo dorado y guindilla hasta ligar una emulsión sedosa y brillante.",
-    price: 25.00,
-    tag: "Lonja del Día",
-    allergens: "Pescado · Sin Gluten",
-    image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=900&q=85"
+    category: "Pescados",
+    name: "Cocochas de Merluza de Pincho del Cantábrico al Pil-Pil o a la Brasa",
+    description: "Ligadas a mano en cazuela de barro con aceite virgen extra y láminas de ajo morado de Las Pedroñeras.",
+    price: 29.00,
+    highlight: "Lonja del Día"
+  },
+  {
+    id: "merluza-celeiro-almejas",
+    category: "Pescados",
+    name: "Lomo de Merluza de Celeiro en Salsa Verde con Almejas de Carril",
+    description: "Corte central de merluza de anzuelo, almeja fina gallega, espárrago blanco fresco y fumet de roca.",
+    price: 28.50,
+    highlight: null
+  },
+  {
+    id: "rodaballo-salvaje-brasa",
+    category: "Pescados",
+    name: "Rodaballo Salvaje Asado al Carbón de Encina con Bilbaína Suave",
+    description: "Asado con su piel gelatinosa, refrito tradicional de ajos dorados, vinagre de sidra y patata panadera.",
+    price: 32.00,
+    highlight: "Recomendación del Chef"
+  },
+  {
+    id: "cazon-adobo-fino",
+    category: "Pescados",
+    name: "Tacos de Cazón de Almadraba en Adobo Antiguo y Mayonesa de Limón Asado",
+    description: "Marinado 24 horas en especias suaves y vinagre viejo de Jerez, fritura limpia en harina de garbanzo.",
+    price: 19.00,
+    highlight: null
+  },
+  {
+    id: "chipirones-anzuelo-tinta",
+    category: "Pescados",
+    name: "Chipirones de Anzuelo Rellenos en su Tinta con Arroz Blanco Cremoso",
+    description: "Guisados lentamente según el recetario clásico del norte con cebolla pochada durante cuatro horas.",
+    price: 25.50,
+    highlight: null
   },
 
   // =========================================================================
-  // POSTRES (Obrador Propio)
+  // 3. CARNES ROJAS MADURADAS
   // =========================================================================
   {
-    id: "torrija-caramelizada-brioche",
-    category: "Postres",
-    name: "Torrija Caramelizada de Brioche en Leche Merengada",
-    description:
-      "Nuestro postre insignia desde 1943: pan brioche artesano infusionado 12 horas en leche fresca, canela de Ceilán y cítricos, tostada al soplete con helado de vainilla Bourbon.",
-    price: 8.50,
-    tag: "Postre Insignia",
-    allergens: "Gluten · Lácteos · Huevo",
-    image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=900&q=85"
+    id: "solomillo-rubia-gallega-foie",
+    category: "Carnes rojas maduradas",
+    name: "Solomillo de Vaca Rubia Gallega a la Brasa con Escalope de Foie y Pedro Ximénez",
+    description: "Centro de solomillo al carbón, foie gras fresco marcado en sartén, reducción de vino viejo y gratén de patata.",
+    price: 31.00,
+    highlight: "Corte Estrella"
   },
   {
-    id: "tarta-queso-fundente",
-    category: "Postres",
-    name: "Tarta de Queso al Horno con Corazón Cremoso",
-    description:
-      "Horneada a diario con quesos artesanos de la Sierra de Madrid y toque de Gamoneu, de interior fluido y base crujiente de galleta sableé.",
-    price: 8.20,
-    tag: "Obrador Propio",
-    allergens: "Gluten · Lácteos · Huevo",
-    image: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=900&q=85"
+    id: "chuleta-vaca-madurada-60",
+    category: "Carnes rojas maduradas",
+    name: "Lomo Alto de Vaca Mayor Madurado 60 Días (Dry-Aged) al Sarmiento",
+    description: "Trinchado en sala sobre plato refractario templado, acompañado de pimientos de Lodosa asados a la leña (500 g).",
+    price: 38.00,
+    highlight: "Maduración 60 Días"
   },
   {
-    id: "arroz-con-leche-requemado",
-    category: "Postres",
-    name: "Arroz con Leche Asturiano Cremoso Requemado al Hierro",
-    description:
-      "Cocinados durante más de dos horas removiendo sin pausa para lograr una textura mantecosa inigualable, coronado con costra fina de azúcar caramelizado.",
-    price: 7.50,
-    tag: "Receta Tradicional",
-    allergens: "Lácteos · Sin Gluten",
-    image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=900&q=85"
+    id: "rabo-toro-vino-tinto",
+    category: "Carnes rojas maduradas",
+    name: "Rabo de Toro Estofado al Vino Tinto Reserva y Parmentier Trufado",
+    description: "Deshuesado en cilindro tras siete horas de cocción lenta, glaseado brillante en su jugo de reducción.",
+    price: 26.00,
+    highlight: "Receta Histórica"
+  },
+  {
+    id: "callos-madrilena-tradicion",
+    category: "Carnes rojas maduradas",
+    name: "Callos a la Madrileña de Casa La Montaña en Cazuela de Barro",
+    description: "Pata, morro y tripa seleccionados, morcilla y chorizo ahumado asturiano con salsa melosa ligeramente picante.",
+    price: 22.50,
+    highlight: "Tradición 1943"
+  },
+  {
+    id: "paletilla-lechazo-igp",
+    category: "Carnes rojas maduradas",
+    name: "Paletilla de Lechazo Churro I.G.P. Castilla y León Asada a Baja Temperatura",
+    description: "Piel dorada y crujiente, carne tierna en su propio jugo de asado y ensalada de brotes de la huerta.",
+    price: 33.50,
+    highlight: null
   },
 
   // =========================================================================
-  // VINOS (Selección de Bodega Subterránea)
+  // 4. POSTRES DE AUTOR
   // =========================================================================
   {
-    id: "pago-de-carraovejas-ribera",
-    category: "Vinos",
-    name: "Pago de Carraovejas · D.O. Ribera del Duero",
-    description:
-      "Tinto Fino, Cabernet Sauvignon y Merlot. Intenso, estructurado y envolvente, con notas de fruta negra madura, cacao y crianza en roble francés y americano. (Botella 75cl).",
-    price: 46.00,
-    tag: "Ribera del Duero",
-    allergens: "Sulfitos",
-    image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=900&q=85"
+    id: "torrija-brioche-bourbon",
+    category: "Postres de autor",
+    name: "Torrija Caramelizada de Pan Brioche en Leche Merengada y Vainilla Bourbon",
+    description: "Infusionada 12 horas en leche fresca con canela en rama y piel de cítricos, caramelizada al hierro en mesa.",
+    price: 10.50,
+    highlight: "Postre Insignia"
   },
   {
-    id: "marques-de-murrieta-reserva",
-    category: "Vinos",
-    name: "Marqués de Murrieta Reserva · D.O.Ca. Rioja",
-    description:
-      "Tempranillo, Graciano, Mazuelo y Garnacha de la Finca Ygay. Elegancia clásica riojana con equilibrio perfecto entre fruta roja, especias dulces y tanino sedoso. (Botella 75cl).",
-    price: 34.00,
-    tag: "Rioja Reserva",
-    allergens: "Sulfitos",
-    image: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=900&q=85"
+    id: "tarta-queso-artesana-fundente",
+    category: "Postres de autor",
+    name: "Tarta Fluida de Quesos Artesanos de la Sierra de Madrid y Gamoneu",
+    description: "Horneada a diario con corazón cremoso, base sableé de mantequilla tostada y compota suave de frutos silvestres.",
+    price: 10.00,
+    highlight: null
   },
   {
-    id: "pazo-senorans-albarino",
-    category: "Vinos",
-    name: "Pazo de Señorans · D.O. Rías Baixas (100% Albariño)",
-    description:
-      "Blanco atlántico vibrante, fresco y mineral, criado sobre lías en acero inoxidable. Maridaje ideal para nuestras verdinas con carabineros, cocochas y cazón. (Botella 75cl).",
-    price: 27.50,
-    tag: "Rías Baixas",
-    allergens: "Sulfitos",
-    image: "https://images.unsplash.com/photo-1584916201218-f4242ceb4809?auto=format&fit=crop&w=900&q=85"
+    id: "arroz-leche-asturiano",
+    category: "Postres de autor",
+    name: "Arroz con Leche Cremoso al Estilo del Principado con Costra de Azúcar",
+    description: "Tres horas de cocción pausada para lograr un grano mantecoso, quemado al momento con hierro candente.",
+    price: 9.00,
+    highlight: null
+  },
+  {
+    id: "milhojas-crema-diplomatica",
+    category: "Postres de autor",
+    name: "Milhojas Crujiente de Hojaldre Invertido con Crema Diplomática y Toffee",
+    description: "Láminas de hojaldre caramelizadas al horno, crema ligera de vainilla de Madagascar y caramelo salado.",
+    price: 11.00,
+    highlight: "Obrador Propio"
   }
 ];
 
+const WINE_PAIRINGS = [
+  { name: "Vega Sicilia Valbuena 5º Año · D.O. Ribera del Duero", price: "165,00 €" },
+  { name: "Pago de Carraovejas · D.O. Ribera del Duero", price: "48,00 €" },
+  { name: "La Rioja Alta Gran Reserva 904 · D.O.Ca. Rioja", price: "76,00 €" },
+  { name: "Marqués de Murrieta Reserva · D.O.Ca. Rioja", price: "36,00 €" },
+  { name: "Pazo Señorans Selección de Añada · D.O. Rías Baixas", price: "54,00 €" },
+  { name: "Louis Roederer Collection 244 · A.O.C. Champagne", price: "82,00 €" }
+];
+
 const TIME_SLOTS = {
-  lunch: ["13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00"],
+  lunch: ["13:30", "14:00", "14:30", "15:00", "15:30"],
   dinner: ["20:30", "21:00", "21:30", "22:00", "22:30", "23:00"]
 };
 
@@ -329,5 +309,6 @@ module.exports = {
   RESTAURANT_INFO,
   MENU_CATEGORIES,
   MENU_ITEMS,
+  WINE_PAIRINGS,
   TIME_SLOTS
 };

@@ -1,146 +1,377 @@
 /**
- * RESTAURANTE LA MONTAÑA — DIRECCIÓN DE ARTE DE ALTA COCINA
- * Paleta: Negro Pizarra (#09090b), Piedra Profunda (#1c1917), Ámbar Cálido (#f59e0b)
- * Tipografías: 'Cormorant Garamond' / 'Playfair Display' (Serif) & 'Plus Jakarta Sans' (Sans)
+ * ============================================================================
+ * RESTAURANTE LA MONTAÑA — ALTA COCINA CLÁSICA (MADRID, 1943)
+ * Sistema de Diseño Formal / Estrella Michelin
+ * Paleta:
+ *   - Fondo Antracita / Pizarra Profundo: #0a0a0c
+ *   - Superficie Elevada Sutil:           #111115
+ *   - Dorado Champán / Latón Clásico:     #d4af37
+ *   - Marfil / Blanco Cálido:             #e5e5e5 / #f5f3ef
+ *   - Gris Piedra Editorial:              #9ca3af
+ *   - Filetes Finos Semitransparentes:    rgba(255, 255, 255, 0.08)
+ * ============================================================================
  */
 
 :root {
-  --bg-obsidian: #09090b;
-  --bg-stone-950: #0c0a09;
-  --bg-stone-900: #1c1917;
-  --border-stone-800: #292524;
-  --amber-400: #fbbf24;
-  --amber-500: #f59e0b;
-  --amber-600: #d97706;
-  --text-light: #fafaf9;
-  --text-muted: #a8a29e;
+  --bg-anthracite: #0a0a0c;
+  --bg-surface: #111115;
+  --bg-surface-elevated: #16161c;
+  --gold-champagne: #d4af37;
+  --gold-muted: rgba(212, 175, 55, 0.32);
+  --gold-subtle: rgba(212, 175, 55, 0.12);
+  --ivory: #f4f1ea;
+  --silver: #e5e5e5;
+  --stone-muted: #9a9895;
+  --border-hairline: rgba(255, 255, 255, 0.08);
+  --border-gold: rgba(212, 175, 55, 0.35);
+  --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Montserrat', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 html {
   scroll-behavior: smooth;
-  background-color: #09090b;
-  color: #fafaf9;
+  background-color: var(--bg-anthracite);
+  color: var(--silver);
 }
 
 body {
   margin: 0;
-  background-color: #09090b;
-  color: #fafaf9;
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-anthracite);
+  color: var(--silver);
+  font-family: var(--font-sans);
+  font-weight: 300;
+  line-height: 1.7;
+  letter-spacing: 0.015em;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
 .font-serif {
-  font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  font-family: var(--font-serif);
 }
 
-/* Scrollbar de lujo */
+/* Scrollbar minimalista en antracita y champán */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #09090b;
+  background: #0a0a0c;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #292524;
-  border-radius: 9999px;
-  border: 2px solid #09090b;
+  background: rgba(212, 175, 55, 0.28);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #f59e0b;
+  background: #d4af37;
 }
 
-/* Efecto de brillo sutil en botones CTA */
-.btn-shine {
+/* ============================================================================
+   1. CABECERA CORPORATIVA Y MONOGRAMA "L.M"
+============================================================================ */
+.lm-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: rgba(10, 10, 12, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-hairline);
+  transition: background-color 0.35s ease, border-color 0.35s ease;
+}
+
+.lm-monogram-seal {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
+  border: 1px solid var(--gold-champagne);
+  background-color: rgba(17, 17, 21, 0.9);
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--gold-champagne);
+  transition: all 0.35s ease;
+}
+
+.lm-monogram-seal::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  pointer-events: none;
+}
+
+.lm-nav-link {
+  position: relative;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(229, 229, 229, 0.8);
+  text-decoration: none;
+  padding: 0.4rem 0;
+  transition: color 0.3s ease;
+}
+
+.lm-nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--gold-champagne);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.lm-nav-link:hover {
+  color: var(--gold-champagne);
+}
+
+.lm-nav-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* Botón CTA Formal y Sobrio */
+.lm-btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.8rem 1.75rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #0a0a0c;
+  background-color: var(--gold-champagne);
+  border: 1px solid var(--gold-champagne);
+  transition: all 0.35s ease;
+  cursor: pointer;
+}
+
+.lm-btn-gold:hover {
+  background-color: #e2be47;
+  border-color: #e2be47;
+  box-shadow: 0 10px 30px -10px rgba(212, 175, 55, 0.4);
+}
+
+.lm-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.8rem 1.75rem;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ivory);
+  background-color: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  transition: all 0.35s ease;
+  cursor: pointer;
+}
+
+.lm-btn-outline:hover {
+  color: #0a0a0c;
+  background-color: var(--gold-champagne);
+  border-color: var(--gold-champagne);
+}
+
+/* ============================================================================
+   2. HERO SECTION MINIMALISTA DE ALTA COCINA
+============================================================================ */
+.lm-hero {
+  position: relative;
+  min-height: 88vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0a0a0c;
   overflow: hidden;
 }
 
-.btn-shine::after {
+.lm-hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.28;
+  filter: contrast(1.06) saturate(0.85);
+  transform: scale(1.03);
+  transition: transform 8s ease-out;
+}
+
+.lm-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(10, 10, 12, 0.4) 0%, rgba(10, 10, 12, 0.92) 78%, #0a0a0c 100%),
+    linear-gradient(to bottom, rgba(10, 10, 12, 0.75) 0%, rgba(10, 10, 12, 0.35) 50%, #0a0a0c 100%);
+}
+
+.lm-divider-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1.5rem auto;
+}
+
+.lm-divider-ornament::before,
+.lm-divider-ornament::after {
+  content: '';
+  width: 64px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.55), transparent);
+}
+
+.lm-diamond {
+  width: 6px;
+  height: 6px;
+  background-color: var(--gold-champagne);
+  transform: rotate(45deg);
+}
+
+/* ============================================================================
+   3. FORMATO DE "MENÚ DE RESTAURANTE FÍSICO DE LUJO"
+============================================================================ */
+.lm-menu-paper {
+  background-color: #0e0e12;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.9);
+}
+
+.lm-menu-paper::before {
   content: '';
   position: absolute;
-  top: -50%;
-  left: -60%;
-  width: 45%;
-  height: 200%;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.28) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  transform: rotate(25deg);
-  transition: all 0.65s cubic-bezier(0.19, 1, 0.22, 1);
+  inset: 10px;
+  border: 1px solid rgba(212, 175, 55, 0.16);
+  pointer-events: none;
 }
 
-.btn-shine:hover::after {
-  left: 130%;
+.lm-menu-row {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background-color 0.3s ease;
 }
 
-/* Elevación suave de tarjetas gastronómicas */
-.luxury-card {
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+.lm-menu-row:last-child {
+  border-bottom: none;
 }
 
-.luxury-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 22px 45px -15px rgba(0, 0, 0, 0.85), 0 0 25px -5px rgba(245, 158, 11, 0.14);
+.lm-menu-leaderLine {
+  flex: 1;
+  border-bottom: 1px dotted rgba(212, 175, 55, 0.28);
+  margin: 0 1rem;
+  position: relative;
+  top: -5px;
+  min-width: 24px;
 }
 
-/* Animaciones de entrada suaves */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.lm-category-tab {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid transparent;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.animate-fade-up {
-  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.lm-category-tab:hover {
+  color: #e5e5e5;
 }
 
-/* Spinner de carga elegante */
-@keyframes spinSlow {
+.lm-category-tab.active {
+  color: var(--gold-champagne);
+  border-bottom-color: var(--gold-champagne);
+}
+
+/* ============================================================================
+   4. FORMULARIO FORMAL Y CONTROLES DE RESERVA
+============================================================================ */
+.lm-input {
+  width: 100%;
+  background-color: #0a0a0c;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--ivory);
+  padding: 0.9rem 1.1rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 300;
+  letter-spacing: 0.03em;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  outline: none;
+}
+
+.lm-input:focus {
+  border-color: var(--gold-champagne);
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.25);
+}
+
+.lm-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(229, 229, 229, 0.7);
+  margin-bottom: 0.6rem;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.82) sepia(0.5) saturate(2) hue-rotate(10deg);
+  cursor: pointer;
+}
+
+/* Spinner minimalista dorado */
+@keyframes lmSpin {
   to {
     transform: rotate(360deg);
   }
 }
 
-.spinner-amber {
-  width: 18px;
-  height: 18px;
-  border: 2px solid rgba(9, 9, 11, 0.25);
-  border-top-color: #09090b;
-  border-radius: 50%;
-   display: inline-block;
-  animation: spinSlow 0.7s linear infinite;
-}
-
-.spinner-amber-light {
-  width: 18px;
-  height: 18px;
-  border: 2px solid rgba(245, 158, 11, 0.25);
-  border-top-color: #f59e0b;
+.lm-spinner {
+  width: 15px;
+  height: 15px;
+  border: 1.5px solid rgba(10, 10, 12, 0.25);
+  border-top-color: #0a0a0c;
   border-radius: 50%;
   display: inline-block;
-  animation: spinSlow 0.7s linear infinite;
+  animation: lmSpin 0.75s linear infinite;
 }
 
-/* Estilizado de calendarios nativos en modo oscuro */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.8) sepia(1) saturate(3) hue-rotate(5deg);
-  cursor: pointer;
+/* Mapa con tratamiento cromático sobrio */
+.lm-map-frame {
+  filter: grayscale(0.85) invert(0.9) contrast(1.1) brightness(0.85);
+  transition: filter 0.5s ease;
+}
+
+.lm-map-frame:hover {
+  filter: grayscale(0.25) invert(0) contrast(1) brightness(0.95);
 }
