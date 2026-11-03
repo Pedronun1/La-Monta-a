@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel de Dirección & Gestión de Mesas — <%= restaurant.name %></title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/luxury.css" />
+</head>
+<body class="bg-[#09090b] text-[#f4f4f5] font-sans font-light min-h-screen flex flex-col selection:bg-[#d4af37] selection:text-[#09090b]">
+
+  <!-- =========================================================================
+       1. CABECERA DEL PANEL PRIVADO (FIJA CON BLUR Y 100% RESPONSIVA)
+  ========================================================================= -->
+  <header class="lm-navbar backdrop-blur-md bg-stone-950/80 sticky top-0 z-50 border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 h-20 sm:h-24 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 sm:gap-4 min-w-0">
+        <span class="lm-monogram-seal"><%= restaurant.monogram %></span>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2.5">
+            <h1 class="font-serif text-xl sm:text-2xl lg:text-3xl font-normal text-[#f4f4f5] leading-none truncate">
+              Dirección de Sala & Mesas
+            </h1>
+            <span class="hidden sm:inline-block px-2.5 py-0.5 text-[9px] tracking-[0.22em] uppercase border border-[#d4af37]/40 text-[#d4af37] shrink-0">
+              SESIÓN ACTIVA
+            </span>
+          </div>
+          <p class="text-[10px] sm:text-[11px] text-neutral-400 mt-1 truncate">
+            <%= restaurant.name %> · <%= restaurant.address.street %> (<%= adminUser %>)
+          </p>
+        </div>
+      </div>
+
+      <!-- Navegación Rápida de Secciones en Tablet/Escritorio -->
+      <nav class="hidden md:flex items-center gap-2 bg-[#111115] border border-white/10 p-1">
+        <a
+          href="#seccion-mesas"
+          class="px-4 py-2 text-[10px] tracking-[0.2em] uppercase font-medium bg-[#d4af37] text-[#09090b] transition"
+        >
+          SALONES & MESAS
+        </a>
+        <a
+          href="#seccion-reservas"
+          class="px-4 py-2 text-[10px] tracking-[0.2em] uppercase font-medium text-neutral-300 hover:text-[#d4af37] transition"
+        >
+          LIBRO DE RESERVAS
+        </a>
+        <a
+          href="/admin/mesas"
+          class="px-4 py-2 text-[10px] tracking-[0.2em] uppercase font-medium text-neutral-300 hover:text-[#d4af37] transition"
+        >
+          PLANO DETALLADO
+        </a>
+      </nav>
+
+      <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+        <a href="/" class="hidden sm:inline-flex lm-btn-outline py-2 px-4 text-[10px] min-h-[42px]">
+          WEB PÚBLICA
+        </a>
+
+        <form action="/admin/logout" method="POST" class="inline">
+          <button
+            type="submit"
+            class="min-h-[42px] px-3.5 sm:px-5 py-2 text-[10px] tracking-[0.2em] uppercase font-medium bg-red-950/60 hover:bg-red-900 text-red-200 border border-red-500/40 transition-colors cursor-pointer"
+          >
+            CERRAR SESIÓN
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Barra Táctil Inferior para Smartphones (< md) -->
+    <div class="md:hidden grid grid-cols-3 border-t border-white/10 bg-[#0d0d10] text-center">
+      <a
+        href="#seccion-mesas"
+        class="py-3 text-[10px] tracking-[0.18em] uppercase font-medium text-[#d4af37]"
+      >
+        MESAS & SALA
+      </a>
+      <a
+        href="#seccion-reservas"
+        class="py-3 text-[10px] tracking-[0.18em] uppercase font-medium text-neutral-300 border-x border-white/10"
+      >
+        RESERVAS
+      </a>
+      <a
+        href="/"
+        class="py-3 text-[10px] tracking-[0.18em] uppercase font-medium text-neutral-400"
+      >
+        WEB PÚBLICA
+      </a>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-10 py-8 sm:py-12 space-y-12">
+
+    <!-- =======================================================================
+         2. INDICADORES KPI DE SALA Y OCUPACIÓN DE MESAS EN TIEMPO REAL
+    ======================================================================= -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-5">
+      <div class="bg-[#111115] border border-white/10 p-4 sm:p-5">
+        <span class="text-[9px] tracking-[0.22em] uppercase text-neutral-400 block">RESERVAS ACTIVAS</span>
+        <span id="kpi-total" class="font-serif text-3xl sm:text-4xl text-[#f4f4f5] mt-1.5 block"><%= stats.totalReservations %></span>
+      </div>
+
+      <div class="bg-[#111115] border border-white/10 p-4 sm:p-5">
+        <span class="text-[9px] tracking-[0.22em] uppercase text-neutral-400 block">SERVICIO DE HOY</span>
+        <span id="kpi-today" class="font-serif text-3xl sm:text-4xl text-[#d4af37] mt-1.5 block"><%= stats.todayReservations %></span>
+      </div>
+
+      <div class="bg-[#111115] border border-white/10 p-4 sm:p-5">
+        <span class="text-[9px] tracking-[0.22em] uppercase text-neutral-400 block">COMENSALES</span>
+        <span id="kpi-guests" class="font-serif text-3xl sm:text-4xl text-[#f4f4f5] mt-1.5 block"><%= stats.totalGuests %></span>
+      </div>
+
+      <div class="bg-[#111115] border border-emerald-500/30 p-4 sm:p-5">
+        <span class="text-[9px] tracking-[0.22em] uppercase text-emerald-400 block">MESAS LIBRES</span>
+        <span id="kpi-tables-free" class="font-serif text-3xl sm:text-4xl text-emerald-300 mt-1.5 block"><%= tableStats.freeTables %></span>
+      </div>
+
+      <div class="bg-[#111115] border border-[#d4af37]/30 p-4 sm:p-5">
+        <span class="text-[9px] tracking-[0.22em] uppercase text-[#d4af37] block">MESAS RESERVADAS</span>
+        <span class="font-serif text-3xl sm:text-4xl text-[#d4af37] mt-1.5 block"><%= tableStats.reservedTables %></span>
+      </div>
+
+      <div class="bg-[#111115] border border-red-500/30 p-4 sm:p-5">
+        <span class="text-[9px] tracking-[0.22em] uppercase text-red-300 block">MESAS OCUPADAS</span>
+        <span class="font-serif text-3xl sm:text-4xl text-red-300 mt-1.5 block"><%= tableStats.occupiedTables %></span>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         3. GESTIÓN DE ESPACIOS Y MESAS EN TIEMPO REAL (/admin/mesa/actualizar)
+    ======================================================================= -->
+    <section id="seccion-mesas" class="bg-[#111115] border border-white/10 p-5 sm:p-8 shadow-2xl space-y-8">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-white/10 pb-6">
+        <div>
+          <span class="text-[10px] tracking-[0.28em] uppercase text-[#d4af37] block">
+            CONTROL TÁCTIL DE SALONES Y MESAS FÍSICAS
+          </span>
+          <h2 class="font-serif text-2xl sm:text-3xl font-normal text-[#f4f4f5] mt-1">
+            Estado de Mesas en Tiempo Real (Salón Principal & La Cueva)
+          </h2>
+          <p class="text-xs text-neutral-400 mt-1">
+            Pulse sobre cualquier estado (<strong class="text-emerald-300 font-normal">Libre</strong>, <strong class="text-[#d4af37] font-normal">Reservada</strong> o <strong class="text-red-300 font-normal">Ocupada</strong>) para actualizar la mesa al instante.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <a href="/admin/mesas" class="lm-btn-outline py-2.5 px-5 text-[10px]">
+            ABRIR PLANO COMPLETO & CRUD →
+          </a>
+        </div>
+      </div>
+
+      <div class="space-y-10">
+        <% (zones || []).forEach(function(zone) { %>
+          <% const zTables = (tables || []).filter(function(t) { return t.zone_id === zone.id; }); %>
+          <div class="space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#d4af37]/25 pb-3">
+              <div>
+                <h3 class="font-serif text-xl sm:text-2xl text-[#f4f4f5]"><%= zone.name %></h3>
+                <p class="text-xs text-neutral-400"><%= zone.description %></p>
+              </div>
+              <span class="px-3 py-1 text-[10px] tracking-[0.2em] uppercase border border-[#d4af37]/40 text-[#d4af37] self-start sm:self-auto">
+                <%= zTables.length %> MESAS EN SALA
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <% zTables.forEach(function(table) { %>
+                <%
+                  let cardBorder = 'border-emerald-500/35';
+                  let badgeColors = 'border-emerald-500/40 text-emerald-300 bg-emerald-950/30';
+                  if (table.status === 'Reservada') {
+                    cardBorder = 'border-[#d4af37]/50';
+                    badgeColors = 'border-[#d4af37]/50 text-[#d4af37] bg-[#d4af37]/10';
+                  } else if (table.status === 'Ocupada') {
+                    cardBorder = 'border-red-500/45';
+                    badgeColors = 'border-red-500/45 text-red-300 bg-red-950/30';
+                  } else if (table.status === 'Mantenimiento') {
+                    cardBorder = 'border-neutral-600/50 opacity-75';
+                    badgeColors = 'border-neutral-500/40 text-neutral-400 bg-neutral-900';
+                  }
+                %>
+                <div class="bg-[#09090b] border <%= cardBorder %> p-5 flex flex-col justify-between transition-all hover:border-[#d4af37]">
+                  <div>
+                    <div class="flex items-start justify-between gap-3">
+                      <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 border border-[#d4af37]/40 bg-[#111115] flex flex-col items-center justify-center shrink-0">
+                          <span class="font-mono text-xs font-medium text-[#f4f4f5]"><%= table.table_number %></span>
+                          <span class="text-[8px] text-[#d4af37]"><%= table.capacity %> PAX</span>
+                        </div>
+                        <div>
+                          <h4 class="font-serif text-lg text-[#f4f4f5]">Mesa <%= table.table_number %></h4>
+                          <span class="text-[11px] text-neutral-400">Capacidad: <%= table.capacity %> comensales</span>
+                        </div>
+                      </div>
+
+                      <span class="px-2.5 py-1 text-[9px] tracking-[0.18em] uppercase border <%= badgeColors %>">
+                        <%= table.status %>
+                      </span>
+                    </div>
+
+                    <% if (table.activeReservation) { %>
+                      <div class="mt-3 p-2.5 bg-[#111115] border border-[#d4af37]/30 text-xs">
+                        <span class="text-[9px] tracking-widest uppercase text-[#d4af37] block">
+                          <%= table.activeReservation.reservation_code %> · <%= table.activeReservation.reservation_time %> h
+                        </span>
+                        <span class="text-[#f4f4f5] font-normal"><%= table.activeReservation.customer_name %> (<%= table.activeReservation.guests %> pax)</span>
+                      </div>
+                    <% } else { %>
+                      <p class="text-[11px] text-neutral-500 mt-3">
+                        <%= table.notes || 'Disponible en sala' %>
+                      </p>
+                    <% } %>
+                  </div>
+
+                  <!-- Formulario Táctil Directo POST /admin/mesa/actualizar -->
+                  <form action="/admin/mesa/actualizar" method="POST" class="mt-4 pt-3 border-t border-white/10">
+                    <input type="hidden" name="id" value="<%= table.id %>" />
+                    <div class="grid grid-cols-3 gap-1.5">
+                      <button
+                        type="submit"
+                        name="status"
+                        value="Libre"
+                        class="min-h-[38px] px-2 py-1.5 text-[9px] tracking-wider uppercase border transition cursor-pointer <%= table.status === 'Libre' ? 'border-emerald-400 bg-emerald-950/60 text-emerald-200 font-medium' : 'border-white/10 text-neutral-400 hover:border-emerald-500/40 hover:text-emerald-300' %>"
+                      >
+                        Libre
+                      </button>
+                      <button
+                        type="submit"
+                        name="status"
+                        value="Reservada"
+                        class="min-h-[38px] px-2 py-1.5 text-[9px] tracking-wider uppercase border transition cursor-pointer <%= table.status === 'Reservada' ? 'border-[#d4af37] bg-[#d4af37]/20 text-[#d4af37] font-medium' : 'border-white/10 text-neutral-400 hover:border-[#d4af37]/40 hover:text-[#d4af37]' %>"
+                      >
+                        Reservada
+                      </button>
+                      <button
+                        type="submit"
+                        name="status"
+                        value="Ocupada"
+                        class="min-h-[38px] px-2 py-1.5 text-[9px] tracking-wider uppercase border transition cursor-pointer <%= table.status === 'Ocupada' ? 'border-red-400 bg-red-950/60 text-red-200 font-medium' : 'border-white/10 text-neutral-400 hover:border-red-500/40 hover:text-red-300' %>"
+                      >
+                        Ocupada
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              <% }); %>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         4. FILTROS Y LIBRO OFICIAL DE RESERVAS (CON SCROLL HORIZONTAL TÁCTIL)
+    ======================================================================= -->
+    <section id="seccion-reservas" class="space-y-6">
+      <div class="bg-[#111115] border border-white/10 p-4 sm:p-6 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 flex-1">
+          <input
+            id="admin-search-input"
+            type="text"
+            placeholder="Buscar titular, teléfono, mesa (M-01) o código LM-2026..."
+            class="lm-input flex-1 h-12"
+          />
+
+          <div class="grid grid-cols-2 sm:flex gap-3">
+            <input id="admin-date-filter" type="date" class="lm-input sm:w-44 h-12" />
+
+            <select id="admin-status-filter" class="lm-input sm:w-44 h-12">
+              <option value="all">Todos los estados</option>
+              <option value="confirmed">Confirmadas</option>
+              <option value="completed">Completadas</option>
+              <option value="cancelled">Canceladas</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:flex items-center gap-3">
+          <button id="admin-refresh-btn" type="button" class="lm-btn-outline h-12 px-4 text-[10px] w-full sm:w-auto">
+            SINCRONIZAR
+          </button>
+          <button id="open-manual-modal-btn" type="button" class="lm-btn-gold h-12 px-4 text-[10px] w-full sm:w-auto">
+            + RESERVA TELEFÓNICA
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-[#111115] border border-white/10 overflow-hidden shadow-2xl">
+        <div class="px-4 sm:px-6 py-5 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="font-serif text-xl sm:text-2xl font-normal text-[#f4f4f5]">
+              Libro Oficial de Reservas & Asignación de Mesas
+            </h2>
+            <p class="text-[11px] text-neutral-400 mt-0.5">
+              Vincule cada reserva de cliente a una mesa física de la sala en tiempo real
+            </p>
+          </div>
+          <span id="table-count-badge" class="text-[10px] tracking-[0.22em] uppercase px-3 py-1 border border-[#d4af37]/40 text-[#d4af37] self-start sm:self-auto">
+            <%= reservations.length %> REGISTROS
+          </span>
+        </div>
+
+        <!-- Indicador Táctil para Móviles y Tablets -->
+        <div class="lg:hidden px-4 py-2 bg-[#0d0d10] border-b border-white/5 text-[10px] tracking-[0.18em] uppercase text-[#d4af37]/80 flex items-center justify-between">
+          <span>← DESLICE LA TABLA HORIZONTALMENTE</span>
+          <span>GESTIÓN TÁCTIL →</span>
+        </div>
+
+        <div class="lm-touch-scroll overflow-x-auto">
+          <table class="w-full min-w-[920px] text-left border-collapse">
+            <thead>
+              <tr class="border-b border-white/10 bg-[#0a0a0c] text-[10px] tracking-[0.2em] uppercase text-neutral-400">
+                <th class="py-4 px-5 font-medium">Localizador</th>
+                <th class="py-4 px-5 font-medium">Fecha y Hora</th>
+                <th class="py-4 px-5 font-medium">Titular y Contacto</th>
+                <th class="py-4 px-5 font-medium">Comensales / Salón</th>
+                <th class="py-4 px-5 font-medium">Asignación de Mesa</th>
+                <th class="py-4 px-5 font-medium">Indicaciones de Sala</th>
+                <th class="py-4 px-5 font-medium">Estado</th>
+                <th class="py-4 px-5 font-medium text-right">Gestión</th>
+              </tr>
+            </thead>
+            <tbody id="admin-reservations-tbody" class="divide-y divide-white/5 text-xs">
+              <% if (reservations.length === 0) { %>
+                <tr>
+                  <td colspan="8" class="py-12 text-center text-neutral-500">
+                    No existen reservas registradas con los criterios actuales.
+                  </td>
+                </tr>
+              <% } else { %>
+                <% reservations.forEach(function(r) { %>
+                  <tr class="hover:bg-white/[0.02] transition-colors <%= r.status === 'cancelled' ? 'opacity-45' : '' %>">
+                    <td class="py-4 px-5 whitespace-nowrap">
+                      <span class="font-mono text-xs text-[#d4af37] border border-[#d4af37]/30 px-2.5 py-1">
+                        <%= r.reservation_code %>
+                      </span>
+                    </td>
+                    <td class="py-4 px-5 whitespace-nowrap">
+                      <span class="block text-[#f4f4f5] font-normal"><%= r.reservation_date %></span>
+                      <span class="block text-[#d4af37] mt-0.5"><%= r.reservation_time %> h</span>
+                    </td>
+                    <td class="py-4 px-5">
+                      <span class="block text-sm text-[#f4f4f5] font-normal <%= r.status === 'completed' ? 'line-through text-neutral-500' : '' %>">
+                        <%= r.customer_name %>
+                      </span>
+                      <a href="tel:<%= r.customer_phone %>" class="block text-neutral-400 hover:text-[#d4af37] mt-0.5">
+                        <%= r.customer_phone %>
+                      </a>
+                      <span class="block text-[11px] text-neutral-500"><%= r.customer_email %></span>
+                    </td>
+                    <td class="py-4 px-5 whitespace-nowrap">
+                      <span class="text-[#f4f4f5] font-normal"><%= r.guests %> comensales</span>
+                      <span class="block text-neutral-400 mt-0.5"><%= r.dining_area_name %></span>
+                    </td>
+                    <td class="py-4 px-5 whitespace-nowrap">
+                      <div class="flex flex-col gap-1.5 min-w-[185px]">
+                        <% if (r.table_number) { %>
+                          <span class="inline-flex items-center gap-1.5 text-[10px] tracking-[0.16em] uppercase text-[#d4af37]">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#d4af37]"></span>
+                            Mesa <%= r.table_number %>
+                          </span>
+                        <% } else { %>
+                          <span class="text-[10px] tracking-[0.14em] uppercase text-neutral-500">
+                            Pendiente de asignar
+                          </span>
+                        <% } %>
+                        <select
+                          data-action="assign-table"
+                          data-reservation-id="<%= r.id %>"
+                          class="assign-table-select bg-[#09090b] border border-white/15 focus:border-[#d4af37] text-[11px] text-[#f4f4f5] px-2.5 py-1.5 outline-none transition"
+                        >
+                          <option value="">— Sin mesa asignada —</option>
+                          <% (tables || []).forEach(function(t) { %>
+                            <option
+                              value="<%= t.id %>"
+                              <%= Number(r.table_id) === Number(t.id) ? 'selected' : '' %>
+                            >
+                              <%= t.table_number %> (<%= t.capacity %> pax · <%= t.status %>)
+                            </option>
+                          <% }); %>
+                        </select>
+                      </div>
+                    </td>
+                    <td class="py-4 px-5 max-w-xs">
+                      <% if (r.notes) { %>
+                        <p class="text-neutral-300 italic">“<%= r.notes %>”</p>
+                      <% } else { %>
+                        <span class="text-neutral-600">Sin observaciones</span>
+                      <% } %>
+                      <% if (r.preselected_dishes && r.preselected_dishes.length > 0) { %>
+                        <div class="mt-1.5 flex flex-wrap gap-1">
+                          <% r.preselected_dishes.forEach(function(d) { %>
+                            <span class="px-2 py-0.5 text-[10px] border border-[#d4af37]/30 text-[#d4af37]">
+                              <%= d %>
+                            </span>
+                          <% }); %>
+                        </div>
+                      <% } %>
+                    </td>
+                    <td class="py-4 px-5 whitespace-nowrap">
+                      <% if (r.status === 'confirmed') { %>
+                        <span class="px-2.5 py-1 text-[10px] tracking-[0.16em] uppercase border border-emerald-500/40 text-emerald-300">
+                          Confirmada
+                        </span>
+                      <% } else if (r.status === 'completed') { %>
+                        <span class="px-2.5 py-1 text-[10px] tracking-[0.16em] uppercase border border-[#d4af37]/40 text-[#d4af37]">
+                          Completada
+                        </span>
+                      <% } else { %>
+                        <span class="px-2.5 py-1 text-[10px] tracking-[0.16em] uppercase border border-red-500/40 text-red-300">
+                          Cancelada
+                        </span>
+                      <% } %>
+                    </td>
+                    <td class="py-4 px-5 whitespace-nowrap text-right">
+                      <div class="inline-flex items-center gap-1.5">
+                        <% if (r.status !== 'completed') { %>
+                          <button
+                            type="button"
+                            data-action="status"
+                            data-id="<%= r.id %>"
+                            data-status="completed"
+                            class="admin-action-btn px-2.5 py-1 text-[10px] tracking-wider uppercase border border-emerald-500/40 text-emerald-300 hover:bg-emerald-950/50 transition"
+                          >
+                            Completar
+                          </button>
+                        <% } %>
+                        <% if (r.status !== 'confirmed') { %>
+                          <button
+                            type="button"
+                            data-action="status"
+                            data-id="<%= r.id %>"
+                            data-status="confirmed"
+                            class="admin-action-btn px-2.5 py-1 text-[10px] tracking-wider uppercase border border-white/20 text-[#f4f4f5] hover:border-[#d4af37] transition"
+                          >
+                            Confirmar
+                          </button>
+                        <% } %>
+                        <% if (r.status !== 'cancelled') { %>
+                          <button
+                            type="button"
+                            data-action="status"
+                            data-id="<%= r.id %>"
+                            data-status="cancelled"
+                            class="admin-action-btn px-2.5 py-1 text-[10px] tracking-wider uppercase border border-amber-500/40 text-amber-300 hover:bg-amber-950/40 transition"
+                          >
+                            Cancelar
+                          </button>
+                        <% } %>
+                        <button
+                          type="button"
+                          data-action="delete"
+                          data-id="<%= r.id %>"
+                          class="admin-action-btn px-2.5 py-1 text-[10px] tracking-wider uppercase border border-red-500/40 text-red-300 hover:bg-red-950/50 transition"
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                <% }); %>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal para Reserva Telefónica Directa -->
+  <div id="manual-reservation-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-[#111115] border border-white/15 max-w-lg w-full max-h-[92dvh] overflow-y-auto p-5 sm:p-8 shadow-2xl space-y-6">
+      <div class="flex items-center justify-between border-b border-white/10 pb-4">
+        <div>
+          <span class="text-[9px] tracking-[0.28em] uppercase text-[#d4af37] block">REGISTRO DE MAÎTRE</span>
+          <h3 class="font-serif text-xl sm:text-2xl text-[#f4f4f5]">Nueva Reserva Telefónica</h3>
+        </div>
+        <button id="close-manual-modal-btn" type="button" class="min-h-[40px] px-2 text-neutral-400 hover:text-white text-xs tracking-widest">CERRAR ✕</button>
+      </div>
+
+      <form id="manual-reservation-form" class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="lm-label">Fecha *</label>
+            <input id="manual-date" type="date" required class="lm-input h-12" />
+          </div>
+          <div>
+            <label class="lm-label">Hora *</label>
+            <select id="manual-time" class="lm-input h-12">
+              <% timeSlots.forEach(function(slot) { %>
+                <option value="<%= slot %>"><%= slot %> h</option>
+              <% }); %>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="lm-label">Comensales *</label>
+            <input id="manual-guests" type="number" min="1" max="25" value="2" required class="lm-input h-12" />
+          </div>
+          <div>
+            <label class="lm-label">Salón *</label>
+            <select id="manual-area" class="lm-input h-12">
+              <% restaurant.diningAreas.forEach(function(a) { %>
+                <option value="<%= a.id %>"><%= a.name %></option>
+              <% }); %>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="lm-label">Asignar Mesa Específica (Opcional)</label>
+          <select id="manual-table-id" class="lm-input h-12">
+            <option value="">Asignación automática según aforo y zona</option>
+            <% (tables || []).forEach(function(t) { %>
+              <option value="<%= t.id %>">
+                Mesa <%= t.table_number %> — <%= t.zone_name %> (Máx. <%= t.capacity %> pax · <%= t.status %>)
+              </option>
+            <% }); %>
+          </select>
+        </div>
+
+        <div>
+          <label class="lm-label">Titular *</label>
+          <input id="manual-name" type="text" required placeholder="Nombre y apellidos" class="lm-input h-12" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="lm-label">Teléfono *</label>
+            <input id="manual-phone" type="tel" inputmode="tel" required placeholder="+34 600 000 000" class="lm-input h-12" />
+          </div>
+          <div>
+            <label class="lm-label">Correo</label>
+            <input id="manual-email" type="email" inputmode="email" placeholder="cliente@correo.es" class="lm-input h-12" />
+          </div>
+        </div>
+
+        <div>
+          <label class="lm-label">Observaciones de Sala</label>
+          <input id="manual-notes" type="text" placeholder="Alergias, mesa preferida..." class="lm-input h-12" />
+        </div>
+
+        <div class="pt-4 flex flex-col-reverse sm:flex-row justify-end gap-3">
+          <button id="cancel-manual-modal-btn" type="button" class="lm-btn-outline h-12 px-5 text-[10px] w-full sm:w-auto">
+            CANCELAR
+          </button>
+          <button type="submit" class="lm-btn-gold h-12 px-6 text-[10px] w-full sm:w-auto">
+            REGISTRAR RESERVA
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    window.__INITIAL_TABLES__ = <%- JSON.stringify(tables || []) %>;
+  </script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

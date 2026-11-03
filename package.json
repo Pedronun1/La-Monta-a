@@ -1,25 +1,26 @@
 {
   "name": "restaurante-la-montana-madrid",
-  "version": "2.0.0",
-  "description": "Aplicación Web Gastronómica Full-Stack (Node.js, Express, EJS, express-session, SQLite y Tailwind CSS Luxury Dark) para el Restaurante La Montaña en C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid.",
+  "version": "3.0.0",
+  "description": "Aplicación Web Oficial y Panel de Administración (Silent Luxury) para Restaurante La Montaña — C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "keywords": [
     "la-montana",
     "restaurante-madrid",
-    "alta-cocina-castiza",
     "moncloa-aravaca",
     "rey-francisco-28",
     "express",
     "ejs",
     "express-session",
-    "tailwindcss",
-    "sqlite"
+    "tailwindcss"
   ],
-  "author": "Restaurante La Montaña — Madrid",
+  "author": "Restaurante La Montaña — Madrid (Fundado en 1943)",
   "license": "MIT",
   "dependencies": {
     "ejs": "^3.1.10",

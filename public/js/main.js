@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (submitText) submitText.textContent = 'PROCESANDO RESERVA EN SALA...';
 
       try {
-        const response = await fetch('/api/reservations', {
+        const response = await fetch('/api/reservar', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
