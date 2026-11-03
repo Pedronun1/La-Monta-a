@@ -86,6 +86,87 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape') setDrawerState(false);
   });
 
+  // 1.B Motor Cinematográfico "Scroll-World" y Revelado Progresivo (duration-1000)
+  const revealElements = document.querySelectorAll('.lm-reveal');
+  const scrollProgressBar = document.getElementById('scroll-progress-bar');
+  const heroCameraLayer = document.getElementById('hero-camera-layer');
+  const heroContentStage = document.getElementById('hero-content-stage');
+  const parallaxItems = document.querySelectorAll('[data-parallax]');
+
+  if ('IntersectionObserver' in window && revealElements.length > 0) {
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: '0px 0px -8% 0px',
+        threshold: 0.12
+      }
+    );
+
+    revealElements.forEach((el) => revealObserver.observe(el));
+  } else {
+    revealElements.forEach((el) => el.classList.add('is-visible'));
+  }
+
+  let ticking = false;
+  function updateScrollWorld() {
+    const scrollY = window.scrollY || window.pageYOffset;
+    const docHeight = Math.max(
+      1,
+      document.documentElement.scrollHeight - window.innerHeight
+    );
+    const progress = Math.min(1, Math.max(0, scrollY / docHeight));
+
+    if (scrollProgressBar) {
+      scrollProgressBar.style.transform = `scaleX(${progress.toFixed(4)})`;
+    }
+
+    // Efecto de cámara cinematográfica en el Hero durante los primeros 800px de scroll
+    if (heroCameraLayer && scrollY < 1000) {
+      const scale = 1 + Math.min(0.12, scrollY * 0.00014);
+      const translateY = scrollY * 0.22;
+      heroCameraLayer.style.transform = `translate3d(0, ${translateY.toFixed(1)}px, 0) scale(${scale.toFixed(4)})`;
+    }
+
+    if (heroContentStage && scrollY < 900) {
+      const fade = Math.max(0.15, 1 - scrollY / 780);
+      const lift = scrollY * -0.12;
+      heroContentStage.style.opacity = fade.toFixed(3);
+      heroContentStage.style.transform = `translate3d(0, ${lift.toFixed(1)}px, 0)`;
+    }
+
+    // Parallax suave para marcos arquitectónicos de salones
+    if (window.innerWidth >= 768 && parallaxItems.length > 0) {
+      parallaxItems.forEach((item) => {
+        const speed = parseFloat(item.getAttribute('data-parallax') || '0');
+        const rect = item.getBoundingClientRect();
+        const centerOffset = rect.top - window.innerHeight * 0.5;
+        const y = centerOffset * speed;
+        item.style.transform = `translate3d(0, ${y.toFixed(1)}px, 0)`;
+      });
+    }
+
+    ticking = false;
+  }
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateScrollWorld);
+        ticking = true;
+      }
+    },
+    { passive: true }
+  );
+  updateScrollWorld();
+
   // 2. Filtrado por Categorías en el Menú Físico de Lujo
   const categoryTabs = document.querySelectorAll('.lm-category-tab');
   const categorySections = document.querySelectorAll('.menu-category-section');

@@ -553,3 +553,87 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .lm-map-frame:hover {
   filter: grayscale(0.25) invert(0) contrast(1) brightness(0.95);
 }
+
+/* ============================================================================
+   5. MOTOR CINEMATOGRÁFICO "SCROLL-WORLD" & REVELADO FLUIDO (DURATION-1000)
+============================================================================ */
+.lm-scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.2), #d4af37, #f4f4f5);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+  z-index: 80;
+  pointer-events: none;
+  transition: transform 0.1s linear;
+}
+
+/* Estados iniciales y activos para revelado cinematográfico sincronizado con el scroll */
+.lm-reveal {
+  opacity: 0;
+  transform: translate3d(0, 44px, 0) scale(0.985);
+  transition:
+    opacity 1.05s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.05s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.lm-reveal.lm-reveal-left {
+  transform: translate3d(-44px, 0, 0) scale(0.985);
+}
+
+.lm-reveal.lm-reveal-right {
+  transform: translate3d(44px, 0, 0) scale(0.985);
+}
+
+.lm-reveal.lm-reveal-scale {
+  transform: translate3d(0, 24px, 0) scale(0.94);
+}
+
+.lm-reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* Retardos escalonados (stagger) para elementos editoriales */
+.lm-delay-100 { transition-delay: 120ms; }
+.lm-delay-200 { transition-delay: 240ms; }
+.lm-delay-300 { transition-delay: 360ms; }
+.lm-delay-400 { transition-delay: 480ms; }
+
+/* Viñeta atmosférica para transiciones de cámara sin cortes entre secciones */
+.lm-camera-section {
+  position: relative;
+  isolation: isolate;
+}
+
+.lm-camera-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 30%, rgba(212, 175, 55, 0.04) 0%, transparent 65%);
+  z-index: -1;
+}
+
+/* Línea vertical de hilo conductor cinematográfico */
+.lm-scroll-thread {
+  width: 1px;
+  height: 76px;
+  margin: 0 auto;
+  background: linear-gradient(to bottom, transparent, rgba(212, 175, 55, 0.65), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lm-reveal,
+  .lm-reveal.lm-reveal-left,
+  .lm-reveal.lm-reveal-right,
+  .lm-reveal.lm-reveal-scale {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
