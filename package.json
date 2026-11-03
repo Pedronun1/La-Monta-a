@@ -1,7 +1,7 @@
 {
   "name": "la-montana-restaurante",
   "version": "1.0.0",
-  "description": "Web oficial y reservas de Restaurante La Montaña (C. del Rey Francisco, 28, Madrid)",
+  "description": "Sitio web oficial y panel de reservas de Restaurante La Montaña (C. del Rey Francisco, 28, Madrid)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

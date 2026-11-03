@@ -56,6 +56,37 @@
       background: rgba(212, 175, 55, 0.25);
     }
 
+    /* Animaciones suaves de aparición progresiva con cubic-bezier */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(28px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-hero {
+      animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .reveal-section {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal-section.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .btn-luxury {
+      transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
     input[type="date"]::-webkit-calendar-picker-indicator {
       filter: invert(0.85) sepia(0.3) saturate(1.5) hue-rotate(10deg);
       cursor: pointer;
@@ -66,7 +97,7 @@
 <body class="bg-[#050506] text-[#f4f4f5] min-h-screen flex flex-col justify-between">
 
   <!-- ===================================================================== -->
-  <!-- 1. CABECERA FIJA MINIMALISTA CON BLUR                                 -->
+  <!-- 1. CABECERA FIJA CON EFECTO BLUR                                      -->
   <!-- ===================================================================== -->
   <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-[#050506]/85 border-b border-white/10">
     <nav class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 h-24 flex items-center justify-between" aria-label="Navegación principal">
@@ -91,7 +122,7 @@
 
       <!-- Derecha: Botón de contorno fino "RESERVAR" -->
       <div class="flex items-center gap-4">
-        <a href="#reservas" class="px-6 py-2.5 border border-[#d4af37] bg-transparent text-[#f4f4f5] hover:bg-[#d4af37]/10 hover:text-[#d4af37] text-[10px] sm:text-[11px] font-light uppercase tracking-[0.28em] transition-all duration-300">
+        <a href="#reservas" class="btn-luxury px-6 py-2.5 border border-[#d4af37] bg-transparent text-[#f4f4f5] hover:bg-[#d4af37]/10 hover:text-[#d4af37] text-[10px] sm:text-[11px] font-light uppercase tracking-[0.28em]">
           RESERVAR
         </a>
 
@@ -121,14 +152,14 @@
       <div class="absolute inset-0 z-0">
         <img
           src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=2000&q=85"
-          alt="Ambiente gastronómico de La Montaña en Madrid"
+          alt="Salón gastronómico de La Montaña en Madrid"
           class="w-full h-full object-cover object-center opacity-30 scale-105"
         />
         <div class="absolute inset-0 bg-gradient-to-t from-[#050506] via-[#050506]/80 to-transparent"></div>
         <div class="absolute inset-0 bg-[#050506]/50"></div>
       </div>
 
-      <div class="relative z-10 max-w-5xl mx-auto px-6 sm:px-10 text-center py-24 md:py-36">
+      <div class="relative z-10 max-w-5xl mx-auto px-6 sm:px-10 text-center py-24 md:py-36 animate-hero">
         <p class="text-[11px] sm:text-xs font-light uppercase tracking-[0.45em] text-[#d4af37] mb-8">
           COCINA DE ALTURA
         </p>
@@ -138,10 +169,10 @@
         </h1>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-8">
-          <a href="#reservas" class="w-full sm:w-auto px-10 py-4 border border-[#d4af37] bg-transparent text-[#f4f4f5] hover:bg-[#d4af37]/15 hover:text-[#d4af37] text-[11px] font-light uppercase tracking-[0.32em] transition-all duration-300">
+          <a href="#reservas" class="btn-luxury w-full sm:w-auto px-10 py-4 border border-[#d4af37] bg-transparent text-[#f4f4f5] hover:bg-[#d4af37]/15 hover:text-[#d4af37] text-[11px] font-light uppercase tracking-[0.32em]">
             RESERVAR MESA
           </a>
-          <a href="#carta" class="w-full sm:w-auto px-10 py-4 border border-white/15 bg-transparent text-[#f4f4f5]/80 hover:border-[#d4af37]/60 hover:text-[#f4f4f5] text-[11px] font-light uppercase tracking-[0.32em] transition-all duration-300">
+          <a href="#carta" class="btn-luxury w-full sm:w-auto px-10 py-4 border border-white/15 bg-transparent text-[#f4f4f5]/80 hover:border-[#d4af37]/60 hover:text-[#f4f4f5] text-[11px] font-light uppercase tracking-[0.32em]">
             VER CARTA
           </a>
         </div>
@@ -149,10 +180,10 @@
     </section>
 
     <!-- =================================================================== -->
-    <!-- 3. SECCIÓN CARTA DINÁMICA (PRIMEROS, SEGUNDOS Y POSTRES)            -->
+    <!-- 3. CARTA DINÁMICA (PRIMEROS, SEGUNDOS Y POSTRES)                    -->
     <!-- =================================================================== -->
     <section id="carta" class="py-28 md:py-40 px-6 sm:px-10 lg:px-16 max-w-5xl mx-auto border-t border-white/10">
-      <div class="text-center max-w-2xl mx-auto mb-20 md:mb-28">
+      <div class="text-center max-w-2xl mx-auto mb-20 md:mb-28 reveal-section">
         <span class="block text-[10px] sm:text-xs font-light uppercase tracking-[0.42em] text-[#d4af37] mb-4">
           PROPUESTA GASTRONÓMICA
         </span>
@@ -163,227 +194,188 @@
       </div>
 
       <div class="space-y-24">
-        <!-- PRIMEROS Y ENTRANTES -->
-        <div>
-          <div class="border-b border-white/10 pb-5 mb-12">
-            <h3 class="font-serif text-3xl sm:text-4xl font-light text-[#d4af37] tracking-[0.04em]">
-              Primeros y Entrantes
-            </h3>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
-            <% menuData.primeros.forEach(function(plato) { %>
-              <article class="group border-b border-white/10 pb-7 flex flex-col justify-between">
-                <div class="flex items-baseline justify-between gap-6 mb-2.5">
-                  <h4 class="font-serif text-xl sm:text-2xl font-normal text-[#f4f4f5] group-hover:text-[#d4af37] transition-colors duration-300">
-                    <%= plato.nombre %>
-                  </h4>
-                  <span class="font-mono text-sm sm:text-base font-normal text-[#d4af37] whitespace-nowrap shrink-0 text-right">
-                    <%= plato.precio %>
-                  </span>
-                </div>
-                <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/60 leading-relaxed">
-                  <%= plato.descripcion %>
+        <% menu.forEach(function(seccion) { %>
+          <div class="reveal-section">
+            <div class="border-b border-white/10 pb-5 mb-12 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+              <h3 class="font-serif text-3xl sm:text-4xl font-light text-[#d4af37] tracking-[0.04em]">
+                <%= seccion.categoria %>
+              </h3>
+              <% if (seccion.subtitulo) { %>
+                <p class="text-xs font-light text-[#f4f4f5]/50 tracking-[0.08em]">
+                  <%= seccion.subtitulo %>
                 </p>
-              </article>
-            <% }); %>
-          </div>
-        </div>
+              <% } %>
+            </div>
 
-        <!-- SEGUNDOS PLATOS -->
-        <div>
-          <div class="border-b border-white/10 pb-5 mb-12">
-            <h3 class="font-serif text-3xl sm:text-4xl font-light text-[#d4af37] tracking-[0.04em]">
-              Segundos Platos
-            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
+              <% seccion.platos.forEach(function(plato) { %>
+                <article class="group border-b border-white/10 pb-7 flex flex-col justify-between">
+                  <div class="flex items-baseline justify-between gap-6 mb-2.5">
+                    <h4 class="font-serif text-xl sm:text-2xl font-normal text-[#f4f4f5] group-hover:text-[#d4af37] transition-colors duration-300">
+                      <%= plato.nombre %>
+                    </h4>
+                    <span class="font-mono text-sm sm:text-base font-normal text-[#d4af37] whitespace-nowrap shrink-0 text-right">
+                      <%= plato.precio %>
+                    </span>
+                  </div>
+                  <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/60 leading-relaxed">
+                    <%= plato.descripcion %>
+                  </p>
+                </article>
+              <% }); %>
+            </div>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
-            <% menuData.segundos.forEach(function(plato) { %>
-              <article class="group border-b border-white/10 pb-7 flex flex-col justify-between">
-                <div class="flex items-baseline justify-between gap-6 mb-2.5">
-                  <h4 class="font-serif text-xl sm:text-2xl font-normal text-[#f4f4f5] group-hover:text-[#d4af37] transition-colors duration-300">
-                    <%= plato.nombre %>
-                  </h4>
-                  <span class="font-mono text-sm sm:text-base font-normal text-[#d4af37] whitespace-nowrap shrink-0 text-right">
-                    <%= plato.precio %>
-                  </span>
-                </div>
-                <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/60 leading-relaxed">
-                  <%= plato.descripcion %>
-                </p>
-              </article>
-            <% }); %>
-          </div>
-        </div>
-
-        <!-- REPOSTERÍA CASERA -->
-        <div>
-          <div class="border-b border-white/10 pb-5 mb-12">
-            <h3 class="font-serif text-3xl sm:text-4xl font-light text-[#d4af37] tracking-[0.04em]">
-              Repostería Casera
-            </h3>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
-            <% menuData.postres.forEach(function(plato) { %>
-              <article class="group border-b border-white/10 pb-7 flex flex-col justify-between">
-                <div class="flex items-baseline justify-between gap-6 mb-2.5">
-                  <h4 class="font-serif text-xl sm:text-2xl font-normal text-[#f4f4f5] group-hover:text-[#d4af37] transition-colors duration-300">
-                    <%= plato.nombre %>
-                  </h4>
-                  <span class="font-mono text-sm sm:text-base font-normal text-[#d4af37] whitespace-nowrap shrink-0 text-right">
-                    <%= plato.precio %>
-                  </span>
-                </div>
-                <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/60 leading-relaxed">
-                  <%= plato.descripcion %>
-                </p>
-              </article>
-            <% }); %>
-          </div>
-        </div>
+        <% }); %>
       </div>
+
+      <p class="text-center text-[11px] font-light tracking-[0.22em] uppercase text-[#f4f4f5]/40 mt-20">
+        Precios en euros con IVA incluido · Servicio de pan de obrador y aperitivo de bienvenida
+      </p>
     </section>
 
     <!-- =================================================================== -->
     <!-- 4. SECCIÓN DE RESERVAS ONLINE (APUNTANDO A /api/reservar)           -->
     <!-- =================================================================== -->
     <section id="reservas" class="py-28 md:py-40 px-6 sm:px-10 lg:px-16 max-w-4xl mx-auto border-t border-white/10">
-      <div class="text-center max-w-2xl mx-auto mb-16">
-        <span class="block text-[10px] sm:text-xs font-light uppercase tracking-[0.42em] text-[#d4af37] mb-4">
-          MESA Y SALA
-        </span>
-        <h2 class="font-serif text-4xl sm:text-6xl font-light tracking-[0.04em] text-[#f4f4f5] mb-6">
-          Reservar Mesa
-        </h2>
-        <div class="w-16 h-px bg-[#d4af37]/40 mx-auto mb-6"></div>
-        <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/60 tracking-[0.06em]">
-          Complete los datos a continuación para confirmar su mesa en La Montaña.
-        </p>
-      </div>
+      <div class="reveal-section">
+        <div class="text-center max-w-2xl mx-auto mb-16">
+          <span class="block text-[10px] sm:text-xs font-light uppercase tracking-[0.42em] text-[#d4af37] mb-4">
+            MESA Y SALA
+          </span>
+          <h2 class="font-serif text-4xl sm:text-6xl font-light tracking-[0.04em] text-[#f4f4f5] mb-6">
+            Reservar Mesa
+          </h2>
+          <div class="w-16 h-px bg-[#d4af37]/40 mx-auto mb-6"></div>
+          <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/60 tracking-[0.06em]">
+            Complete los datos a continuación para confirmar su mesa en La Montaña.
+          </p>
+        </div>
 
-      <div class="border border-white/10 bg-[#050506] p-8 sm:p-12 md:p-16">
-        <% if (typeof reservaExitosa !== 'undefined' && reservaExitosa) { %>
-          <div class="mb-10 border border-[#d4af37] bg-[#d4af37]/5 p-6 text-center">
-            <p class="font-serif text-2xl text-[#d4af37] mb-1">Reserva Confirmada</p>
-            <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/80">
-              Su solicitud ha sido registrada correctamente<%= (typeof codigoReserva !== 'undefined' && codigoReserva) ? ' con el código ' + codigoReserva : '' %>.
-            </p>
-          </div>
-        <% } %>
-
-        <% if (typeof errorReserva !== 'undefined' && errorReserva) { %>
-          <div class="mb-10 border border-white/20 bg-white/5 p-6 text-center">
-            <p class="text-xs sm:text-sm font-light text-[#d4af37]">
-              Por favor, complete todos los campos requeridos para procesar su reserva.
-            </p>
-          </div>
-        <% } %>
-
-        <form id="form-reservas" action="/api/reservar" method="POST" class="space-y-10">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
-            <div>
-              <label for="nombre" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
-                Nombre Completo *
-              </label>
-              <input
-                type="text"
-                id="nombre"
-                name="nombre"
-                required
-                placeholder="Ej. Elena Valdés"
-                class="w-full bg-[#050506] border-b border-white/15 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] placeholder-[#f4f4f5]/25 focus:outline-none transition-colors"
-              />
+        <div class="border border-white/10 bg-[#050506] p-8 sm:p-12 md:p-16">
+          <% if (typeof reservaExitosa !== 'undefined' && reservaExitosa) { %>
+            <div class="mb-10 border border-[#d4af37] bg-[#d4af37]/5 p-6 text-center">
+              <p class="font-serif text-2xl text-[#d4af37] mb-1">Reserva Confirmada</p>
+              <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/80">
+                Su solicitud ha sido registrada correctamente<%= (typeof codigoReserva !== 'undefined' && codigoReserva) ? ' con el código ' + codigoReserva : '' %>. Le esperamos en La Montaña.
+              </p>
             </div>
+          <% } %>
 
-            <div>
-              <label for="telefono" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
-                Teléfono *
-              </label>
-              <input
-                type="tel"
-                id="telefono"
-                name="telefono"
-                required
-                placeholder="Ej. 600 000 000"
-                class="w-full bg-[#050506] border-b border-white/15 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] placeholder-[#f4f4f5]/25 focus:outline-none transition-colors"
-              />
+          <% if (typeof errorReserva !== 'undefined' && errorReserva) { %>
+            <div class="mb-10 border border-white/20 bg-white/5 p-6 text-center">
+              <p class="text-xs sm:text-sm font-light text-[#d4af37]">
+                Por favor, complete todos los campos requeridos para procesar su reserva.
+              </p>
             </div>
+          <% } %>
 
-            <div>
-              <label for="fecha" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
-                Fecha *
-              </label>
-              <input
-                type="date"
-                id="fecha"
-                name="fecha"
-                required
-                class="w-full bg-[#050506] border-b border-white/15 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] focus:outline-none transition-colors"
-              />
-            </div>
-
-            <div class="grid grid-cols-2 gap-6">
+          <form id="form-reservas" action="/api/reservar" method="POST" class="space-y-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
               <div>
-                <label for="hora" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
-                  Hora *
+                <label for="nombre" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
+                  Nombre Completo *
                 </label>
-                <select
-                  id="hora"
-                  name="hora"
+                <input
+                  type="text"
+                  id="nombre"
+                  name="nombre"
                   required
-                  class="w-full bg-[#050506] border-b border-white/15 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] focus:outline-none transition-colors"
-                >
-                  <option value="13:30">13:30 h</option>
-                  <option value="14:00" selected>14:00 h</option>
-                  <option value="14:30">14:30 h</option>
-                  <option value="15:00">15:00 h</option>
-                  <option value="20:30">20:30 h</option>
-                  <option value="21:00">21:00 h</option>
-                  <option value="21:30">21:30 h</option>
-                  <option value="22:00">22:00 h</option>
-                </select>
+                  placeholder="Ej. Elena Valdés"
+                  class="w-full bg-[#050506] border-b border-white/15 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] placeholder-[#f4f4f5]/25 focus:outline-none transition-colors"
+                />
               </div>
 
               <div>
-                <label for="comensales" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
-                  Comensales *
+                <label for="telefono" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
+                  Teléfono *
                 </label>
-                <select
-                  id="comensales"
-                  name="comensales"
+                <input
+                  type="tel"
+                  id="telefono"
+                  name="telefono"
+                  required
+                  placeholder="Ej. 600 000 000"
+                  class="w-full bg-[#050506] border-b border-white/15 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] placeholder-[#f4f4f5]/25 focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div>
+                <label for="fecha" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
+                  Fecha *
+                </label>
+                <input
+                  type="date"
+                  id="fecha"
+                  name="fecha"
                   required
                   class="w-full bg-[#050506] border-b border-white/15 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] focus:outline-none transition-colors"
-                >
-                  <% for (let i = 1; i <= 8; i++) { %>
-                    <option value="<%= i %>" <%= i === 2 ? 'selected' : '' %>><%= i %> <%= i === 1 ? 'Persona' : 'Personas' %></option>
-                  <% } %>
-                </select>
+                />
+              </div>
+
+              <div class="grid grid-cols-2 gap-6">
+                <div>
+                  <label for="hora" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
+                    Hora *
+                  </label>
+                  <select
+                    id="hora"
+                    name="hora"
+                    required
+                    class="w-full bg-[#050506] border-b border-white/15 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] focus:outline-none transition-colors"
+                  >
+                    <option value="13:30">13:30 h</option>
+                    <option value="14:00" selected>14:00 h</option>
+                    <option value="14:30">14:30 h</option>
+                    <option value="15:00">15:00 h</option>
+                    <option value="20:30">20:30 h</option>
+                    <option value="21:00">21:00 h</option>
+                    <option value="21:30">21:30 h</option>
+                    <option value="22:00">22:00 h</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="comensales" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
+                    Comensales *
+                  </label>
+                  <select
+                    id="comensales"
+                    name="comensales"
+                    required
+                    class="w-full bg-[#050506] border-b border-white/15 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] focus:outline-none transition-colors"
+                  >
+                    <% for (let i = 1; i <= 8; i++) { %>
+                      <option value="<%= i %>" <%= i === 2 ? 'selected' : '' %>><%= i %> <%= i === 1 ? 'Persona' : 'Personas' %></option>
+                    <% } %>
+                  </select>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div id="reserva-feedback" class="hidden border border-[#d4af37] p-6 text-center text-xs sm:text-sm font-light text-[#f4f4f5]"></div>
+            <div id="reserva-feedback" class="hidden border border-[#d4af37] p-6 text-center text-xs sm:text-sm font-light text-[#f4f4f5]"></div>
 
-          <div class="pt-4 text-center">
-            <button
-              type="submit"
-              id="btn-submit-reserva"
-              class="w-full sm:w-auto px-14 py-4 border border-[#d4af37] bg-transparent text-[#f4f4f5] hover:bg-[#d4af37]/15 hover:text-[#d4af37] text-[11px] font-light uppercase tracking-[0.32em] transition-all duration-300"
-            >
-              CONFIRMAR RESERVA
-            </button>
-          </div>
-        </form>
+            <div class="pt-4 text-center">
+              <button
+                type="submit"
+                id="btn-submit-reserva"
+                class="btn-luxury w-full sm:w-auto px-14 py-4 border border-[#d4af37] bg-transparent text-[#f4f4f5] hover:bg-[#d4af37]/15 hover:text-[#d4af37] text-[11px] font-light uppercase tracking-[0.32em]"
+              >
+                CONFIRMAR RESERVA
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </section>
   </main>
 
   <!-- ===================================================================== -->
-  <!-- 5. PIE DE PÁGINA MINIMALISTA                                          -->
+  <!-- 5. FOOTER PROFESIONAL, DIRECCIÓN FÍSICA Y ENLACES LEGALES             -->
   <!-- ===================================================================== -->
-  <footer id="contacto" class="border-t border-white/10 bg-[#050506] py-16 px-6 sm:px-10 lg:px-16">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+  <footer id="contacto" class="border-t border-white/10 bg-[#050506] py-20 px-6 sm:px-10 lg:px-16">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center md:items-start justify-between gap-10 pb-14 border-b border-white/10">
       <div class="text-center md:text-left">
-        <p class="font-serif text-xl font-light tracking-[0.32em] text-[#f4f4f5] uppercase mb-2">
+        <p class="font-serif text-xl font-light tracking-[0.32em] text-[#f4f4f5] uppercase mb-3">
           LA MONTAÑA
         </p>
         <p class="text-xs font-light text-[#f4f4f5]/60 tracking-[0.1em]">
@@ -391,14 +383,36 @@
         </p>
       </div>
 
-      <div class="text-center md:text-right text-[11px] font-light text-[#f4f4f5]/40 tracking-[0.15em] uppercase">
-        <p>© <%= new Date().getFullYear() %> Restaurante La Montaña · Todos los derechos reservados</p>
+      <!-- Enlaces Institucionales y Legales Obligatorios -->
+      <div class="flex flex-wrap items-center justify-center gap-8 text-[11px] font-light uppercase tracking-[0.24em] text-[#f4f4f5]/60">
+        <a href="#aviso-legal" data-legal="aviso" class="hover:text-[#d4af37] transition-colors">Aviso Legal</a>
+        <a href="#politica-privacidad" data-legal="privacidad" class="hover:text-[#d4af37] transition-colors">Política de Privacidad</a>
+        <a href="#politica-cookies" data-legal="cookies" class="hover:text-[#d4af37] transition-colors">Política de Cookies</a>
+        <a href="/admin/reservas" class="text-[#d4af37]/80 hover:text-[#d4af37] transition-colors">Panel Restaurante</a>
       </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto pt-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-light text-[#f4f4f5]/40 tracking-[0.14em] uppercase">
+      <p>© <%= new Date().getFullYear() %> Restaurante La Montaña · Todos los derechos reservados</p>
+      <p>Moncloa - Aravaca · 28008 Madrid</p>
     </div>
   </footer>
 
+  <!-- Modal Legal Institucional (Aviso Legal, Privacidad y Cookies) -->
+  <div id="legal-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-[#050506]/90 backdrop-blur-md p-6" role="dialog" aria-modal="true">
+    <div class="max-w-2xl w-full border border-white/10 bg-[#050506] p-8 sm:p-12 relative">
+      <button type="button" id="close-legal-modal" class="absolute top-6 right-6 text-[#f4f4f5]/50 hover:text-[#d4af37] text-xs uppercase tracking-[0.25em]">
+        Cerrar [×]
+      </button>
+      <h3 id="legal-modal-title" class="font-serif text-3xl font-light text-[#d4af37] mb-6"></h3>
+      <div id="legal-modal-body" class="text-xs sm:text-sm font-light text-[#f4f4f5]/70 space-y-4 leading-relaxed"></div>
+    </div>
+  </div>
+
+  <!-- Scripts de Animación Pro, Menú Móvil, Reservas y Modales Legales -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+      // 1. Fecha mínima hoy
       const fechaInput = document.getElementById('fecha');
       if (fechaInput) {
         const hoy = new Date().toISOString().split('T')[0];
@@ -406,6 +420,28 @@
         if (!fechaInput.value) fechaInput.value = hoy;
       }
 
+      // 2. Animación progresiva al hacer scroll (cubic-bezier)
+      const revealItems = document.querySelectorAll('.reveal-section');
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12 });
+
+        revealItems.forEach(function (el) {
+          observer.observe(el);
+        });
+      } else {
+        revealItems.forEach(function (el) {
+          el.classList.add('is-visible');
+        });
+      }
+
+      // 3. Menú móvil
       const mobileBtn = document.getElementById('mobile-menu-btn');
       const mobileMenu = document.getElementById('mobile-menu');
       if (mobileBtn && mobileMenu) {
@@ -419,6 +455,7 @@
         });
       }
 
+      // 4. Envío asíncrono de reservas
       const form = document.getElementById('form-reservas');
       const feedback = document.getElementById('reserva-feedback');
       const submitBtn = document.getElementById('btn-submit-reserva');
@@ -465,6 +502,54 @@
           } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = 'CONFIRMAR RESERVA';
+          }
+        });
+      }
+
+      // 5. Textos Legales (Aviso Legal, Política de Privacidad y Cookies)
+      const legalModal = document.getElementById('legal-modal');
+      const legalTitle = document.getElementById('legal-modal-title');
+      const legalBody = document.getElementById('legal-modal-body');
+      const closeLegal = document.getElementById('close-legal-modal');
+
+      const textosLegales = {
+        aviso: {
+          titulo: 'Aviso Legal (LSSI-CE)',
+          cuerpo: '<p>En cumplimiento de la Ley 34/2002 de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa que este sitio web es titularidad de <strong>Restaurante La Montaña</strong>, ubicado en C. del Rey Francisco, 28, 28008 Madrid.</p>'
+        },
+        privacidad: {
+          titulo: 'Política de Privacidad (RGPD)',
+          cuerpo: '<p>De conformidad con el Reglamento General de Protección de Datos (RGPD), los datos personales facilitados en el formulario de reservas se emplean exclusivamente para gestionar su mesa en sala y no se ceden a terceros.</p>'
+        },
+        cookies: {
+          titulo: 'Política de Cookies',
+          cuerpo: '<p>Este portal utiliza únicamente cookies técnicas indispensables para el funcionamiento del sistema de reservas, sin emplear cookies publicitarias ni de seguimiento de terceros.</p>'
+        }
+      };
+
+      document.querySelectorAll('[data-legal]').forEach(function (link) {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          const key = link.getAttribute('data-legal');
+          const info = textosLegales[key];
+          if (info && legalModal) {
+            legalTitle.textContent = info.titulo;
+            legalBody.innerHTML = info.cuerpo;
+            legalModal.classList.remove('hidden');
+            legalModal.classList.add('flex');
+          }
+        });
+      });
+
+      if (closeLegal && legalModal) {
+        closeLegal.addEventListener('click', function () {
+          legalModal.classList.add('hidden');
+          legalModal.classList.remove('flex');
+        });
+        legalModal.addEventListener('click', function (e) {
+          if (e.target === legalModal) {
+            legalModal.classList.add('hidden');
+            legalModal.classList.remove('flex');
           }
         });
       }
