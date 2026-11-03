@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acceso Administración | La Montaña</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #050506;
+      color: #f4f4f5;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-serif {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+  </style>
+</head>
+
+<body class="bg-[#050506] text-[#f4f4f5] min-h-screen flex flex-col justify-between">
+  <header class="border-b border-white/10 px-6 sm:px-12 h-24 flex items-center justify-between max-w-7xl w-full mx-auto">
+    <a href="/" class="font-serif text-2xl font-light tracking-[0.32em] text-[#f4f4f5] uppercase">
+      LA MONTAÑA
+    </a>
+    <a href="/" class="text-[11px] font-light uppercase tracking-[0.28em] text-[#f4f4f5]/60 hover:text-[#d4af37] transition-colors">
+      ← Volver a la Web
+    </a>
+  </header>
+
+  <main class="flex-1 flex items-center justify-center p-6">
+    <div class="w-full max-w-md border border-white/10 bg-[#050506] p-10 sm:p-12">
+      <div class="text-center mb-10">
+        <span class="block text-[10px] font-light uppercase tracking-[0.38em] text-[#d4af37] mb-3">
+          ÁREA PRIVADA DEL RESTAURANTE
+        </span>
+        <h1 class="font-serif text-4xl font-light text-[#f4f4f5]">
+          Acceso Dirección
+        </h1>
+      </div>
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="mb-8 border border-red-500/40 bg-red-950/30 p-4 text-center text-xs font-light text-red-200">
+          <%= error %>
+        </div>
+      <% } %>
+
+      <form action="/admin/login" method="POST" class="space-y-8">
+        <div>
+          <label for="password" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
+            Contraseña de Administración
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            autofocus
+            placeholder="Introduzca la clave (ej. admin123)"
+            class="w-full bg-[#050506] border-b border-white/20 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] placeholder-[#f4f4f5]/25 focus:outline-none transition-colors"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-4 border border-[#d4af37] bg-transparent text-[#f4f4f5] hover:bg-[#d4af37] hover:text-[#050506] text-[11px] font-normal uppercase tracking-[0.32em] transition-all duration-300"
+        >
+          ENTRAR AL PANEL
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <footer class="border-t border-white/10 py-8 text-center text-[11px] font-light text-[#f4f4f5]/35 tracking-[0.15em] uppercase">
+    Restaurante La Montaña · C. del Rey Francisco, 28, Madrid
+  </footer>
+</body>
+</html>

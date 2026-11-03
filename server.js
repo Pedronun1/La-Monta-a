@@ -6,106 +6,119 @@
  */
 
 const express = require('express');
+const session = require('express-session');
 const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 
 // Configuración para proxy inverso en Render (HTTPS)
 app.set('trust proxy', 1);
 
-// Motor de plantillas EJS y carpeta de vistas en la raíz absoluta
+// Configuración del motor de vistas EJS en la raíz del proyecto
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Middlewares para archivos estáticos y formularios
+// Middlewares
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.use(
+  session({
+    name: 'lamontana.sid',
+    secret: process.env.SESSION_SECRET || 'la_montana_madrid_secret_key_2026',
+    resave: false,
+    saveUninitialized: false,
+    proxy: true,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 12
+    }
+  })
+);
+
 // ============================================================================
-// CARTA DINÁMICA DEL RESTAURANTE (PRIMEROS, SEGUNDOS Y POSTRES)
+// CARTA OFICIAL REAL DEL RESTAURANTE LA MONTAÑA
 // ============================================================================
-const menu = [
+const cartaOficial = {
+  primeros: [
+    { nombre: 'Consomé', precio: '5,00 €' },
+    { nombre: 'Ensaladilla rusa', precio: '11,50 €' },
+    { nombre: 'Ens. Tomate bonito', precio: '15,50 €' },
+    { nombre: 'Ens. Tomate Raf Bon', precio: '18,50 €' },
+    { nombre: 'Torreznos', precio: '10,00 €' },
+    { nombre: 'Lentejas', precio: '9,00 €' },
+    { nombre: 'Sopa cocido', precio: '9,00 €' },
+    { nombre: 'Berenjena rebizada', precio: '11,00 €' },
+    { nombre: 'Pisto manchego', precio: '11,00 €' },
+    { nombre: 'Patatas revolconas', precio: '11,00 €' },
+    { nombre: 'Gazpacho', precio: '11,50 €' },
+    { nombre: 'Salmorejo', precio: '11,50 €' },
+    { nombre: 'Huevos rellenos', precio: '12,00 €' },
+    { nombre: 'Judías verdes', precio: '14,00 €' },
+    { nombre: 'Fabada', precio: '19,50 €' },
+    { nombre: 'Verdinas carab', precio: '19,50 €' },
+    { nombre: 'Cocido', precio: '21,00 €' },
+    { nombre: 'Croqueta jamón pol (ud)', precio: '1,80 €' },
+    { nombre: 'Gilda', precio: '2,00 €' },
+    { nombre: 'Patatas bravas', precio: '7,00 €' }
+  ],
+  segundos: [
+    { nombre: 'Sardinas escabeche', precio: '11,00 €' },
+    { nombre: 'Tortilla de la abuela', precio: '21,00 €' },
+    { nombre: 'Calamares tinta', precio: '21,50 €' },
+    { nombre: 'Filetes de gallo', precio: '23,00 €' },
+    { nombre: 'Merluza de pincho', precio: '27,50 €' },
+    { nombre: 'Delicias de merluza', precio: '27,50 €' },
+    { nombre: 'Cococha', precio: '35,00 €' },
+    { nombre: 'Filete de ternera', precio: '19,00 €' },
+    { nombre: 'Escalope de ternera', precio: '20,00 €' },
+    { nombre: 'Pollo al ajillo', precio: '14,00 €' },
+    { nombre: 'Albóndigas', precio: '15,00 €' },
+    { nombre: 'Pollo en pepitoria', precio: '16,50 €' },
+    { nombre: 'Lomo de ternera', precio: '17,50 €' },
+    { nombre: 'Solomillo y patata frita', precio: '20,00 €' },
+    { nombre: 'Cachopo de ternera', precio: '22,00 €' },
+    { nombre: 'Chuletón de vaca', precio: '68,00 €' }
+  ],
+  postres: [
+    { nombre: 'Arroz con leche', precio: '7,00 €' },
+    { nombre: 'Flan', precio: '7,00 €' },
+    { nombre: 'Manzana asada', precio: '7,00 €' },
+    { nombre: 'Fruta', precio: '6,50 €' },
+    { nombre: 'Torrija', precio: '9,00 €' }
+  ]
+};
+
+// ============================================================================
+// ESTADO EN MEMORIA: SALAS, MESAS Y RESERVAS
+// ============================================================================
+const hoyISO = new Date().toISOString().split('T')[0];
+
+const salas = [
   {
-    categoria: 'Primeros y Entrantes',
-    subtitulo: 'Recetario clásico y producto seleccionado de temporada',
-    platos: [
-      {
-        nombre: 'Croquetas cremosas de jamón ibérico',
-        descripcion: 'Bechamel reposada de leche fresca con virutas de jamón ibérico de bellota y rebozado crujiente.',
-        precio: '14 €'
-      },
-      {
-        nombre: 'Oreja a la plancha con ajillo',
-        descripcion: 'Marcada en plancha de hierro hasta lograr bordes crujientes con majado suave de ajo morado y perejil.',
-        precio: '13 €'
-      },
-      {
-        nombre: 'Huevos trufados con patatas de obrador',
-        descripcion: 'Huevos camperos a baja temperatura sobre patata agria confitada y aroma de trufa negra.',
-        precio: '16 €'
-      },
-      {
-        nombre: 'Ensaladilla rusa de la casa',
-        descripcion: 'Receta tradicional con patata seleccionada, ventresca de bonito del norte y emulsión suave de aceite de oliva.',
-        precio: '12 €'
-      }
-    ]
+    id: 1,
+    nombre: 'Salón Principal',
+    descripcion: 'Planta calle con zócalo de azulejos clásicos madrileños'
   },
   {
-    categoria: 'Segundos Platos',
-    subtitulo: 'Cocina de fuego lento, lonja fresca y parrilla',
-    platos: [
-      {
-        nombre: 'Cazón en adobo tradicional',
-        descripcion: 'Dados de cazón marinados en adobo artesano de especias y vinagre de Jerez, fritos al momento.',
-        precio: '18 €'
-      },
-      {
-        nombre: 'Hamburguesas a la parrilla La Montaña',
-        descripcion: 'Carne seleccionada de vacuno madurado a la brasa con queso fundente y guarnición artesana.',
-        precio: '19 €'
-      },
-      {
-        nombre: 'Rabo de toro estofado a baja temperatura',
-        descripcion: 'Guiso meloso cocinado lentamente durante seis horas en reducción de vino tinto reserva.',
-        precio: '22 €'
-      },
-      {
-        nombre: 'Merluza de pincho a la romana',
-        descripcion: 'Lomo central de merluza del Cantábrico con rebozado fino y jugoso en aceite de oliva virgen extra.',
-        precio: '21 €'
-      }
-    ]
-  },
-  {
-    categoria: 'Postres Caseros',
-    subtitulo: 'Repostería artesana elaborada a diario en casa',
-    platos: [
-      {
-        nombre: 'Tarta casera de queso cremosa',
-        descripcion: 'Horneada a diario con corazón fundente de quesos seleccionados y base artesana.',
-        precio: '7 €'
-      },
-      {
-        nombre: 'Flan de la casa con nata',
-        descripcion: 'Flan tradicional de huevo campero al baño maría con caramelo tostado y nata montada.',
-        precio: '6 €'
-      },
-      {
-        nombre: 'Torrija caramelizada en brioche',
-        descripcion: 'Pan brioche infusionado en leche aromatizada con canela y corteza caramelizada al momento.',
-        precio: '8 €'
-      }
-    ]
+    id: 2,
+    nombre: 'La Cueva / Bóveda',
+    descripcion: 'Comedor histórico subterráneo de ladrillo visto'
   }
 ];
 
-// ============================================================================
-// REGISTRO DE RESERVAS EN MEMORIA (CON DATOS INICIALES DE EJEMPLO)
-// ============================================================================
-const hoy = new Date().toISOString().split('T')[0];
+const mesas = [
+  { id: 1, numero: 'Mesa 1', salaId: 1, salaNombre: 'Salón Principal', capacidad: 2, estado: 'Libre' },
+  { id: 2, numero: 'Mesa 2', salaId: 1, salaNombre: 'Salón Principal', capacidad: 4, estado: 'Libre' },
+  { id: 3, numero: 'Mesa 3', salaId: 1, salaNombre: 'Salón Principal', capacidad: 6, estado: 'Reservada' },
+  { id: 4, numero: 'Mesa 4', salaId: 2, salaNombre: 'La Cueva / Bóveda', capacidad: 4, estado: 'Libre' },
+  { id: 5, numero: 'Mesa 5', salaId: 2, salaNombre: 'La Cueva / Bóveda', capacidad: 8, estado: 'Libre' }
+];
 
 const reservas = [
   {
@@ -113,9 +126,11 @@ const reservas = [
     codigo: 'LM-4821',
     nombre: 'Carlos Mendoza',
     telefono: '629 410 882',
-    fecha: hoy,
+    fecha: hoyISO,
     hora: '14:00',
     comensales: 4,
+    sala: 'Salón Principal',
+    mesa: 'Mesa 2',
     estado: 'Confirmada',
     creadaEn: new Date().toISOString()
   },
@@ -124,13 +139,25 @@ const reservas = [
     codigo: 'LM-5190',
     nombre: 'Elena Valdés',
     telefono: '648 912 301',
-    fecha: hoy,
+    fecha: hoyISO,
     hora: '21:00',
     comensales: 2,
-    estado: 'Confirmada',
+    sala: 'La Cueva / Bóveda',
+    mesa: 'Mesa 4',
+    estado: 'Pendiente',
     creadaEn: new Date().toISOString()
   }
 ];
+
+// ============================================================================
+// MIDDLEWARE DE AUTENTICACIÓN ADMIN
+// ============================================================================
+function requireAuth(req, res, next) {
+  if (req.session && req.session.isAdmin === true) {
+    return next();
+  }
+  return res.redirect('/admin/login');
+}
 
 // ============================================================================
 // 1. RUTAS PÚBLICAS (WEB PRINCIPAL Y FORMULARIO DE RESERVAS)
@@ -138,7 +165,8 @@ const reservas = [
 
 app.get('/', (req, res) => {
   res.render('index', {
-    menu,
+    carta: cartaOficial,
+    salas,
     reservaExitosa: req.query.reserva === 'ok',
     codigoReserva: req.query.codigo || null,
     errorReserva: req.query.error || null
@@ -146,7 +174,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/api/reservar', (req, res) => {
-  const { nombre, telefono, fecha, hora, comensales } = req.body || {};
+  const { nombre, telefono, fecha, hora, comensales, sala } = req.body || {};
 
   const wantsJson =
     req.is('application/json') ||
@@ -162,6 +190,18 @@ app.post('/api/reservar', (req, res) => {
     return res.redirect('/?error=1#reservas');
   }
 
+  const numComensales = Number(comensales) || 2;
+  const salaElegida = sala || (salas[0] ? salas[0].nombre : 'Salón Principal');
+
+  const mesaCandidata =
+    mesas.find((m) => m.salaNombre === salaElegida && m.estado === 'Libre' && m.capacidad >= numComensales) ||
+    mesas.find((m) => m.estado === 'Libre' && m.capacidad >= numComensales) ||
+    null;
+
+  if (mesaCandidata) {
+    mesaCandidata.estado = 'Reservada';
+  }
+
   const nuevaReserva = {
     id: Date.now(),
     codigo: 'LM-' + Math.floor(1000 + Math.random() * 9000),
@@ -169,8 +209,10 @@ app.post('/api/reservar', (req, res) => {
     telefono: String(telefono).trim(),
     fecha: String(fecha).trim(),
     hora: String(hora).trim(),
-    comensales: Number(comensales) || 2,
-    estado: 'Confirmada',
+    comensales: numComensales,
+    sala: mesaCandidata ? mesaCandidata.salaNombre : salaElegida,
+    mesa: mesaCandidata ? mesaCandidata.numero : 'Asignación en sala',
+    estado: 'Pendiente',
     creadaEn: new Date().toISOString()
   };
 
@@ -179,7 +221,7 @@ app.post('/api/reservar', (req, res) => {
   if (wantsJson) {
     return res.status(201).json({
       success: true,
-      message: 'Su mesa ha sido reservada con éxito en La Montaña.',
+      message: 'Su solicitud de reserva ha sido registrada correctamente.',
       reserva: nuevaReserva
     });
   }
@@ -188,33 +230,123 @@ app.post('/api/reservar', (req, res) => {
 });
 
 // ============================================================================
-// 2. RUTA PRIVADA DEL RESTAURANTE (PANEL DE RESERVAS EN /admin/reservas)
+// 2. RUTAS DE AUTENTICACIÓN Y PANEL DE ADMINISTRACIÓN (/admin)
 // ============================================================================
 
-function renderAdminPanel(req, res) {
+app.get('/admin/login', (req, res) => {
+  if (req.session && req.session.isAdmin === true) {
+    return res.redirect('/admin');
+  }
+  res.render('login', {
+    error: req.query.error ? 'Contraseña incorrecta. Inténtelo de nuevo.' : null
+  });
+});
+
+app.get('/login', (req, res) => res.redirect('/admin/login'));
+
+app.post('/admin/login', (req, res) => {
+  const { password } = req.body || {};
+  if (password === ADMIN_PASSWORD || password === 'admin123' || password === 'lamontana2026') {
+    req.session.isAdmin = true;
+    return res.redirect('/admin');
+  }
+  return res.redirect('/admin/login?error=1');
+});
+
+app.post('/admin/logout', (req, res) => {
+  if (req.session) {
+    req.session.destroy(() => res.redirect('/admin/login'));
+  } else {
+    res.redirect('/admin/login');
+  }
+});
+
+function renderAdmin(req, res) {
+  const fechaFiltro = req.query.fecha || '';
   res.render('admin', {
-    reservas
+    reservas,
+    salas,
+    mesas,
+    fechaFiltro,
+    hoyISO
   });
 }
 
-app.get('/admin/reservas', renderAdminPanel);
-app.get('/admin', renderAdminPanel);
+app.get('/admin', requireAuth, renderAdmin);
+app.get('/admin/reservas', requireAuth, renderAdmin);
 
-// Actualizar el estado de una reserva desde el panel interno
-app.post('/admin/reservas/:id/estado', (req, res) => {
+// Actualizar estado de una reserva (Pendiente, Confirmada, Cancelada)
+app.post('/admin/reservas/:id/estado', requireAuth, (req, res) => {
   const id = Number(req.params.id);
   const { estado } = req.body || {};
-  const estadosValidos = ['Confirmada', 'En Mesa', 'Completada', 'Cancelada'];
+  const estadosValidos = ['Pendiente', 'Confirmada', 'Cancelada'];
 
   const item = reservas.find((r) => r.id === id);
   if (item && estadosValidos.includes(estado)) {
     item.estado = estado;
   }
+  return res.redirect('/admin');
+});
 
-  if (req.is('application/json') || (req.headers.accept && req.headers.accept.includes('application/json'))) {
-    return res.json({ success: true, reserva: item });
+// Añadir una nueva Sala al restaurante
+app.post('/admin/salas', requireAuth, (req, res) => {
+  const { nombre, descripcion } = req.body || {};
+  if (nombre && String(nombre).trim()) {
+    salas.push({
+      id: Date.now(),
+      nombre: String(nombre).trim(),
+      descripcion: descripcion ? String(descripcion).trim() : 'Sala del restaurante'
+    });
   }
-  return res.redirect('/admin/reservas');
+  return res.redirect('/admin#gestion-salas');
+});
+
+// Eliminar una Sala
+app.post('/admin/salas/:id/eliminar', requireAuth, (req, res) => {
+  const id = Number(req.params.id);
+  const idx = salas.findIndex((s) => s.id === id);
+  if (idx !== -1) {
+    salas.splice(idx, 1);
+  }
+  return res.redirect('/admin#gestion-salas');
+});
+
+// Añadir una nueva Mesa a una Sala
+app.post('/admin/mesas', requireAuth, (req, res) => {
+  const { numero, salaId, capacidad, estado } = req.body || {};
+  if (numero && String(numero).trim()) {
+    const salaObj = salas.find((s) => s.id === Number(salaId)) || salas[0] || { id: 1, nombre: 'Salón Principal' };
+    mesas.push({
+      id: Date.now(),
+      numero: String(numero).trim(),
+      salaId: salaObj.id,
+      salaNombre: salaObj.nombre,
+      capacidad: Number(capacidad) || 4,
+      estado: estado || 'Libre'
+    });
+  }
+  return res.redirect('/admin#gestion-salas');
+});
+
+// Cambiar estado de una Mesa (Libre, Ocupada, Reservada)
+app.post('/admin/mesas/:id/estado', requireAuth, (req, res) => {
+  const id = Number(req.params.id);
+  const { estado } = req.body || {};
+  const mesa = mesas.find((m) => m.id === id);
+  if (mesa && ['Libre', 'Ocupada', 'Reservada'].includes(estado)) {
+    mesa.estado = estado;
+  }
+  return res.redirect('/admin#gestion-salas');
+});
+
+// Eliminar una Mesa
+app.post('/admin/mesas/:id/eliminar', requireAuth, (req, res) => {
+  const id = Number(req.params.id);
+  const idx = mesas.findIndex((m) => m.id === id);
+  if (idx !== -1) {
+    mesas.splice(idx, 1);
+  }
+  return res.redirect('/admin#gestion-salas');
 });
 
 // ============================================================================

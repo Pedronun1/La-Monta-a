@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>La Montaña | Cocina de Altura en Madrid</title>
-  <meta name="description" content="Restaurante La Montaña en C. del Rey Francisco, 28, Madrid. La mesa se encuentra donde la montaña susurra." />
+  <title>La Montaña | Restaurante en Madrid</title>
+  <meta name="description" content="Restaurante La Montaña en C. del Rey Francisco, 28, Madrid. Carta tradicional y reservas online." />
 
   <!-- Google Fonts: Cormorant Garamond, Plus Jakarta Sans & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=JetBrains+Mono:wght@300;400&family=Plus+Jakarta+Sans:wght@200;300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400&family=Plus+Jakarta+Sans:wght@200;300;400;500&display=swap" rel="stylesheet" />
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -56,11 +56,10 @@
       background: rgba(212, 175, 55, 0.25);
     }
 
-    /* Animaciones suaves de aparición progresiva con cubic-bezier */
-    @keyframes fadeInUp {
+    @keyframes fadeIn {
       from {
         opacity: 0;
-        transform: translateY(28px);
+        transform: translateY(22px);
       }
       to {
         opacity: 1;
@@ -68,23 +67,19 @@
       }
     }
 
-    .animate-hero {
-      animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    .fade-in-hero {
+      animation: fadeIn 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    .reveal-section {
+    .reveal {
       opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(24px);
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .reveal-section.is-visible {
+    .reveal.is-visible {
       opacity: 1;
       transform: translateY(0);
-    }
-
-    .btn-luxury {
-      transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     input[type="date"]::-webkit-calendar-picker-indicator {
@@ -95,34 +90,39 @@
 </head>
 
 <body class="bg-[#050506] text-[#f4f4f5] min-h-screen flex flex-col justify-between">
+  <%
+    const listaSalas = (typeof salas !== 'undefined' && Array.isArray(salas) && salas.length)
+      ? salas
+      : [{ id: 1, nombre: 'Salón Principal' }, { id: 2, nombre: 'La Cueva / Bóveda' }];
+  %>
 
   <!-- ===================================================================== -->
-  <!-- 1. CABECERA FIJA CON EFECTO BLUR                                      -->
+  <!-- 1. NAVBAR SUPERIOR REDISEÑADA (MINIMALISTA Y DE ALTA GAMA)            -->
   <!-- ===================================================================== -->
-  <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-[#050506]/85 border-b border-white/10">
-    <nav class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 h-24 flex items-center justify-between" aria-label="Navegación principal">
+  <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-[#050506]/90 border-b border-white/[0.08]">
+    <div class="max-w-7xl mx-auto px-6 sm:px-12 lg:px-20 h-24 flex items-center justify-between">
       
-      <!-- Izquierda: Logotipo "LA MONTAÑA" -->
-      <a href="#" class="font-serif text-xl sm:text-2xl font-light tracking-[0.32em] text-[#f4f4f5] uppercase hover:text-[#d4af37] transition-colors duration-300">
+      <!-- Izquierda: Logotipo Tipográfico Impecable -->
+      <a href="#" class="font-serif text-2xl sm:text-[26px] font-light tracking-[0.36em] text-[#f4f4f5] uppercase hover:text-[#d4af37] transition-colors duration-300">
         LA MONTAÑA
       </a>
 
-      <!-- Centro: Enlaces "CARTA", "RESERVAS", "CONTACTO" -->
-      <div class="hidden md:flex items-center gap-12 lg:gap-16">
-        <a href="#carta" class="text-[11px] font-light uppercase tracking-[0.32em] text-[#f4f4f5]/75 hover:text-[#d4af37] transition-colors duration-300">
+      <!-- Centro: Enlaces Esenciales ("CARTA", "RESERVAS", "CONTACTO") -->
+      <nav class="hidden md:flex items-center gap-14 lg:gap-20" aria-label="Navegación principal">
+        <a href="#carta" class="text-[11px] font-light uppercase tracking-[0.34em] text-[#f4f4f5]/75 hover:text-[#d4af37] transition-colors duration-300">
           CARTA
         </a>
-        <a href="#reservas" class="text-[11px] font-light uppercase tracking-[0.32em] text-[#f4f4f5]/75 hover:text-[#d4af37] transition-colors duration-300">
+        <a href="#reservas" class="text-[11px] font-light uppercase tracking-[0.34em] text-[#f4f4f5]/75 hover:text-[#d4af37] transition-colors duration-300">
           RESERVAS
         </a>
-        <a href="#contacto" class="text-[11px] font-light uppercase tracking-[0.32em] text-[#f4f4f5]/75 hover:text-[#d4af37] transition-colors duration-300">
+        <a href="#contacto" class="text-[11px] font-light uppercase tracking-[0.34em] text-[#f4f4f5]/75 hover:text-[#d4af37] transition-colors duration-300">
           CONTACTO
         </a>
-      </div>
+      </nav>
 
-      <!-- Derecha: Botón de contorno fino "RESERVAR" -->
+      <!-- Derecha: Botón de Reserva Elegante -->
       <div class="flex items-center gap-4">
-        <a href="#reservas" class="btn-luxury px-6 py-2.5 border border-[#d4af37] bg-transparent text-[#f4f4f5] hover:bg-[#d4af37]/10 hover:text-[#d4af37] text-[10px] sm:text-[11px] font-light uppercase tracking-[0.28em]">
+        <a href="#reservas" class="px-7 py-2.5 border border-[#d4af37]/80 bg-transparent text-[#f4f4f5] hover:bg-[#d4af37] hover:text-[#050506] text-[10px] sm:text-[11px] font-normal uppercase tracking-[0.3em] transition-all duration-300">
           RESERVAR
         </a>
 
@@ -132,7 +132,7 @@
           </svg>
         </button>
       </div>
-    </nav>
+    </div>
 
     <!-- Menú Móvil -->
     <div id="mobile-menu" class="hidden md:hidden bg-[#050506]/95 backdrop-blur-xl border-b border-white/10 px-6 py-8">
@@ -146,33 +146,32 @@
 
   <main>
     <!-- =================================================================== -->
-    <!-- 2. SECCIÓN HERO ("SILENT LUXURY")                                   -->
+    <!-- 2. HERO SECTION LIMPIA Y SOBRIA (SIN FRASES EXTRAÑAS DE RELLENO)    -->
     <!-- =================================================================== -->
-    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-24">
+    <section class="relative min-h-[88vh] flex items-center justify-center overflow-hidden pt-24">
       <div class="absolute inset-0 z-0">
         <img
           src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=2000&q=85"
-          alt="Salón gastronómico de La Montaña en Madrid"
-          class="w-full h-full object-cover object-center opacity-30 scale-105"
+          alt="Restaurante La Montaña Madrid"
+          class="w-full h-full object-cover object-center opacity-25"
         />
-        <div class="absolute inset-0 bg-gradient-to-t from-[#050506] via-[#050506]/80 to-transparent"></div>
-        <div class="absolute inset-0 bg-[#050506]/50"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#050506] via-[#050506]/80 to-[#050506]/60"></div>
       </div>
 
-      <div class="relative z-10 max-w-5xl mx-auto px-6 sm:px-10 text-center py-24 md:py-36 animate-hero">
-        <p class="text-[11px] sm:text-xs font-light uppercase tracking-[0.45em] text-[#d4af37] mb-8">
-          COCINA DE ALTURA
-        </p>
+      <div class="relative z-10 max-w-4xl mx-auto px-6 sm:px-10 text-center py-24 fade-in-hero">
+        <span class="block text-[10px] sm:text-xs font-light uppercase tracking-[0.45em] text-[#d4af37] mb-6">
+          C. DEL REY FRANCISCO, 28 · MADRID
+        </span>
 
-        <h1 class="font-serif italic text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-light text-[#f4f4f5] leading-[1.12] tracking-[0.02em] mb-14">
-          "La mesa se encuentra donde la montaña susurra."
+        <h1 class="font-serif text-5xl sm:text-7xl md:text-8xl font-light tracking-[0.18em] text-[#f4f4f5] uppercase mb-14">
+          LA MONTAÑA
         </h1>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-8">
-          <a href="#reservas" class="btn-luxury w-full sm:w-auto px-10 py-4 border border-[#d4af37] bg-transparent text-[#f4f4f5] hover:bg-[#d4af37]/15 hover:text-[#d4af37] text-[11px] font-light uppercase tracking-[0.32em]">
+          <a href="#reservas" class="w-full sm:w-auto px-11 py-4 border border-[#d4af37] bg-transparent text-[#f4f4f5] hover:bg-[#d4af37] hover:text-[#050506] text-[11px] font-normal uppercase tracking-[0.32em] transition-all duration-300">
             RESERVAR MESA
           </a>
-          <a href="#carta" class="btn-luxury w-full sm:w-auto px-10 py-4 border border-white/15 bg-transparent text-[#f4f4f5]/80 hover:border-[#d4af37]/60 hover:text-[#f4f4f5] text-[11px] font-light uppercase tracking-[0.32em]">
+          <a href="#carta" class="w-full sm:w-auto px-11 py-4 border border-white/15 bg-transparent text-[#f4f4f5]/80 hover:border-[#d4af37] hover:text-[#f4f4f5] text-[11px] font-light uppercase tracking-[0.32em] transition-all duration-300">
             VER CARTA
           </a>
         </div>
@@ -180,83 +179,125 @@
     </section>
 
     <!-- =================================================================== -->
-    <!-- 3. CARTA DINÁMICA (PRIMEROS, SEGUNDOS Y POSTRES)                    -->
+    <!-- 3. CARTA OFICIAL REAL DEL RESTAURANTE                               -->
     <!-- =================================================================== -->
-    <section id="carta" class="py-28 md:py-40 px-6 sm:px-10 lg:px-16 max-w-5xl mx-auto border-t border-white/10">
-      <div class="text-center max-w-2xl mx-auto mb-20 md:mb-28 reveal-section">
+    <section id="carta" class="py-28 md:py-36 px-6 sm:px-12 lg:px-20 max-w-6xl mx-auto border-t border-white/10">
+      <div class="text-center max-w-2xl mx-auto mb-20 reveal">
         <span class="block text-[10px] sm:text-xs font-light uppercase tracking-[0.42em] text-[#d4af37] mb-4">
-          PROPUESTA GASTRONÓMICA
+          GASTRONOMÍA TRADICIONAL
         </span>
-        <h2 class="font-serif text-4xl sm:text-6xl font-light tracking-[0.04em] text-[#f4f4f5] mb-6">
+        <h2 class="font-serif text-4xl sm:text-6xl font-light tracking-[0.06em] text-[#f4f4f5] mb-6">
           Nuestra Carta
         </h2>
         <div class="w-16 h-px bg-[#d4af37]/40 mx-auto"></div>
       </div>
 
       <div class="space-y-24">
-        <% menu.forEach(function(seccion) { %>
-          <div class="reveal-section">
-            <div class="border-b border-white/10 pb-5 mb-12 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
-              <h3 class="font-serif text-3xl sm:text-4xl font-light text-[#d4af37] tracking-[0.04em]">
-                <%= seccion.categoria %>
-              </h3>
-              <% if (seccion.subtitulo) { %>
-                <p class="text-xs font-light text-[#f4f4f5]/50 tracking-[0.08em]">
-                  <%= seccion.subtitulo %>
-                </p>
-              <% } %>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
-              <% seccion.platos.forEach(function(plato) { %>
-                <article class="group border-b border-white/10 pb-7 flex flex-col justify-between">
-                  <div class="flex items-baseline justify-between gap-6 mb-2.5">
-                    <h4 class="font-serif text-xl sm:text-2xl font-normal text-[#f4f4f5] group-hover:text-[#d4af37] transition-colors duration-300">
-                      <%= plato.nombre %>
-                    </h4>
-                    <span class="font-mono text-sm sm:text-base font-normal text-[#d4af37] whitespace-nowrap shrink-0 text-right">
-                      <%= plato.precio %>
-                    </span>
-                  </div>
-                  <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/60 leading-relaxed">
-                    <%= plato.descripcion %>
-                  </p>
-                </article>
-              <% }); %>
-            </div>
+        <!-- PRIMEROS -->
+        <div class="reveal">
+          <div class="border-b border-[#d4af37]/30 pb-4 mb-10 flex items-baseline justify-between">
+            <h3 class="font-serif text-3xl sm:text-4xl font-light text-[#d4af37] tracking-[0.08em] uppercase">
+              Primeros
+            </h3>
+            <span class="text-[11px] font-light uppercase tracking-[0.25em] text-[#f4f4f5]/40">
+              <%= carta.primeros.length %> Platos
+            </span>
           </div>
-        <% }); %>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-5">
+            <% carta.primeros.forEach(function(plato) { %>
+              <div class="group flex items-baseline justify-between border-b border-white/[0.07] py-3.5 hover:border-[#d4af37]/40 transition-colors duration-300">
+                <span class="font-serif text-xl sm:text-2xl font-light text-[#f4f4f5] group-hover:text-[#d4af37] transition-colors">
+                  <%= plato.nombre %>
+                </span>
+                <span class="font-mono text-sm sm:text-base font-light text-[#d4af37] whitespace-nowrap ml-4">
+                  <%= plato.precio %>
+                </span>
+              </div>
+            <% }); %>
+          </div>
+        </div>
+
+        <!-- SEGUNDOS -->
+        <div class="reveal">
+          <div class="border-b border-[#d4af37]/30 pb-4 mb-10 flex items-baseline justify-between">
+            <h3 class="font-serif text-3xl sm:text-4xl font-light text-[#d4af37] tracking-[0.08em] uppercase">
+              Segundos
+            </h3>
+            <span class="text-[11px] font-light uppercase tracking-[0.25em] text-[#f4f4f5]/40">
+              <%= carta.segundos.length %> Platos
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-5">
+            <% carta.segundos.forEach(function(plato) { %>
+              <div class="group flex items-baseline justify-between border-b border-white/[0.07] py-3.5 hover:border-[#d4af37]/40 transition-colors duration-300">
+                <span class="font-serif text-xl sm:text-2xl font-light text-[#f4f4f5] group-hover:text-[#d4af37] transition-colors">
+                  <%= plato.nombre %>
+                </span>
+                <span class="font-mono text-sm sm:text-base font-light text-[#d4af37] whitespace-nowrap ml-4">
+                  <%= plato.precio %>
+                </span>
+              </div>
+            <% }); %>
+          </div>
+        </div>
+
+        <!-- POSTRES -->
+        <div class="reveal">
+          <div class="border-b border-[#d4af37]/30 pb-4 mb-10 flex items-baseline justify-between">
+            <h3 class="font-serif text-3xl sm:text-4xl font-light text-[#d4af37] tracking-[0.08em] uppercase">
+              Postres
+            </h3>
+            <span class="text-[11px] font-light uppercase tracking-[0.25em] text-[#f4f4f5]/40">
+              <%= carta.postres.length %> Platos
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-5">
+            <% carta.postres.forEach(function(plato) { %>
+              <div class="group flex items-baseline justify-between border-b border-white/[0.07] py-3.5 hover:border-[#d4af37]/40 transition-colors duration-300">
+                <span class="font-serif text-xl sm:text-2xl font-light text-[#f4f4f5] group-hover:text-[#d4af37] transition-colors">
+                  <%= plato.nombre %>
+                </span>
+                <span class="font-mono text-sm sm:text-base font-light text-[#d4af37] whitespace-nowrap ml-4">
+                  <%= plato.precio %>
+                </span>
+              </div>
+            <% }); %>
+          </div>
+        </div>
       </div>
 
       <p class="text-center text-[11px] font-light tracking-[0.22em] uppercase text-[#f4f4f5]/40 mt-20">
-        Precios en euros con IVA incluido · Servicio de pan de obrador y aperitivo de bienvenida
+        Todos los precios incluyen IVA · C. del Rey Francisco, 28, Madrid
       </p>
     </section>
 
     <!-- =================================================================== -->
-    <!-- 4. SECCIÓN DE RESERVAS ONLINE (APUNTANDO A /api/reservar)           -->
+    <!-- 4. SECCIÓN DE RESERVAS ONLINE                                       -->
     <!-- =================================================================== -->
-    <section id="reservas" class="py-28 md:py-40 px-6 sm:px-10 lg:px-16 max-w-4xl mx-auto border-t border-white/10">
-      <div class="reveal-section">
+    <section id="reservas" class="py-28 md:py-36 px-6 sm:px-12 lg:px-20 max-w-4xl mx-auto border-t border-white/10">
+      <div class="reveal">
         <div class="text-center max-w-2xl mx-auto mb-16">
           <span class="block text-[10px] sm:text-xs font-light uppercase tracking-[0.42em] text-[#d4af37] mb-4">
-            MESA Y SALA
+            RESERVA ONLINE
           </span>
-          <h2 class="font-serif text-4xl sm:text-6xl font-light tracking-[0.04em] text-[#f4f4f5] mb-6">
+          <h2 class="font-serif text-4xl sm:text-6xl font-light tracking-[0.06em] text-[#f4f4f5] mb-6">
             Reservar Mesa
           </h2>
           <div class="w-16 h-px bg-[#d4af37]/40 mx-auto mb-6"></div>
           <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/60 tracking-[0.06em]">
-            Complete los datos a continuación para confirmar su mesa en La Montaña.
+            Seleccione fecha, hora, número de comensales y salón de preferencia.
           </p>
         </div>
 
         <div class="border border-white/10 bg-[#050506] p-8 sm:p-12 md:p-16">
           <% if (typeof reservaExitosa !== 'undefined' && reservaExitosa) { %>
             <div class="mb-10 border border-[#d4af37] bg-[#d4af37]/5 p-6 text-center">
-              <p class="font-serif text-2xl text-[#d4af37] mb-1">Reserva Confirmada</p>
+              <p class="font-serif text-2xl text-[#d4af37] mb-1">Reserva Registrada</p>
               <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/80">
-                Su solicitud ha sido registrada correctamente<%= (typeof codigoReserva !== 'undefined' && codigoReserva) ? ' con el código ' + codigoReserva : '' %>. Le esperamos en La Montaña.
+                Su reserva ha quedado registrada<%= (typeof codigoReserva !== 'undefined' && codigoReserva) ? ' con el código ' + codigoReserva : '' %>.
               </p>
             </div>
           <% } %>
@@ -264,7 +305,7 @@
           <% if (typeof errorReserva !== 'undefined' && errorReserva) { %>
             <div class="mb-10 border border-white/20 bg-white/5 p-6 text-center">
               <p class="text-xs sm:text-sm font-light text-[#d4af37]">
-                Por favor, complete todos los campos requeridos para procesar su reserva.
+                Por favor, complete todos los campos requeridos.
               </p>
             </div>
           <% } %>
@@ -280,7 +321,7 @@
                   id="nombre"
                   name="nombre"
                   required
-                  placeholder="Ej. Elena Valdés"
+                  placeholder="Ej. Carlos Mendoza"
                   class="w-full bg-[#050506] border-b border-white/15 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] placeholder-[#f4f4f5]/25 focus:outline-none transition-colors"
                 />
               </div>
@@ -312,43 +353,57 @@
                 />
               </div>
 
-              <div class="grid grid-cols-2 gap-6">
-                <div>
-                  <label for="hora" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
-                    Hora *
-                  </label>
-                  <select
-                    id="hora"
-                    name="hora"
-                    required
-                    class="w-full bg-[#050506] border-b border-white/15 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] focus:outline-none transition-colors"
-                  >
-                    <option value="13:30">13:30 h</option>
-                    <option value="14:00" selected>14:00 h</option>
-                    <option value="14:30">14:30 h</option>
-                    <option value="15:00">15:00 h</option>
-                    <option value="20:30">20:30 h</option>
-                    <option value="21:00">21:00 h</option>
-                    <option value="21:30">21:30 h</option>
-                    <option value="22:00">22:00 h</option>
-                  </select>
-                </div>
+              <div>
+                <label for="sala" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
+                  Sala / Espacio
+                </label>
+                <select
+                  id="sala"
+                  name="sala"
+                  class="w-full bg-[#050506] border-b border-white/15 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] focus:outline-none transition-colors"
+                >
+                  <% listaSalas.forEach(function(s) { %>
+                    <option value="<%= s.nombre %>"><%= s.nombre %></option>
+                  <% }); %>
+                </select>
+              </div>
 
-                <div>
-                  <label for="comensales" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
-                    Comensales *
-                  </label>
-                  <select
-                    id="comensales"
-                    name="comensales"
-                    required
-                    class="w-full bg-[#050506] border-b border-white/15 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] focus:outline-none transition-colors"
-                  >
-                    <% for (let i = 1; i <= 8; i++) { %>
-                      <option value="<%= i %>" <%= i === 2 ? 'selected' : '' %>><%= i %> <%= i === 1 ? 'Persona' : 'Personas' %></option>
-                    <% } %>
-                  </select>
-                </div>
+              <div>
+                <label for="hora" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
+                  Hora *
+                </label>
+                <select
+                  id="hora"
+                  name="hora"
+                  required
+                  class="w-full bg-[#050506] border-b border-white/15 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] focus:outline-none transition-colors"
+                >
+                  <option value="13:30">13:30 h</option>
+                  <option value="14:00" selected>14:00 h</option>
+                  <option value="14:30">14:30 h</option>
+                  <option value="15:00">15:00 h</option>
+                  <option value="15:30">15:30 h</option>
+                  <option value="20:30">20:30 h</option>
+                  <option value="21:00">21:00 h</option>
+                  <option value="21:30">21:30 h</option>
+                  <option value="22:00">22:00 h</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="comensales" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
+                  Comensales *
+                </label>
+                <select
+                  id="comensales"
+                  name="comensales"
+                  required
+                  class="w-full bg-[#050506] border-b border-white/15 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] focus:outline-none transition-colors"
+                >
+                  <% for (let i = 1; i <= 10; i++) { %>
+                    <option value="<%= i %>" <%= i === 2 ? 'selected' : '' %>><%= i %> <%= i === 1 ? 'Persona' : 'Personas' %></option>
+                  <% } %>
+                </select>
               </div>
             </div>
 
@@ -358,7 +413,7 @@
               <button
                 type="submit"
                 id="btn-submit-reserva"
-                class="btn-luxury w-full sm:w-auto px-14 py-4 border border-[#d4af37] bg-transparent text-[#f4f4f5] hover:bg-[#d4af37]/15 hover:text-[#d4af37] text-[11px] font-light uppercase tracking-[0.32em]"
+                class="w-full sm:w-auto px-14 py-4 border border-[#d4af37] bg-transparent text-[#f4f4f5] hover:bg-[#d4af37] hover:text-[#050506] text-[11px] font-normal uppercase tracking-[0.32em] transition-all duration-300"
               >
                 CONFIRMAR RESERVA
               </button>
@@ -370,12 +425,12 @@
   </main>
 
   <!-- ===================================================================== -->
-  <!-- 5. FOOTER PROFESIONAL, DIRECCIÓN FÍSICA Y ENLACES LEGALES             -->
+  <!-- 5. FOOTER Y ENLACES LEGALES OBLIGATORIOS                              -->
   <!-- ===================================================================== -->
-  <footer id="contacto" class="border-t border-white/10 bg-[#050506] py-20 px-6 sm:px-10 lg:px-16">
+  <footer id="contacto" class="border-t border-white/10 bg-[#050506] py-20 px-6 sm:px-12 lg:px-20">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center md:items-start justify-between gap-10 pb-14 border-b border-white/10">
       <div class="text-center md:text-left">
-        <p class="font-serif text-xl font-light tracking-[0.32em] text-[#f4f4f5] uppercase mb-3">
+        <p class="font-serif text-2xl font-light tracking-[0.32em] text-[#f4f4f5] uppercase mb-3">
           LA MONTAÑA
         </p>
         <p class="text-xs font-light text-[#f4f4f5]/60 tracking-[0.1em]">
@@ -383,12 +438,11 @@
         </p>
       </div>
 
-      <!-- Enlaces Institucionales y Legales Obligatorios -->
       <div class="flex flex-wrap items-center justify-center gap-8 text-[11px] font-light uppercase tracking-[0.24em] text-[#f4f4f5]/60">
         <a href="#aviso-legal" data-legal="aviso" class="hover:text-[#d4af37] transition-colors">Aviso Legal</a>
         <a href="#politica-privacidad" data-legal="privacidad" class="hover:text-[#d4af37] transition-colors">Política de Privacidad</a>
         <a href="#politica-cookies" data-legal="cookies" class="hover:text-[#d4af37] transition-colors">Política de Cookies</a>
-        <a href="/admin/reservas" class="text-[#d4af37]/80 hover:text-[#d4af37] transition-colors">Panel Restaurante</a>
+        <a href="/admin" class="text-[#d4af37]/80 hover:text-[#d4af37] transition-colors">Acceso Admin</a>
       </div>
     </div>
 
@@ -398,7 +452,7 @@
     </div>
   </footer>
 
-  <!-- Modal Legal Institucional (Aviso Legal, Privacidad y Cookies) -->
+  <!-- Modal Legal -->
   <div id="legal-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-[#050506]/90 backdrop-blur-md p-6" role="dialog" aria-modal="true">
     <div class="max-w-2xl w-full border border-white/10 bg-[#050506] p-8 sm:p-12 relative">
       <button type="button" id="close-legal-modal" class="absolute top-6 right-6 text-[#f4f4f5]/50 hover:text-[#d4af37] text-xs uppercase tracking-[0.25em]">
@@ -409,10 +463,8 @@
     </div>
   </div>
 
-  <!-- Scripts de Animación Pro, Menú Móvil, Reservas y Modales Legales -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      // 1. Fecha mínima hoy
       const fechaInput = document.getElementById('fecha');
       if (fechaInput) {
         const hoy = new Date().toISOString().split('T')[0];
@@ -420,8 +472,7 @@
         if (!fechaInput.value) fechaInput.value = hoy;
       }
 
-      // 2. Animación progresiva al hacer scroll (cubic-bezier)
-      const revealItems = document.querySelectorAll('.reveal-section');
+      const revealItems = document.querySelectorAll('.reveal');
       if ('IntersectionObserver' in window) {
         const observer = new IntersectionObserver(function (entries) {
           entries.forEach(function (entry) {
@@ -430,7 +481,7 @@
               observer.unobserve(entry.target);
             }
           });
-        }, { threshold: 0.12 });
+        }, { threshold: 0.1 });
 
         revealItems.forEach(function (el) {
           observer.observe(el);
@@ -441,7 +492,6 @@
         });
       }
 
-      // 3. Menú móvil
       const mobileBtn = document.getElementById('mobile-menu-btn');
       const mobileMenu = document.getElementById('mobile-menu');
       if (mobileBtn && mobileMenu) {
@@ -455,7 +505,6 @@
         });
       }
 
-      // 4. Envío asíncrono de reservas
       const form = document.getElementById('form-reservas');
       const feedback = document.getElementById('reserva-feedback');
       const submitBtn = document.getElementById('btn-submit-reserva');
@@ -471,6 +520,7 @@
             nombre: document.getElementById('nombre').value.trim(),
             telefono: document.getElementById('telefono').value.trim(),
             fecha: document.getElementById('fecha').value,
+            sala: document.getElementById('sala').value,
             hora: document.getElementById('hora').value,
             comensales: document.getElementById('comensales').value
           };
@@ -488,8 +538,8 @@
 
             if (res.ok && data.success) {
               feedback.innerHTML =
-                '<p class="font-serif text-2xl text-[#d4af37] mb-1">Reserva Confirmada</p>' +
-                '<p class="text-[#f4f4f5]/80">' + data.message + ' (Código: <span class="font-mono text-[#d4af37]">' + data.reserva.codigo + '</span>)</p>';
+                '<p class="font-serif text-2xl text-[#d4af37] mb-1">Reserva Registrada</p>' +
+                '<p class="text-[#f4f4f5]/80">' + data.message + ' · Sala: ' + data.reserva.sala + ' · Código: <span class="font-mono text-[#d4af37]">' + data.reserva.codigo + '</span></p>';
               feedback.classList.remove('hidden');
               form.reset();
               if (fechaInput) fechaInput.value = payload.fecha;
@@ -506,7 +556,6 @@
         });
       }
 
-      // 5. Textos Legales (Aviso Legal, Política de Privacidad y Cookies)
       const legalModal = document.getElementById('legal-modal');
       const legalTitle = document.getElementById('legal-modal-title');
       const legalBody = document.getElementById('legal-modal-body');
@@ -515,15 +564,15 @@
       const textosLegales = {
         aviso: {
           titulo: 'Aviso Legal (LSSI-CE)',
-          cuerpo: '<p>En cumplimiento de la Ley 34/2002 de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa que este sitio web es titularidad de <strong>Restaurante La Montaña</strong>, ubicado en C. del Rey Francisco, 28, 28008 Madrid.</p>'
+          cuerpo: '<p>En cumplimiento de la Ley 34/2002 de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa que este sitio web es titularidad de <strong>Restaurante La Montaña</strong>, con domicilio en C. del Rey Francisco, 28, 28008 Madrid.</p>'
         },
         privacidad: {
           titulo: 'Política de Privacidad (RGPD)',
-          cuerpo: '<p>De conformidad con el Reglamento General de Protección de Datos (RGPD), los datos personales facilitados en el formulario de reservas se emplean exclusivamente para gestionar su mesa en sala y no se ceden a terceros.</p>'
+          cuerpo: '<p>De conformidad con el Reglamento General de Protección de Datos (RGPD), los datos personales facilitados en el formulario de reservas se emplean exclusivamente para gestionar su reserva de mesa y no se ceden a terceros.</p>'
         },
         cookies: {
           titulo: 'Política de Cookies',
-          cuerpo: '<p>Este portal utiliza únicamente cookies técnicas indispensables para el funcionamiento del sistema de reservas, sin emplear cookies publicitarias ni de seguimiento de terceros.</p>'
+          cuerpo: '<p>Este sitio web utiliza únicamente cookies técnicas de sesión necesarias para el funcionamiento del sistema de reservas y del área de administración.</p>'
         }
       };
 
