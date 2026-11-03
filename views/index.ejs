@@ -4,23 +4,30 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title><%= titulo %></title>
-  <meta name="description" content="La Montaña — cocina de altura. Reserva tu experiencia." />
+  <meta name="description" content="LA MONTAÑA — cocina de altura. Reserva tu experiencia." />
+
+  <!-- Tipografías: Cormorant Garamond (serif) + Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            slate: { DEFAULT: '#050506', 900: '#0a0a0c', 800: '#101014' },
-            bone: '#f4efe6',
-            mute: '#8a867d',
-            gold: '#c8b28a'
+            slate:  '#050506',
+            slate2: '#0a0a0c',
+            ivory:  '#f4efe6',
+            mute:   '#8a867d',
+            gold:   '#d4af37'
           },
           fontFamily: {
-            serif: ['"Cormorant Garamond"', 'Georgia', 'serif']
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans:  ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif']
           },
           letterSpacing: { widest2: '0.35em' }
         }
@@ -28,9 +35,8 @@
     };
   </script>
   <style>
-    ::selection { background: #c8b28a; color: #050506; }
+    ::selection { background: #d4af37; color: #050506; }
     html { background-color: #050506; }
-    body { font-feature-settings: "liga" 1; }
     .hairline { border-color: rgba(244,239,230,.12); }
     .hero-fade {
       background: linear-gradient(180deg, rgba(5,5,6,.0) 0%, rgba(5,5,6,.85) 78%, #050506 100%);
@@ -39,121 +45,178 @@
     .dish-line { transition: width .5s cubic-bezier(.22,1,.36,1); }
   </style>
 </head>
-<body class="bg-slate text-bone font-serif antialiased">
 
+<body class="bg-slate text-ivory font-sans antialiased">
+
+  <!-- ======= Cabecera fija minimalista ======= -->
   <header class="fixed top-0 inset-x-0 z-50">
     <div class="mx-auto max-w-6xl px-6 mt-5">
       <div class="flex items-center justify-between rounded-full border hairline bg-slate/70 backdrop-blur-md px-6 py-3">
-        <a href="#" class="text-2xl font-medium tracking-widest2 uppercase">La Montaña</a>
-        <nav class="hidden md:flex items-center gap-8 text-[13px] uppercase tracking-widest2 text-mute">
-          <a href="#carta" class="hover:text-bone transition-colors">Carta</a>
-          <a href="#reservas" class="hover:text-bone transition-colors">Reservas</a>
-          <a href="#contacto" class="hover:text-bone transition-colors">Contacto</a>
+        <a href="#" class="font-serif text-xl font-medium tracking-widest2 uppercase">LA MONTAÑA</a>
+        <nav class="hidden md:flex items-center gap-10 text-[12px] font-light uppercase tracking-widest2 text-mute">
+          <a href="#carta" class="hover:text-ivory transition-colors duration-300">CARTA</a>
+          <a href="#reservas" class="hover:text-ivory transition-colors duration-300">RESERVAS</a>
+          <a href="#contacto" class="hover:text-ivory transition-colors duration-300">CONTACTO</a>
         </nav>
         <a href="#reservas"
-           class="hidden md:inline-block rounded-full border border-gold/50 px-5 py-2 text-[12px] uppercase tracking-widest2 text-gold hover:bg-gold hover:text-slate transition-colors duration-300">
+           class="hidden md:inline-block rounded-full border border-gold/50 px-5 py-2 text-[11px] uppercase tracking-widest2 text-gold hover:bg-gold hover:text-slate transition-colors duration-300">
           Reservar
         </a>
       </div>
     </div>
   </header>
 
+  <!-- ======= Hero ======= -->
   <section class="relative h-screen flex items-end overflow-hidden">
     <div class="absolute inset-0 bg-[url('/img/hero.jpg')] bg-cover bg-center"></div>
     <div class="absolute inset-0 hero-fade"></div>
-    <div class="relative z-10 mx-auto max-w-6xl w-full px-6 pb-24">
-      <p class="text-[12px] uppercase tracking-widest2 text-gold mb-6">Cocina de altura · Siempre</p>
-      <h1 class="font-light leading-[0.95] text-6xl md:text-8xl">
-        La mesa se encuentra<br /><em class="font-normal">donde la montaña susurra.</em>
+    <div class="relative z-10 mx-auto max-w-6xl w-full px-6 pb-28">
+      <p class="text-[12px] font-light uppercase tracking-widest2 text-gold mb-6">Cocina de altura</p>
+      <h1 class="font-serif font-light leading-[1.02] text-6xl md:text-8xl">
+        La mesa se encuentra<br />
+        <em class="font-normal">donde la montaña susurra.</em>
       </h1>
       <div class="mt-10 flex flex-wrap gap-4">
-        <a href="#reservas" class="rounded-full bg-bone text-slate px-8 py-3 text-[13px] uppercase tracking-widest2 hover:bg-gold transition-colors duration-300">Reservar mesa</a>
-        <a href="#carta" class="rounded-full border hairline px-8 py-3 text-[13px] uppercase tracking-widest2 text-bone hover:border-gold hover:text-gold transition-colors duration-300">Ver carta</a>
+        <a href="#reservas"
+           class="rounded-full bg-ivory text-slate px-8 py-3 text-[12px] uppercase tracking-widest2 hover:bg-gold transition-colors duration-300">
+          Reservar mesa
+        </a>
+        <a href="#carta"
+           class="rounded-full border hairline px-8 py-3 text-[12px] uppercase tracking-widest2 text-ivory hover:border-gold hover:text-gold transition-colors duration-300">
+          Ver carta
+        </a>
       </div>
     </div>
   </section>
 
+  <!-- ======= Manifiesto ======= -->
   <section class="mx-auto max-w-3xl px-6 py-28 text-center">
-    <p class="text-2xl md:text-3xl font-light leading-relaxed text-bone/90">
+    <p class="font-serif text-2xl md:text-3xl font-light leading-relaxed text-ivory/90">
       «Menos ruido, más materia. Cocinamos el silencio de la montaña:
       producto honesto, fuego paciente y una sobriedad que no necesita gritar.»
     </p>
     <p class="mt-8 text-[12px] uppercase tracking-widest2 text-mute">— Martín Cuesta, chef</p>
   </section>
 
+  <!-- ======= Carta dinámica (datos desde Express) ======= -->
   <section id="carta" class="border-t hairline">
     <div class="mx-auto max-w-6xl px-6 py-24">
+
       <div class="flex items-end justify-between mb-16">
-        <h2 class="text-4xl md:text-5xl font-light">La carta</h2>
-        <span class="text-[11px] uppercase tracking-widest2 text-mute">Temporada · Otoño 2026</span>
+        <h2 class="font-serif text-4xl md:text-5xl font-light">La carta</h2>
+        <span class="text-[11px] font-light uppercase tracking-widest2 text-mute">Temporada · Otoño 2026</span>
       </div>
 
-      <div class="grid md:grid-cols-2 gap-x-16 gap-y-12">
-        <% platosDestacados.forEach(plato => { %>
-          <article class="dish group cursor-default">
-            <div class="flex items-baseline gap-4">
-              <span class="dish-line inline-block h-px w-6 bg-gold"></span>
-              <h3 class="text-2xl font-normal flex-1"><%= plato.nombre %></h3>
-              <span class="text-xl text-gold"><%= plato.precio %> €</span>
-            </div>
-            <p class="mt-2 pl-10 text-mute font-light"><%= plato.desc %></p>
-          </article>
-        <% }) %>
+      <div class="space-y-20">
+
+        <!-- Entrantes -->
+        <div>
+          <h3 class="text-[12px] font-light uppercase tracking-widest2 text-gold mb-8">Entrantes</h3>
+          <div class="grid md:grid-cols-2 gap-x-16 gap-y-10">
+            <% carta.entrantes.forEach(plato => { %>
+              <article class="dish group cursor-default">
+                <div class="flex items-baseline gap-4">
+                  <span class="dish-line inline-block h-px w-6 bg-gold"></span>
+                  <h4 class="font-serif text-2xl font-normal flex-1"><%= plato.nombre %></h4>
+                  <span class="font-serif text-xl text-gold whitespace-nowrap"><%= plato.precio %> €</span>
+                </div>
+                <p class="mt-2 pl-10 text-sm font-light text-mute"><%= plato.desc %></p>
+              </article>
+            <% }) %>
+          </div>
+        </div>
+
+        <!-- Segundos -->
+        <div>
+          <h3 class="text-[12px] font-light uppercase tracking-widest2 text-gold mb-8">Segundos</h3>
+          <div class="grid md:grid-cols-2 gap-x-16 gap-y-10">
+            <% carta.segundos.forEach(plato => { %>
+              <article class="dish group cursor-default">
+                <div class="flex items-baseline gap-4">
+                  <span class="dish-line inline-block h-px w-6 bg-gold"></span>
+                  <h4 class="font-serif text-2xl font-normal flex-1"><%= plato.nombre %></h4>
+                  <span class="font-serif text-xl text-gold whitespace-nowrap"><%= plato.precio %> €</span>
+                </div>
+                <p class="mt-2 pl-10 text-sm font-light text-mute"><%= plato.desc %></p>
+              </article>
+            <% }) %>
+          </div>
+        </div>
+
+        <!-- Postres -->
+        <div>
+          <h3 class="text-[12px] font-light uppercase tracking-widest2 text-gold mb-8">Postres</h3>
+          <div class="grid md:grid-cols-2 gap-x-16 gap-y-10">
+            <% carta.postres.forEach(plato => { %>
+              <article class="dish group cursor-default">
+                <div class="flex items-baseline gap-4">
+                  <span class="dish-line inline-block h-px w-6 bg-gold"></span>
+                  <h4 class="font-serif text-2xl font-normal flex-1"><%= plato.nombre %></h4>
+                  <span class="font-serif text-xl text-gold whitespace-nowrap"><%= plato.precio %> €</span>
+                </div>
+                <p class="mt-2 pl-10 text-sm font-light text-mute"><%= plato.desc %></p>
+              </article>
+            <% }) %>
+          </div>
+        </div>
+
       </div>
 
-      <p class="mt-20 text-center text-[12px] uppercase tracking-widest2 text-mute">
+      <p class="mt-20 text-center text-[12px] font-light uppercase tracking-widest2 text-mute">
         Menú degustación · 7 tiempos · 145 € — maridaje + 85 €
       </p>
     </div>
   </section>
 
-  <section id="reservas" class="border-t hairline bg-slate-900">
+  <!-- ======= Reservas online (POST /api/reservar) ======= -->
+  <section id="reservas" class="border-t hairline bg-slate2">
     <div class="mx-auto max-w-6xl px-6 py-24 grid md:grid-cols-2 gap-16">
+
       <div>
-        <p class="text-[12px] uppercase tracking-widest2 text-gold mb-6">Reservas</p>
-        <h2 class="text-4xl md:text-5xl font-light leading-tight">Su mesa le está esperando.</h2>
-        <p class="mt-6 text-mute font-light leading-relaxed max-w-md">
+        <p class="text-[12px] font-light uppercase tracking-widest2 text-gold mb-6">Reservas</p>
+        <h2 class="font-serif text-4xl md:text-5xl font-light leading-tight">Su mesa le está esperando.</h2>
+        <p class="mt-6 text-sm font-light leading-relaxed text-mute max-w-md">
           Aceptamos reservas para comidas y cenas. Para grupos de más de ocho personas o
           peticiones especiales, escríbanos directamente.
         </p>
-        <div class="mt-12 space-y-4 text-sm">
-          <p class="text-mute"><span class="text-bone">Dirección</span> · Calle Altos de Soria 14, 28001</p>
-          <p class="text-mute"><span class="text-bone">Teléfono</span> · +34 910 555 214</p>
-          <p class="text-mute"><span class="text-bone">Horario</span> · Mar–Dom, 13:30–15:30 / 20:00–23:00</p>
+        <div class="mt-12 space-y-4 text-sm font-light">
+          <p class="text-mute"><span class="text-ivory">Dirección</span> · Calle Altos de Soria 14, 28001</p>
+          <p class="text-mute"><span class="text-ivory">Teléfono</span> · +34 910 555 214</p>
+          <p class="text-mute"><span class="text-ivory">Horario</span> · Mar–Dom, 13:30–15:30 / 20:00–23:00</p>
         </div>
       </div>
 
-      <form hx-post="/reservas" hx-target="#reserva-resultado" hx-swap="innerHTML"
-            class="space-y-8 border hairline rounded-2xl p-8 bg-slate/60 backdrop-blur">
+      <form hx-post="/api/reservar" hx-target="#reserva-resultado" hx-swap="innerHTML"
+            class="space-y-8 border hairline rounded-2xl p-8 bg-slate/60 backdrop-blur self-start">
         <div class="grid grid-cols-2 gap-6">
           <label class="block">
-            <span class="text-[11px] uppercase tracking-widest2 text-mute">Nombre</span>
+            <span class="text-[11px] font-light uppercase tracking-widest2 text-mute">Nombre</span>
             <input type="text" name="nombre" required placeholder="Nombre y apellido"
-                   class="mt-2 w-full bg-transparent border-b hairline focus:border-gold outline-none py-2 font-light placeholder:text-mute/50" />
+                   class="mt-2 w-full bg-transparent border-b hairline focus:border-gold outline-none py-2 font-light placeholder:text-mute/50 transition-colors" />
           </label>
           <label class="block">
-            <span class="text-[11px] uppercase tracking-widest2 text-mute">Email</span>
+            <span class="text-[11px] font-light uppercase tracking-widest2 text-mute">Email</span>
             <input type="email" name="email" required placeholder="tu@email.com"
-                   class="mt-2 w-full bg-transparent border-b hairline focus:border-gold outline-none py-2 font-light placeholder:text-mute/50" />
+                   class="mt-2 w-full bg-transparent border-b hairline focus:border-gold outline-none py-2 font-light placeholder:text-mute/50 transition-colors" />
           </label>
           <label class="block">
-            <span class="text-[11px] uppercase tracking-widest2 text-mute">Fecha</span>
+            <span class="text-[11px] font-light uppercase tracking-widest2 text-mute">Fecha</span>
             <input type="date" name="fecha" required
                    class="mt-2 w-full bg-transparent border-b hairline focus:border-gold outline-none py-2 font-light [color-scheme:dark]" />
           </label>
           <label class="block">
-            <span class="text-[11px] uppercase tracking-widest2 text-mute">Hora</span>
+            <span class="text-[11px] font-light uppercase tracking-widest2 text-mute">Hora</span>
             <input type="time" name="hora" required
                    class="mt-2 w-full bg-transparent border-b hairline focus:border-gold outline-none py-2 font-light [color-scheme:dark]" />
           </label>
           <label class="block col-span-2">
-            <span class="text-[11px] uppercase tracking-widest2 text-mute">Comensales</span>
+            <span class="text-[11px] font-light uppercase tracking-widest2 text-mute">Comensales</span>
             <input type="number" name="comensales" min="1" max="12" required placeholder="2"
-                   class="mt-2 w-full bg-transparent border-b hairline focus:border-gold outline-none py-2 font-light placeholder:text-mute/50" />
+                   class="mt-2 w-full bg-transparent border-b hairline focus:border-gold outline-none py-2 font-light placeholder:text-mute/50 transition-colors" />
           </label>
         </div>
         <button type="submit"
-                class="w-full rounded-full bg-bone text-slate py-3 text-[13px] uppercase tracking-widest2 hover:bg-gold transition-colors duration-300">
+                class="w-full rounded-full bg-ivory text-slate py-3 text-[12px] uppercase tracking-widest2 hover:bg-gold transition-colors duration-300">
           Confirmar reserva
         </button>
         <div id="reserva-resultado"></div>
@@ -161,13 +224,15 @@
     </div>
   </section>
 
+  <!-- ======= Footer ======= -->
   <footer id="contacto" class="border-t hairline">
     <div class="mx-auto max-w-6xl px-6 py-14 flex flex-col md:flex-row items-center justify-between gap-6">
-      <span class="text-xl tracking-widest2 uppercase">La Montaña</span>
-      <p class="text-[11px] uppercase tracking-widest2 text-mute">© 2026 La Montaña — Todos los derechos reservados</p>
+      <span class="font-serif text-xl tracking-widest2 uppercase">LA MONTAÑA</span>
+      <p class="text-[11px] font-light uppercase tracking-widest2 text-mute">© 2026 La Montaña — Todos los derechos reservados</p>
     </div>
   </footer>
 
+  <!-- HTMX: envío del formulario sin recargar la página -->
   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 </body>
 </html>

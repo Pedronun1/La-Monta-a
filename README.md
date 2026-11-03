@@ -1,14 +1,13 @@
-# La Montaña — Web
+# LA MONTAÑA — restaurante
 
 ## Local
 npm install
 npm run dev
 
-## Producción (Render)
+## Producción
 npm install && node server.js
 
 ## Estructura
-server.js      → punto de entrada
-views/         → plantillas EJS
-public/        → estáticos (imágenes, css)
-render.yaml    → config de Render
+server.js    → punto de entrada (Express + EJS, rutas con __dirname)
+views/       → plantillas EJS
+public/      → estáticos (img/hero.jpg, css)

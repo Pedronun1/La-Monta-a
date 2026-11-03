@@ -1,8 +1,8 @@
 {
-  "name": "la-montana",
+  "name": "restaurante",
   "version": "1.0.0",
   "private": true,
-  "description": "Web del restaurante La Montaña",
+  "description": "Web del restaurante LA MONTAÑA",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
