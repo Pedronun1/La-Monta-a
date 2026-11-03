@@ -1,49 +1,124 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth bg-[#050506]">
+<html lang="es" class="bg-[#050506]">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>La Montaña · Restaurante en Madrid desde 1943</title>
-  <meta name="description" content="Restaurante La Montaña, C. del Rey Francisco, 28, 28008 Madrid. Cocina tradicional castiza desde 1943. Consulte la carta y reserve su mesa." />
-  <meta name="robots" content="index, follow" />
-  <meta property="og:title" content="La Montaña · Madrid, 1943" />
-  <meta property="og:description" content="Cocina tradicional castiza en C. del Rey Francisco, 28. Carta oficial y reservas online." />
-  <meta property="og:type" content="website" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
   <meta name="theme-color" content="#050506" />
+  <title>La Montaña · Restaurante en Madrid desde <%= restaurant.foundedYear %></title>
+  <meta name="description" content="Restaurante La Montaña, <%= restaurant.address.street %>, <%= restaurant.address.postalCode %> Madrid. Cocina tradicional castiza desde <%= restaurant.foundedYear %>. Carta oficial y reservas online." />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="La Montaña · Madrid, <%= restaurant.foundedYear %>" />
+  <meta property="og:description" content="Cocina tradicional castiza en <%= restaurant.address.street %>. Carta oficial y reservas online." />
+  <meta property="og:type" content="website" />
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=2200&q=80" />
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
-          colors: {
-            slate: { deep: '#050506' },
-            ivory: '#f4f4f5',
-            champagne: '#d4af37'
-          },
           fontFamily: {
             serif: ["'Cormorant Garamond'", 'Georgia', 'serif'],
             sans: ["'Montserrat'", 'system-ui', 'sans-serif']
           }
         }
-      }
+      },
+      // Clases que se añaden dinámicamente desde JavaScript
+      safelist: [
+        'opacity-0', 'opacity-100', 'translate-y-8', 'translate-y-0',
+        'scale-100', 'scale-110', 'h-20', 'h-24',
+        'border-white/10', 'border-transparent', 'pointer-events-none', 'pointer-events-auto'
+      ]
     };
   </script>
 
-  <!-- Utilidades compartidas (drawer móvil, revelado al scroll, accesibilidad) -->
-  <link rel="stylesheet" href="/css/luxury.css" />
-
-  <!-- Estilos propios de esta vista: formularios minimalistas y ajustes de color -->
   <style>
-    html, body { background-color: #050506; color: #f4f4f5; }
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 6rem;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+    body { background-color: #050506; color: #f4f4f5; }
+    ::selection { background: rgba(212, 175, 55, 0.25); color: #f4f4f5; }
+    :focus-visible { outline: 1px solid #d4af37; outline-offset: 3px; }
 
-    .lm-field {
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #050506; }
+    ::-webkit-scrollbar-thumb { background: rgba(212, 175, 55, 0.22); }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(212, 175, 55, 0.5); }
+
+    /* Enlaces de navegación con subrayado animado y estado activo por sección */
+    .nav-link {
+      position: relative;
+      font-size: 0.66rem;
+      letter-spacing: 0.34em;
+      color: rgba(244, 244, 245, 0.6);
+      transition: color 0.6s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0.34em;
+      bottom: -8px;
+      height: 1px;
+      background: #d4af37;
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .nav-link:hover,
+    .nav-link[aria-current="true"] { color: #f4f4f5; }
+    .nav-link:hover::after,
+    .nav-link[aria-current="true"]::after { transform: scaleX(1); }
+
+    /* Botón de menú móvil: dos líneas que se convierten en aspa */
+    .menu-toggle .bar {
+      display: block;
+      width: 22px;
+      height: 1px;
+      background: currentColor;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .menu-toggle .bar + .bar { margin-top: 6px; }
+    .menu-toggle[aria-expanded="true"] .bar-top { transform: translateY(3.5px) rotate(45deg); }
+    .menu-toggle[aria-expanded="true"] .bar-bottom { transform: translateY(-3.5px) rotate(-45deg); }
+
+    /* Pestañas de la carta */
+    .menu-tab {
+      position: relative;
+      padding: 0.9rem 0.25rem;
+      font-size: 0.66rem;
+      letter-spacing: 0.34em;
+      color: rgba(244, 244, 245, 0.45);
+      transition: color 0.5s ease;
+      white-space: nowrap;
+    }
+    .menu-tab::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0.34em;
+      bottom: -1px;
+      height: 1px;
+      background: #d4af37;
+      transform: scaleX(0);
+      transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .menu-tab:hover { color: rgba(244, 244, 245, 0.8); }
+    .menu-tab[aria-selected="true"] { color: #f4f4f5; }
+    .menu-tab[aria-selected="true"]::after { transform: scaleX(1); }
+
+    /* Campos de formulario sobrios (línea inferior) */
+    .field {
       width: 100%;
       height: 3rem;
       background: transparent;
@@ -57,288 +132,294 @@
       letter-spacing: 0.02em;
       padding: 0 0.1rem;
       outline: none;
+      color-scheme: dark;
+      transition: border-color 0.5s ease;
+    }
+    @media (min-width: 640px) { .field { font-size: 0.9rem; } }
+    .field:focus { border-bottom-color: #d4af37; }
+    .field::placeholder { color: rgba(244, 244, 245, 0.28); }
+    textarea.field { height: auto; min-height: 6.5rem; padding: 0.8rem 0.1rem; resize: vertical; line-height: 1.7; }
+    select.field {
       -webkit-appearance: none;
       appearance: none;
-      transition: border-color 0.4s ease;
-    }
-    @media (min-width: 640px) { .lm-field { font-size: 0.9rem; } }
-    .lm-field:focus { border-bottom-color: #d4af37; }
-    .lm-field::placeholder { color: rgba(244, 244, 245, 0.28); }
-    textarea.lm-field { height: auto; min-height: 6rem; padding: 0.75rem 0.1rem; resize: vertical; }
-    select.lm-field {
       padding-right: 1.75rem;
+      cursor: pointer;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='none' viewBox='0 0 24 24' stroke='%23d4af37' stroke-width='1.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 0.2rem center;
     }
-    select.lm-field option,
-    select.lm-field optgroup { background-color: #050506; color: #f4f4f5; }
-
-    .lm-field-label {
+    select.field option,
+    select.field optgroup { background-color: #0c0c0e; color: #f4f4f5; }
+    input[type="date"].field::-webkit-calendar-picker-indicator {
+      filter: invert(0.75) sepia(0.6) saturate(3) hue-rotate(5deg);
+      opacity: 0.75;
+      cursor: pointer;
+    }
+    .field-label {
       display: block;
-      font-size: 0.62rem;
-      font-weight: 400;
-      letter-spacing: 0.28em;
+      font-size: 0.6rem;
+      letter-spacing: 0.32em;
       text-transform: uppercase;
       color: rgba(244, 244, 245, 0.5);
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.2rem;
     }
 
-    .lm-spinner-light {
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
       width: 14px;
       height: 14px;
       border: 1px solid rgba(212, 175, 55, 0.25);
       border-top-color: #d4af37;
       border-radius: 50%;
       display: inline-block;
-      animation: lmSpin 0.8s linear infinite;
+      animation: spin 0.8s linear infinite;
     }
 
-    .lm-nav-minimal {
-      position: relative;
-      font-size: 0.68rem;
-      font-weight: 400;
-      letter-spacing: 0.32em;
-      color: rgba(244, 244, 245, 0.72);
-      transition: color 0.4s ease;
+    /* Indicador de scroll del hero */
+    @keyframes scrollCue {
+      0%   { transform: scaleY(0); transform-origin: top; }
+      45%  { transform: scaleY(1); transform-origin: top; }
+      55%  { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
     }
-    .lm-nav-minimal::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 0.32em;
-      bottom: -6px;
-      height: 1px;
-      background: #d4af37;
-      transform: scaleX(0);
-      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    .scroll-cue { animation: scrollCue 2.8s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      [data-reveal] { opacity: 1 !important; transform: none !important; }
     }
-    .lm-nav-minimal:hover { color: #f4f4f5; }
-    .lm-nav-minimal:hover::after { transform: scaleX(1); }
   </style>
 </head>
-<body class="bg-[#050506] text-[#f4f4f5] font-sans font-light antialiased selection:bg-[#d4af37]/30 selection:text-[#f4f4f5]">
+<body class="bg-[#050506] text-[#f4f4f5] font-sans font-light antialiased overflow-x-hidden">
 
-  <!-- =====================================================================
-       CABECERA ULTRA MINIMALISTA
-  ====================================================================== -->
-  <header class="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-[#050506]/90 border-b border-white/10">
-    <div class="max-w-7xl mx-auto h-20 px-5 sm:px-8 lg:px-12 flex md:grid md:grid-cols-[1fr_auto_1fr] items-center justify-between gap-4">
+  <!-- ========================================================================
+       CABECERA FLOTANTE
+  ========================================================================= -->
+  <header id="site-header" class="fixed top-0 inset-x-0 z-50 backdrop-blur-xl bg-[#050506]/80 border-b border-transparent transition-colors duration-700">
+    <div id="site-header-inner" class="max-w-7xl mx-auto h-24 px-5 sm:px-8 lg:px-12 flex md:grid md:grid-cols-[1fr_auto_1fr] items-center justify-between gap-6 transition-all duration-700 ease-out">
 
-      <!-- Izquierda: monograma + nombre -->
-      <a href="#inicio" class="flex items-center gap-4 min-w-0" aria-label="La Montaña, inicio">
-        <span class="font-serif text-sm tracking-[0.18em] text-[#d4af37] border border-[#d4af37]/40 w-10 h-10 inline-flex items-center justify-center shrink-0">
+      <a href="#inicio" class="group flex items-center gap-4 min-w-0" aria-label="La Montaña, volver al inicio">
+        <span class="w-10 h-10 shrink-0 inline-flex items-center justify-center border border-[#d4af37]/40 font-serif text-[13px] tracking-[0.16em] text-[#d4af37] transition-colors duration-700 group-hover:border-[#d4af37]">
           <%= restaurant.monogram %>
         </span>
-        <span class="font-serif text-lg sm:text-xl tracking-[0.34em] text-[#f4f4f5] truncate">
-          LA MONTAÑA
-        </span>
+        <span class="font-serif text-lg sm:text-xl tracking-[0.36em] text-[#f4f4f5] truncate">LA MONTAÑA</span>
       </a>
 
-      <!-- Centro: tres enlaces esenciales -->
-      <nav class="hidden md:flex items-center justify-center gap-12" aria-label="Navegación principal">
-        <a href="#carta" class="lm-nav-minimal">CARTA</a>
-        <a href="#la-casa" class="lm-nav-minimal">LA CASA</a>
-        <a href="#reservas" class="lm-nav-minimal">RESERVAS</a>
+      <nav class="hidden md:flex items-center justify-center gap-14" aria-label="Navegación principal">
+        <a href="#carta" class="nav-link" data-nav="carta">CARTA</a>
+        <a href="#la-casa" class="nav-link" data-nav="la-casa">LA CASA</a>
+        <a href="#reservas" class="nav-link" data-nav="reservas">RESERVAS</a>
       </nav>
 
-      <!-- Derecha: único botón de reserva -->
-      <div class="flex items-center justify-end gap-3">
+      <div class="flex items-center justify-end gap-2">
         <a
           href="#reservas"
-          class="hidden sm:inline-flex items-center justify-center h-11 px-6 border border-[#d4af37]/60 text-[#d4af37] text-[10px] tracking-[0.3em] hover:border-[#d4af37] hover:bg-[#d4af37]/10 transition-colors duration-500"
+          class="hidden sm:inline-flex items-center justify-center h-11 px-7 border border-[#d4af37]/50 text-[10px] tracking-[0.32em] text-[#d4af37] transition-all duration-700 ease-out hover:border-[#d4af37] hover:bg-[#d4af37]/[0.08]"
         >
           RESERVAR
         </a>
-
         <button
-          id="mobile-menu-btn"
+          id="menu-toggle"
           type="button"
-          class="md:hidden inline-flex items-center justify-center w-11 h-11 text-[#f4f4f5]"
+          class="menu-toggle md:hidden inline-flex flex-col items-center justify-center w-11 h-11 text-[#f4f4f5]"
           aria-label="Abrir menú"
           aria-expanded="false"
-          aria-controls="mobile-menu-drawer"
+          aria-controls="mobile-menu"
         >
-          <svg id="hamburger-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-width="1" d="M4 9h16M4 15h16" />
-          </svg>
-          <svg id="hamburger-icon-close" class="hidden w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-width="1" d="M6 6l12 12M6 18L18 6" />
-          </svg>
+          <span class="bar bar-top"></span>
+          <span class="bar bar-bottom"></span>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Menú móvil (drawer) -->
-  <div id="mobile-drawer-backdrop" class="lm-mobile-drawer-backdrop md:hidden" aria-hidden="true"></div>
-  <aside
-    id="mobile-menu-drawer"
-    class="lm-mobile-drawer md:hidden"
-    style="background-color:#050506;border-left-color:rgba(255,255,255,0.1);"
-    aria-label="Menú móvil"
+  <!-- Menú móvil a pantalla completa -->
+  <div
+    id="mobile-menu"
+    class="md:hidden fixed inset-0 z-40 bg-[#050506]/95 backdrop-blur-xl opacity-0 pointer-events-none transition-opacity duration-700 ease-out"
     aria-hidden="true"
   >
-    <div>
-      <div class="h-20 px-6 flex items-center justify-between border-b border-white/10">
-        <span class="font-serif text-lg tracking-[0.34em]">LA MONTAÑA</span>
-        <button id="mobile-drawer-close-btn" type="button" class="w-11 h-11 inline-flex items-center justify-center" aria-label="Cerrar menú">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-width="1" d="M6 6l12 12M6 18L18 6" />
-          </svg>
-        </button>
-      </div>
-      <nav class="px-6 pt-10 flex flex-col gap-8" aria-label="Navegación móvil">
-        <a href="#carta" class="mobile-nav-link font-serif text-3xl text-[#f4f4f5]">Carta</a>
-        <a href="#la-casa" class="mobile-nav-link font-serif text-3xl text-[#f4f4f5]">La Casa</a>
-        <a href="#reservas" class="mobile-nav-link font-serif text-3xl text-[#f4f4f5]">Reservas</a>
-      </nav>
-    </div>
-    <div class="px-6">
+    <nav class="h-full flex flex-col items-center justify-center gap-10 px-8" aria-label="Navegación móvil">
+      <a href="#carta" class="mobile-link font-serif font-light text-5xl text-[#f4f4f5] transition-all duration-700 ease-out">Carta</a>
+      <a href="#la-casa" class="mobile-link font-serif font-light text-5xl text-[#f4f4f5] transition-all duration-700 ease-out">La Casa</a>
+      <a href="#reservas" class="mobile-link font-serif font-light text-5xl text-[#f4f4f5] transition-all duration-700 ease-out">Reservas</a>
       <a
         href="#reservas"
-        class="mobile-nav-link flex items-center justify-center h-12 w-full border border-[#d4af37]/60 text-[#d4af37] text-[10px] tracking-[0.3em]"
+        class="mobile-link mt-6 inline-flex items-center justify-center h-12 px-10 border border-[#d4af37]/50 text-[10px] tracking-[0.32em] text-[#d4af37] transition-all duration-700 ease-out"
       >
         RESERVAR MESA
       </a>
-    </div>
-  </aside>
+    </nav>
+  </div>
 
   <main>
-    <!-- =====================================================================
+    <!-- ======================================================================
          HERO
-    ====================================================================== -->
-    <section id="inicio" class="relative min-h-[100dvh] flex items-center justify-center overflow-hidden">
-      <div id="hero-camera-layer" class="absolute inset-0 will-change-transform">
-        <img
-          src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=2200&q=80"
-          alt="Comedor de La Montaña"
-          class="w-full h-full object-cover opacity-35 grayscale-[30%]"
-        />
-      </div>
-      <div class="absolute inset-0 bg-gradient-to-b from-[#050506]/80 via-[#050506]/55 to-[#050506]"></div>
+    ======================================================================= -->
+    <section id="inicio" class="relative min-h-[100svh] flex items-center justify-center overflow-hidden bg-[#050506]">
+      <img
+        id="hero-image"
+        src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=2200&q=80"
+        alt=""
+        aria-hidden="true"
+        fetchpriority="high"
+        class="absolute inset-0 w-full h-full object-cover opacity-30 scale-110 transition-transform duration-[3200ms] ease-out"
+      />
+      <div class="absolute inset-0 bg-gradient-to-b from-[#050506]/85 via-[#050506]/50 to-[#050506]"></div>
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#050506_85%)]"></div>
 
-      <div class="relative z-10 max-w-5xl mx-auto px-6 pt-32 pb-24 text-center">
-        <p class="text-[10px] sm:text-[11px] tracking-[0.5em] text-[#d4af37]/90 mb-10">
+      <div class="relative z-10 w-full max-w-6xl mx-auto px-6 pt-32 pb-28 text-center">
+        <p data-reveal data-reveal-delay="100" class="text-[10px] sm:text-[11px] tracking-[0.55em] text-[#d4af37]/90 transition-all duration-1000 ease-out">
           MADRID · DESDE <%= restaurant.foundedYear %>
         </p>
 
-        <h1 class="font-serif font-light text-[clamp(3.75rem,13vw,10rem)] leading-[0.92] tracking-[0.02em] text-[#f4f4f5]">
+        <h1 data-reveal data-reveal-delay="250" class="mt-10 font-serif font-light text-[clamp(4rem,14vw,11rem)] leading-[0.9] tracking-[0.01em] text-[#f4f4f5] transition-all duration-1000 ease-out">
           La Montaña
         </h1>
 
-        <p class="mt-10 font-serif italic font-light text-xl sm:text-2xl text-[#f4f4f5]/70 max-w-2xl mx-auto leading-relaxed">
+        <div data-reveal data-reveal-delay="450" class="mx-auto mt-10 w-12 h-px bg-[#d4af37]/60 transition-all duration-1000 ease-out"></div>
+
+        <p data-reveal data-reveal-delay="550" class="mt-10 font-serif italic font-light text-xl sm:text-2xl md:text-[1.7rem] leading-relaxed text-[#f4f4f5]/75 max-w-2xl mx-auto transition-all duration-1000 ease-out">
           Cocina tradicional castiza, servida con la calma de siempre.
         </p>
 
-        <div class="mt-14 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 sm:gap-6 max-w-sm sm:max-w-none mx-auto">
+        <p data-reveal data-reveal-delay="650" class="mt-5 text-[10px] sm:text-[11px] tracking-[0.34em] text-[#f4f4f5]/45 transition-all duration-1000 ease-out">
+          <%= restaurant.address.street.toUpperCase() %> · <%= restaurant.address.city.toUpperCase() %>
+        </p>
+
+        <div data-reveal data-reveal-delay="800" class="mt-14 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 sm:gap-6 max-w-xs sm:max-w-none mx-auto transition-all duration-1000 ease-out">
           <a
             href="#carta"
-            class="inline-flex items-center justify-center h-12 px-10 border border-[#d4af37]/60 text-[#d4af37] text-[10px] tracking-[0.34em] hover:border-[#d4af37] hover:bg-[#d4af37]/10 transition-colors duration-500"
+            class="inline-flex items-center justify-center h-12 px-11 border border-[#d4af37]/55 text-[10px] tracking-[0.36em] text-[#d4af37] transition-all duration-700 ease-out hover:border-[#d4af37] hover:bg-[#d4af37]/[0.08]"
           >
-            VER LA CARTA
+            DESCUBRIR LA CARTA
           </a>
           <a
             href="#reservas"
-            class="inline-flex items-center justify-center h-12 px-10 border border-white/15 text-[#f4f4f5]/85 text-[10px] tracking-[0.34em] hover:border-white/40 hover:text-[#f4f4f5] transition-colors duration-500"
+            class="inline-flex items-center justify-center h-12 px-11 border border-white/15 text-[10px] tracking-[0.36em] text-[#f4f4f5]/85 transition-all duration-700 ease-out hover:border-white/40 hover:text-[#f4f4f5]"
           >
             RESERVAR MESA
           </a>
         </div>
       </div>
 
-      <div class="absolute bottom-10 left-1/2 -translate-x-1/2 hidden sm:block" aria-hidden="true">
-        <div class="w-px h-16 bg-gradient-to-b from-transparent via-[#d4af37]/50 to-transparent"></div>
-      </div>
+      <a href="#carta" class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-3 text-[9px] tracking-[0.4em] text-[#f4f4f5]/35 hover:text-[#f4f4f5]/70 transition-colors duration-700" aria-label="Ir a la carta">
+        <span>SCROLL</span>
+        <span class="block w-px h-14 bg-[#d4af37]/60 scroll-cue"></span>
+      </a>
     </section>
 
-    <!-- =====================================================================
+    <!-- ======================================================================
          CARTA
-    ====================================================================== -->
-    <section id="carta" class="py-28 sm:py-40 border-t border-white/10">
-      <div class="max-w-5xl mx-auto px-6 sm:px-10">
+    ======================================================================= -->
+    <section id="carta" class="py-32 sm:py-44 border-t border-white/10">
+      <div class="max-w-6xl mx-auto px-6 sm:px-10">
 
-        <header class="text-center mb-20 sm:mb-24 lm-reveal">
-          <p class="text-[10px] tracking-[0.5em] text-[#d4af37]/90 mb-6">LA CARTA</p>
-          <h2 class="font-serif font-light text-5xl sm:text-7xl text-[#f4f4f5]">Cocina de siempre</h2>
-          <p class="mt-6 text-sm text-[#f4f4f5]/50 max-w-lg mx-auto leading-relaxed">
-            Cuchara a fuego lento, pescado de lonja y repostería casera.
+        <header class="text-center max-w-2xl mx-auto">
+          <p data-reveal class="text-[10px] tracking-[0.55em] text-[#d4af37]/90 transition-all duration-1000 ease-out">LA CARTA</p>
+          <h2 data-reveal data-reveal-delay="120" class="mt-8 font-serif font-light text-5xl sm:text-7xl lg:text-8xl leading-[0.95] text-[#f4f4f5] transition-all duration-1000 ease-out">
+            Cocina de siempre
+          </h2>
+          <p data-reveal data-reveal-delay="240" class="mt-8 text-sm leading-[1.9] text-[#f4f4f5]/55 transition-all duration-1000 ease-out">
+            Cuchara a fuego lento, pescado de lonja, carnes nobles y repostería casera elaborada cada día en nuestra cocina.
           </p>
         </header>
 
-        <!-- Filtro de categorías -->
-        <div id="menu-category-tabs" class="lm-touch-scroll no-scrollbar flex sm:justify-center gap-2 sm:gap-8 mb-20 border-b border-white/10 -mx-6 px-6 sm:mx-0 sm:px-0 lm-reveal">
-          <button type="button" data-category="all" class="lm-category-tab active shrink-0">TODO</button>
-          <% categories.forEach(function (cat) { %>
-            <button type="button" data-category="<%= cat.id %>" class="lm-category-tab shrink-0">
-              <%= cat.title.toUpperCase() %>
-            </button>
-          <% }); %>
+        <!-- Pestañas -->
+        <div data-reveal data-reveal-delay="320" class="mt-20 sm:mt-24 flex justify-center border-b border-white/10 transition-all duration-1000 ease-out">
+          <div class="flex gap-10 sm:gap-16 overflow-x-auto" role="tablist" aria-label="Categorías de la carta">
+            <% categories.forEach(function (cat, idx) { %>
+              <button
+                type="button"
+                role="tab"
+                id="tab-<%= cat.id %>"
+                class="menu-tab"
+                data-menu-tab="<%= cat.id %>"
+                aria-controls="panel-<%= cat.id %>"
+                aria-selected="<%= idx === 0 ? 'true' : 'false' %>"
+              >
+                <%= cat.title.toUpperCase() %>
+              </button>
+            <% }); %>
+          </div>
         </div>
 
-        <div id="formal-menu-container" class="space-y-28 sm:space-y-36">
-          <% categories.forEach(function (cat) { %>
-            <div class="menu-category-section" data-section-category="<%= cat.id %>">
-              <div class="text-center mb-14 sm:mb-16 lm-reveal">
-                <h3 class="font-serif font-light text-4xl sm:text-5xl text-[#f4f4f5]"><%= cat.title %></h3>
-                <div class="w-10 h-px bg-[#d4af37]/50 mx-auto mt-6"></div>
-              </div>
+        <!-- Paneles por categoría -->
+        <% categories.forEach(function (cat, idx) { %>
+          <div
+            id="panel-<%= cat.id %>"
+            role="tabpanel"
+            aria-labelledby="tab-<%= cat.id %>"
+            data-menu-panel="<%= cat.id %>"
+            class="<%= idx === 0 ? '' : 'hidden' %> pt-16 sm:pt-20 transition-opacity duration-500 ease-out"
+          >
+            <p class="text-center font-serif italic text-lg sm:text-xl text-[#f4f4f5]/50 max-w-xl mx-auto">
+              <%= cat.subtitle %>
+            </p>
 
-              <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-10 sm:gap-y-12">
-                <% menuItems.filter(function (i) { return i.category === cat.id; }).forEach(function (dish) { %>
-                  <li class="lm-reveal">
-                    <div class="flex items-baseline justify-between gap-6">
-                      <h4 class="font-serif text-[1.45rem] sm:text-2xl font-normal text-[#f4f4f5] leading-snug">
-                        <%= dish.name %>
-                      </h4>
-                      <span class="shrink-0 text-sm tracking-[0.08em] text-[#d4af37] tabular-nums">
-                        <%= dish.priceText || (dish.price !== null ? dish.price.toFixed(2).replace('.', ',') + ' €' : 'Consultar') %>
-                      </span>
-                    </div>
-                    <p class="mt-2 text-[13px] leading-relaxed text-[#f4f4f5]/45 pr-10">
-                      <% if (dish.highlight) { %><span class="font-serif italic text-[#d4af37]/80"><%= dish.highlight %> — </span><% } %><%= dish.description %>
-                    </p>
-                  </li>
-                <% }); %>
-              </ul>
-            </div>
-          <% }); %>
-        </div>
+            <ul class="mt-16 sm:mt-20 grid grid-cols-1 lg:grid-cols-2 gap-x-24 gap-y-12 sm:gap-y-14">
+              <% menuItems.filter(function (i) { return i.category === cat.id; }).forEach(function (dish, dIdx) { %>
+                <li
+                  data-reveal
+                  data-reveal-delay="<%= (dIdx % 2) * 120 %>"
+                  class="group transition-all duration-1000 ease-out"
+                >
+                  <div class="flex items-baseline justify-between gap-8">
+                    <h3 class="font-serif text-[1.55rem] sm:text-[1.7rem] font-normal leading-snug text-[#f4f4f5]/90 transition-colors duration-500 group-hover:text-[#f4f4f5]">
+                      <%= dish.name %>
+                    </h3>
+                    <span class="shrink-0 text-[13px] tracking-[0.14em] tabular-nums text-[#d4af37]/85 transition-colors duration-500 group-hover:text-[#d4af37]">
+                      <%= dish.priceText || (dish.price !== null ? dish.price.toFixed(2).replace('.', ',') + ' €' : 'Consultar') %>
+                    </span>
+                  </div>
+                  <p class="mt-2.5 pr-12 text-[13px] leading-[1.8] text-[#f4f4f5]/55">
+                    <%= dish.description %>
+                  </p>
+                  <% if (dish.highlight) { %>
+                    <p class="mt-2 font-serif italic text-[15px] text-[#d4af37]/75"><%= dish.highlight %></p>
+                  <% } %>
+                </li>
+              <% }); %>
+            </ul>
+          </div>
+        <% }); %>
 
-        <p class="mt-28 text-center text-[10px] tracking-[0.3em] text-[#f4f4f5]/35 leading-relaxed lm-reveal">
-          PRECIOS EN EUROS · IVA INCLUIDO · CONSULTE ALÉRGENOS EN SALA
+        <p data-reveal class="mt-28 sm:mt-32 text-center text-[10px] tracking-[0.34em] leading-loose text-[#f4f4f5]/35 transition-all duration-1000 ease-out">
+          PRECIOS EN EUROS · IVA INCLUIDO · CONSULTE ALÉRGENOS CON NUESTRO PERSONAL DE SALA
         </p>
       </div>
     </section>
 
-    <!-- =====================================================================
+    <!-- ======================================================================
          LA CASA
-    ====================================================================== -->
-    <section id="la-casa" class="py-28 sm:py-40 border-t border-white/10">
-      <!-- Ancla de compatibilidad con enlaces antiguos -->
+    ======================================================================= -->
+    <section id="la-casa" class="py-32 sm:py-44 border-t border-white/10">
       <span id="historia" class="sr-only"></span>
 
       <div class="max-w-6xl mx-auto px-6 sm:px-10">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-          <div class="lm-reveal">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-20 items-center">
+          <figure data-reveal class="lg:col-span-6 overflow-hidden border border-white/10 transition-all duration-1000 ease-out">
             <img
-              src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1200&q=80"
+              src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1400&q=80"
               alt="Salón principal de La Montaña"
-              class="w-full aspect-[4/5] object-cover opacity-80 border border-white/10"
               loading="lazy"
+              class="w-full aspect-[4/5] object-cover opacity-80 transition-transform duration-[2000ms] ease-out hover:scale-[1.03]"
             />
-          </div>
+          </figure>
 
-          <div class="space-y-8 lm-reveal">
-            <p class="text-[10px] tracking-[0.5em] text-[#d4af37]/90">LA CASA · <%= restaurant.foundedYear %></p>
-            <h2 class="font-serif font-light text-4xl sm:text-6xl leading-[1.05] text-[#f4f4f5]">
+          <div class="lg:col-span-6 lg:pl-6">
+            <p data-reveal class="text-[10px] tracking-[0.55em] text-[#d4af37]/90 transition-all duration-1000 ease-out">
+              LA CASA · <%= restaurant.foundedYear %>
+            </p>
+            <h2 data-reveal data-reveal-delay="120" class="mt-8 font-serif font-light text-5xl sm:text-6xl lg:text-7xl leading-[1] text-[#f4f4f5] transition-all duration-1000 ease-out">
               Ochenta años en la calle del Rey Francisco
             </h2>
-            <p class="text-sm leading-[1.9] text-[#f4f4f5]/60">
+            <p data-reveal data-reveal-delay="240" class="mt-10 text-sm leading-[1.95] text-[#f4f4f5]/60 transition-all duration-1000 ease-out">
               <%= restaurant.heritage.lead %>
             </p>
             <% if (restaurant.heritage.paragraphs && restaurant.heritage.paragraphs[0]) { %>
-              <p class="text-sm leading-[1.9] text-[#f4f4f5]/60">
+              <p data-reveal data-reveal-delay="320" class="mt-6 text-sm leading-[1.95] text-[#f4f4f5]/60 transition-all duration-1000 ease-out">
                 <%= restaurant.heritage.paragraphs[0] %>
               </p>
             <% } %>
@@ -346,22 +427,39 @@
         </div>
 
         <!-- Salones -->
-        <div class="mt-28 sm:mt-36 grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-10">
-          <% restaurant.diningAreas.forEach(function (area) { %>
-            <div class="pt-8 border-t border-white/10 lm-reveal">
-              <h3 class="font-serif text-2xl font-normal text-[#f4f4f5]"><%= area.name %></h3>
-              <p class="mt-2 text-[10px] tracking-[0.28em] text-[#d4af37]/80"><%= area.capacity.toUpperCase() %></p>
-              <p class="mt-5 text-[13px] leading-relaxed text-[#f4f4f5]/50"><%= area.description %></p>
-            </div>
-          <% }); %>
+        <div class="mt-32 sm:mt-40">
+          <h3 data-reveal class="text-center text-[10px] tracking-[0.55em] text-[#d4af37]/90 transition-all duration-1000 ease-out">NUESTROS SALONES</h3>
+
+          <div class="mt-14 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <% restaurant.diningAreas.forEach(function (area, aIdx) { %>
+              <article
+                data-reveal
+                data-reveal-delay="<%= aIdx * 140 %>"
+                class="flex flex-col justify-between border border-white/10 p-8 sm:p-10 transition-all duration-1000 ease-out hover:border-white/20 hover:bg-white/[0.015]"
+              >
+                <div>
+                  <p class="text-[10px] tracking-[0.3em] text-[#d4af37]/80"><%= area.capacity.toUpperCase() %></p>
+                  <h4 class="mt-6 font-serif font-normal text-[1.7rem] leading-tight text-[#f4f4f5]"><%= area.name %></h4>
+                  <p class="mt-5 text-[13px] leading-[1.85] text-[#f4f4f5]/55"><%= area.description %></p>
+                </div>
+                <a
+                  href="#reservas"
+                  data-select-area="<%= area.id %>"
+                  class="select-area-link mt-10 inline-flex items-center gap-3 text-[10px] tracking-[0.3em] text-[#f4f4f5]/60 transition-colors duration-500 hover:text-[#d4af37]"
+                >
+                  RESERVAR AQUÍ <span aria-hidden="true">→</span>
+                </a>
+              </article>
+            <% }); %>
+          </div>
         </div>
 
         <% if (restaurant.ratings && restaurant.ratings.quotes && restaurant.ratings.quotes[0]) { %>
-          <figure class="mt-28 sm:mt-36 max-w-3xl mx-auto text-center lm-reveal">
-            <blockquote class="font-serif italic font-light text-2xl sm:text-3xl leading-relaxed text-[#f4f4f5]/85">
+          <figure class="mt-32 sm:mt-40 max-w-3xl mx-auto text-center">
+            <blockquote data-reveal class="font-serif italic font-light text-3xl sm:text-4xl leading-[1.4] text-[#f4f4f5]/85 transition-all duration-1000 ease-out">
               “<%= restaurant.ratings.quotes[0].quote %>”
             </blockquote>
-            <figcaption class="mt-8 text-[10px] tracking-[0.3em] text-[#f4f4f5]/40">
+            <figcaption data-reveal data-reveal-delay="150" class="mt-10 text-[10px] tracking-[0.36em] text-[#f4f4f5]/40 transition-all duration-1000 ease-out">
               <%= restaurant.ratings.quotes[0].publication.toUpperCase() %>
             </figcaption>
           </figure>
@@ -369,52 +467,55 @@
       </div>
     </section>
 
-    <!-- =====================================================================
+    <!-- ======================================================================
          RESERVAS
-    ====================================================================== -->
-    <section id="reservas" class="py-28 sm:py-40 border-t border-white/10">
+    ======================================================================= -->
+    <section id="reservas" class="py-32 sm:py-44 border-t border-white/10">
       <div class="max-w-3xl mx-auto px-6 sm:px-10">
-        <header class="text-center mb-16 sm:mb-20 lm-reveal">
-          <p class="text-[10px] tracking-[0.5em] text-[#d4af37]/90 mb-6">RESERVAS</p>
-          <h2 class="font-serif font-light text-5xl sm:text-7xl text-[#f4f4f5]">Su mesa</h2>
-          <p class="mt-6 text-sm text-[#f4f4f5]/50 leading-relaxed">
-            Confirmación inmediata. Cerrado los lunes.
+        <header class="text-center">
+          <p data-reveal class="text-[10px] tracking-[0.55em] text-[#d4af37]/90 transition-all duration-1000 ease-out">RESERVAS</p>
+          <h2 data-reveal data-reveal-delay="120" class="mt-8 font-serif font-light text-5xl sm:text-7xl lg:text-8xl leading-[0.95] text-[#f4f4f5] transition-all duration-1000 ease-out">
+            Su mesa
+          </h2>
+          <p data-reveal data-reveal-delay="240" class="mt-8 text-sm leading-[1.9] text-[#f4f4f5]/55 transition-all duration-1000 ease-out">
+            Confirmación inmediata. Cerrado los lunes por descanso semanal.
           </p>
         </header>
 
-        <div class="lm-reveal">
+        <div data-reveal data-reveal-delay="320" class="mt-16 sm:mt-20 border border-white/10 px-6 py-10 sm:px-14 sm:py-16 transition-all duration-1000 ease-out">
+
           <!-- Confirmación -->
-          <div id="reservation-success-box" class="hidden text-center space-y-10 py-6">
+          <div id="reservation-success-box" class="hidden text-center space-y-10">
             <div>
-              <p class="text-[10px] tracking-[0.5em] text-[#d4af37]/90">RESERVA CONFIRMADA</p>
-              <h3 class="mt-5 font-serif font-light text-4xl text-[#f4f4f5]">Le esperamos</h3>
+              <p class="text-[10px] tracking-[0.55em] text-[#d4af37]/90">RESERVA CONFIRMADA</p>
+              <h3 class="mt-6 font-serif font-light text-5xl text-[#f4f4f5]">Le esperamos</h3>
             </div>
-            <div class="inline-block border border-[#d4af37]/40 px-10 py-5">
-              <span class="block text-[9px] tracking-[0.34em] text-[#f4f4f5]/45 mb-2">LOCALIZADOR</span>
+            <div class="inline-block border border-[#d4af37]/40 px-10 py-6">
+              <span class="block text-[9px] tracking-[0.36em] text-[#f4f4f5]/45 mb-2">LOCALIZADOR</span>
               <span id="res-confirm-code" class="font-serif text-3xl tracking-[0.12em] text-[#d4af37]">LM-0000</span>
             </div>
             <div id="res-confirm-details" class="max-w-md mx-auto text-left text-xs text-[#f4f4f5]/70 space-y-2"></div>
             <button
               id="new-reservation-btn"
               type="button"
-              class="inline-flex items-center justify-center h-12 px-10 border border-white/15 text-[10px] tracking-[0.3em] text-[#f4f4f5]/80 hover:border-white/40 transition-colors duration-500"
+              class="inline-flex items-center justify-center h-12 px-10 border border-white/15 text-[10px] tracking-[0.32em] text-[#f4f4f5]/80 transition-colors duration-500 hover:border-white/40"
             >
               NUEVA RESERVA
             </button>
           </div>
 
-          <!-- Formulario -->
-          <form id="reservation-form" class="space-y-10" novalidate>
-            <div id="reservation-error-alert" class="hidden px-4 py-3 border border-red-400/30 text-red-200/90 text-xs"></div>
+          <!-- Formulario (conectado a POST /api/reservar desde /js/main.js) -->
+          <form id="reservation-form" class="space-y-11" novalidate>
+            <div id="reservation-error-alert" class="hidden px-4 py-3 border border-red-400/30 text-red-200/90 text-xs leading-relaxed"></div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-8">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-11 sm:gap-8">
               <div>
-                <label for="res-date" class="lm-field-label">Fecha</label>
-                <input id="res-date" name="date" type="date" required class="lm-field" />
+                <label for="res-date" class="field-label">Fecha</label>
+                <input id="res-date" name="date" type="date" required class="field" />
               </div>
               <div>
-                <label for="res-time" class="lm-field-label">Hora</label>
-                <select id="res-time" name="time" required class="lm-field">
+                <label for="res-time" class="field-label">Hora</label>
+                <select id="res-time" name="time" required class="field">
                   <optgroup label="Comida">
                     <% timeSlots.lunch.forEach(function (t) { %>
                       <option value="<%= t %>" <%= t === '14:00' ? 'selected' : '' %>><%= t %></option>
@@ -428,8 +529,8 @@
                 </select>
               </div>
               <div>
-                <label for="res-guests" class="lm-field-label">Comensales</label>
-                <select id="res-guests" name="guests" required class="lm-field">
+                <label for="res-guests" class="field-label">Comensales</label>
+                <select id="res-guests" name="guests" required class="field">
                   <% [1, 2, 3, 4, 5, 6, 7, 8, 10, 12].forEach(function (n) { %>
                     <option value="<%= n %>" <%= n === 2 ? 'selected' : '' %>><%= n %></option>
                   <% }); %>
@@ -437,53 +538,54 @@
               </div>
             </div>
 
-            <p id="availability-text" class="text-[11px] tracking-[0.04em] text-[#f4f4f5]/45">
+            <p id="availability-text" class="-mt-4 text-[11px] leading-relaxed text-[#f4f4f5]/45">
               Consultando disponibilidad…
             </p>
 
             <div>
-              <label for="res-area" class="lm-field-label">Salón</label>
-              <select id="res-area" name="diningArea" class="lm-field">
+              <label for="res-area" class="field-label">Salón</label>
+              <select id="res-area" name="diningArea" class="field">
                 <% restaurant.diningAreas.forEach(function (a) { %>
                   <option value="<%= a.id %>"><%= a.name %></option>
                 <% }); %>
               </select>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-10 sm:gap-8">
-              <div class="sm:col-span-2">
-                <label for="res-name" class="lm-field-label">Nombre y apellidos</label>
-                <input id="res-name" name="name" type="text" required autocomplete="name" class="lm-field" />
+            <div>
+              <label for="res-name" class="field-label">Nombre y apellidos</label>
+              <input id="res-name" name="name" type="text" required autocomplete="name" class="field" />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-11 sm:gap-8">
+              <div>
+                <label for="res-phone" class="field-label">Teléfono</label>
+                <input id="res-phone" name="phone" type="tel" inputmode="tel" required autocomplete="tel" class="field" />
               </div>
               <div>
-                <label for="res-phone" class="lm-field-label">Teléfono</label>
-                <input id="res-phone" name="phone" type="tel" inputmode="tel" required autocomplete="tel" class="lm-field" />
-              </div>
-              <div>
-                <label for="res-email" class="lm-field-label">Correo electrónico</label>
-                <input id="res-email" name="email" type="email" inputmode="email" required autocomplete="email" class="lm-field" />
+                <label for="res-email" class="field-label">Correo electrónico</label>
+                <input id="res-email" name="email" type="email" inputmode="email" required autocomplete="email" class="field" />
               </div>
             </div>
 
             <div>
-              <label for="res-notes" class="lm-field-label">Alergias u observaciones</label>
-              <textarea id="res-notes" name="notes" rows="3" class="lm-field"></textarea>
+              <label for="res-notes" class="field-label">Alergias u observaciones</label>
+              <textarea id="res-notes" name="notes" rows="3" class="field"></textarea>
             </div>
 
-            <div class="flex items-start gap-3 text-xs text-[#f4f4f5]/55">
-              <input id="res-privacy" type="checkbox" checked required class="mt-0.5 w-4 h-4 shrink-0 accent-[#d4af37]" />
-              <label for="res-privacy" class="leading-relaxed">
+            <div class="flex items-start gap-3 text-xs leading-relaxed text-[#f4f4f5]/55">
+              <input id="res-privacy" type="checkbox" checked required class="mt-0.5 w-4 h-4 shrink-0 accent-[#d4af37] cursor-pointer" />
+              <label for="res-privacy" class="cursor-pointer">
                 Acepto la
-                <button type="button" data-open-legal="privacidad" class="underline underline-offset-4 decoration-white/30 hover:text-[#f4f4f5]">política de privacidad</button>.
+                <button type="button" data-open-legal="privacidad" class="underline underline-offset-4 decoration-white/25 transition-colors hover:text-[#f4f4f5]">política de privacidad</button>.
               </label>
             </div>
 
             <button
               id="res-submit-btn"
               type="submit"
-              class="w-full h-14 inline-flex items-center justify-center gap-3 border border-[#d4af37]/60 text-[#d4af37] text-[10px] tracking-[0.34em] hover:border-[#d4af37] hover:bg-[#d4af37]/10 transition-colors duration-500 disabled:opacity-50"
+              class="w-full h-14 inline-flex items-center justify-center gap-3 border border-[#d4af37]/55 text-[10px] tracking-[0.36em] text-[#d4af37] transition-all duration-700 ease-out hover:border-[#d4af37] hover:bg-[#d4af37]/[0.08] disabled:opacity-50 disabled:cursor-wait"
             >
-              <span id="res-submit-spinner" class="hidden lm-spinner-light"></span>
+              <span id="res-submit-spinner" class="hidden spinner"></span>
               <span id="res-submit-text">CONFIRMAR RESERVA DE MESA</span>
             </button>
           </form>
@@ -492,15 +594,20 @@
     </section>
   </main>
 
-  <!-- =====================================================================
+  <!-- ========================================================================
        PIE DE PÁGINA
-  ====================================================================== -->
-  <footer id="contacto" class="border-t border-white/10 pt-24 pb-12">
+  ========================================================================= -->
+  <footer id="contacto" class="border-t border-white/10 pt-28 pb-12">
     <div class="max-w-6xl mx-auto px-6 sm:px-10">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-14">
-        <div class="space-y-5">
-          <span class="font-serif text-xl tracking-[0.34em] text-[#f4f4f5]">LA MONTAÑA</span>
-          <p class="text-[13px] leading-relaxed text-[#f4f4f5]/50">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-16">
+        <div data-reveal class="space-y-6 transition-all duration-1000 ease-out">
+          <div class="flex items-center gap-4">
+            <span class="w-10 h-10 inline-flex items-center justify-center border border-[#d4af37]/40 font-serif text-[13px] tracking-[0.16em] text-[#d4af37]">
+              <%= restaurant.monogram %>
+            </span>
+            <span class="font-serif text-xl tracking-[0.36em]">LA MONTAÑA</span>
+          </div>
+          <p class="text-[13px] leading-[1.9] text-[#f4f4f5]/55">
             <%= restaurant.address.street %><br />
             <%= restaurant.address.postalCode %> <%= restaurant.address.city %>
           </p>
@@ -508,66 +615,65 @@
             href="<%= restaurant.address.googleMapsUrl %>"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-block text-[10px] tracking-[0.3em] text-[#d4af37]/90 hover:text-[#d4af37]"
+            class="inline-block text-[10px] tracking-[0.32em] text-[#d4af37]/85 transition-colors hover:text-[#d4af37]"
           >
-            CÓMO LLEGAR
+            CÓMO LLEGAR ↗
           </a>
         </div>
 
-        <div class="space-y-4">
-          <p class="text-[10px] tracking-[0.34em] text-[#f4f4f5]/40">HORARIO</p>
-          <ul class="space-y-2 text-[13px] text-[#f4f4f5]/60">
+        <div data-reveal data-reveal-delay="120" class="space-y-5 transition-all duration-1000 ease-out">
+          <p class="text-[10px] tracking-[0.36em] text-[#f4f4f5]/40">HORARIO</p>
+          <ul class="space-y-3 text-[13px] text-[#f4f4f5]/60">
             <% (restaurant.hours || []).forEach(function (h) { %>
               <li class="flex justify-between gap-6">
-                <span><%= h.day %></span>
-                <span class="<%= h.status === 'open' ? '' : 'text-[#f4f4f5]/35 italic' %> text-right"><%= h.schedule %></span>
+                <span class="shrink-0"><%= h.day %></span>
+                <span class="text-right <%= h.status === 'open' ? '' : 'italic text-[#f4f4f5]/35' %>"><%= h.schedule %></span>
               </li>
             <% }); %>
           </ul>
         </div>
 
-        <div class="space-y-4">
-          <p class="text-[10px] tracking-[0.34em] text-[#f4f4f5]/40">CONTACTO</p>
-          <p class="text-[13px] text-[#f4f4f5]/60 space-y-1">
-            <a href="tel:<%= restaurant.contact.phoneClean %>" class="block hover:text-[#f4f4f5]"><%= restaurant.contact.phone %></a>
-            <a href="mailto:<%= restaurant.contact.email %>" class="block hover:text-[#f4f4f5] break-all"><%= restaurant.contact.email %></a>
-          </p>
+        <div data-reveal data-reveal-delay="240" class="space-y-5 transition-all duration-1000 ease-out">
+          <p class="text-[10px] tracking-[0.36em] text-[#f4f4f5]/40">CONTACTO</p>
+          <div class="space-y-2 text-[13px] text-[#f4f4f5]/60">
+            <a href="tel:<%= restaurant.contact.phoneClean %>" class="block transition-colors hover:text-[#f4f4f5]"><%= restaurant.contact.phone %></a>
+            <a href="mailto:<%= restaurant.contact.email %>" class="block break-all transition-colors hover:text-[#f4f4f5]"><%= restaurant.contact.email %></a>
+          </div>
         </div>
       </div>
 
-      <div class="mt-20 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 text-[11px] text-[#f4f4f5]/35">
+      <div class="mt-24 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 text-[11px] text-[#f4f4f5]/35">
         <p>© <%= new Date().getFullYear() %> <%= restaurant.legalName %></p>
-        <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2" aria-label="Información legal">
-          <button type="button" data-open-legal="aviso-legal" class="hover:text-[#f4f4f5]/80">Aviso legal</button>
-          <button type="button" data-open-legal="privacidad" class="hover:text-[#f4f4f5]/80">Privacidad</button>
-          <button type="button" data-open-legal="cookies" class="hover:text-[#f4f4f5]/80">Cookies</button>
-          <button type="button" id="reopen-cookie-banner-btn" class="hover:text-[#f4f4f5]/80">Preferencias</button>
-          <a href="/admin" class="hover:text-[#d4af37]">Dirección</a>
+        <nav class="flex flex-wrap items-center justify-center gap-x-7 gap-y-2" aria-label="Información legal">
+          <button type="button" data-open-legal="aviso-legal" class="transition-colors hover:text-[#f4f4f5]/80">Aviso legal</button>
+          <button type="button" data-open-legal="privacidad" class="transition-colors hover:text-[#f4f4f5]/80">Privacidad</button>
+          <button type="button" data-open-legal="cookies" class="transition-colors hover:text-[#f4f4f5]/80">Cookies</button>
+          <button type="button" id="reopen-cookie-banner-btn" class="transition-colors hover:text-[#f4f4f5]/80">Preferencias</button>
+          <a href="/admin" class="transition-colors hover:text-[#d4af37]">Dirección</a>
         </nav>
       </div>
     </div>
   </footer>
 
-  <!-- Banner de cookies -->
+  <!-- Aviso de cookies (tarjeta flotante) -->
   <div
     id="cookie-consent-banner"
-    class="hidden fixed bottom-0 inset-x-0 z-50 backdrop-blur-md bg-[#050506]/95 border-t border-white/10 px-6 py-6"
+    class="hidden fixed z-50 bottom-4 inset-x-4 md:inset-x-auto md:left-6 md:bottom-6 md:max-w-md backdrop-blur-xl bg-[#050506]/90 border border-white/10 p-6"
     role="dialog"
     aria-label="Aviso de cookies"
   >
-    <div class="max-w-5xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-5">
-      <p class="text-xs leading-relaxed text-[#f4f4f5]/60 max-w-2xl">
-        Utilizamos cookies técnicas necesarias para el funcionamiento de las reservas y, con su consentimiento, cookies analíticas.
-        <button type="button" data-open-legal="cookies" class="underline underline-offset-4 decoration-white/30 hover:text-[#f4f4f5]">Más información</button>.
-      </p>
-      <div class="flex gap-3 shrink-0">
-        <button id="cookie-reject-btn" type="button" class="flex-1 md:flex-none h-11 px-6 border border-white/15 text-[10px] tracking-[0.26em] text-[#f4f4f5]/75 hover:border-white/40 transition-colors">
-          SOLO NECESARIAS
-        </button>
-        <button id="cookie-accept-btn" type="button" class="flex-1 md:flex-none h-11 px-6 border border-[#d4af37]/60 text-[10px] tracking-[0.26em] text-[#d4af37] hover:bg-[#d4af37]/10 transition-colors">
-          ACEPTAR
-        </button>
-      </div>
+    <p class="text-[10px] tracking-[0.36em] text-[#d4af37]/90">COOKIES</p>
+    <p class="mt-3 text-xs leading-[1.8] text-[#f4f4f5]/60">
+      Utilizamos cookies técnicas necesarias para las reservas y, con su consentimiento, cookies analíticas.
+      <button type="button" data-open-legal="cookies" class="underline underline-offset-4 decoration-white/25 hover:text-[#f4f4f5]">Más información</button>.
+    </p>
+    <div class="mt-5 flex gap-3">
+      <button id="cookie-reject-btn" type="button" class="flex-1 h-11 border border-white/15 text-[10px] tracking-[0.26em] text-[#f4f4f5]/75 transition-colors hover:border-white/40">
+        SOLO NECESARIAS
+      </button>
+      <button id="cookie-accept-btn" type="button" class="flex-1 h-11 border border-[#d4af37]/55 text-[10px] tracking-[0.26em] text-[#d4af37] transition-colors hover:bg-[#d4af37]/[0.08]">
+        ACEPTAR
+      </button>
     </div>
   </div>
 
@@ -577,18 +683,182 @@
     class="hidden fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
     role="dialog"
     aria-modal="true"
+    aria-labelledby="legal-modal-title"
   >
-    <div class="bg-[#050506] border border-white/10 max-w-2xl w-full max-h-[85dvh] flex flex-col">
+    <div class="bg-[#050506] border border-white/10 max-w-2xl w-full max-h-[85svh] flex flex-col">
       <div class="px-6 sm:px-8 py-5 border-b border-white/10 flex items-center justify-between gap-4">
         <h3 id="legal-modal-title" class="font-serif text-2xl font-light text-[#f4f4f5]">Aviso legal</h3>
-        <button id="close-legal-modal-btn" type="button" class="h-10 px-2 text-[10px] tracking-[0.3em] text-[#f4f4f5]/50 hover:text-[#f4f4f5]">
+        <button id="close-legal-modal-btn" type="button" class="h-10 px-2 text-[10px] tracking-[0.32em] text-[#f4f4f5]/50 transition-colors hover:text-[#f4f4f5]">
           CERRAR
         </button>
       </div>
-      <div id="legal-modal-body" class="p-6 sm:p-8 overflow-y-auto text-[13px] leading-relaxed text-[#f4f4f5]/65 space-y-4"></div>
+      <div id="legal-modal-body" class="p-6 sm:p-8 overflow-y-auto text-[13px] leading-[1.85] text-[#f4f4f5]/65 space-y-4"></div>
     </div>
   </div>
 
+  <!-- ========================================================================
+       INTERACCIONES DE ESTA VISTA (revelado, cabecera, pestañas, menú móvil)
+       Se ejecuta antes del primer pintado para evitar parpadeos.
+  ========================================================================= -->
+  <script>
+    (function () {
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // 1. Revelado al hacer scroll (opacidad + desplazamiento, duration-1000 ease-out)
+      var revealEls = Array.prototype.slice.call(document.querySelectorAll('[data-reveal]'));
+      var HIDDEN = ['opacity-0', 'translate-y-8'];
+      var SHOWN = ['opacity-100', 'translate-y-0'];
+
+      function show(el) {
+        var delay = parseInt(el.getAttribute('data-reveal-delay') || '0', 10);
+        el.style.transitionDelay = delay + 'ms';
+        el.classList.remove.apply(el.classList, HIDDEN);
+        el.classList.add.apply(el.classList, SHOWN);
+        // Se elimina el retardo al terminar para que los hover respondan al instante
+        window.setTimeout(function () { el.style.transitionDelay = ''; }, delay + 1100);
+      }
+
+      if (!reduceMotion && 'IntersectionObserver' in window) {
+        revealEls.forEach(function (el) { el.classList.add.apply(el.classList, HIDDEN); });
+
+        var revealObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              show(entry.target);
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+
+        window.requestAnimationFrame(function () {
+          window.requestAnimationFrame(function () {
+            revealEls.forEach(function (el) { revealObserver.observe(el); });
+          });
+        });
+      }
+
+      // 2. Imagen del hero: acercamiento lento al cargar
+      var heroImg = document.getElementById('hero-image');
+      if (heroImg) {
+        var settleHero = function () {
+          heroImg.classList.remove('scale-110');
+          heroImg.classList.add('scale-100');
+        };
+        if (heroImg.complete) { window.requestAnimationFrame(settleHero); }
+        else { heroImg.addEventListener('load', settleHero, { once: true }); }
+      }
+
+      // 3. Cabecera: compacta y con borde al desplazarse
+      var header = document.getElementById('site-header');
+      var headerInner = document.getElementById('site-header-inner');
+      var ticking = false;
+      function updateHeader() {
+        var scrolled = window.scrollY > 24;
+        header.classList.toggle('border-white/10', scrolled);
+        header.classList.toggle('border-transparent', !scrolled);
+        headerInner.classList.toggle('h-20', scrolled);
+        headerInner.classList.toggle('h-24', !scrolled);
+        ticking = false;
+      }
+      window.addEventListener('scroll', function () {
+        if (!ticking) { window.requestAnimationFrame(updateHeader); ticking = true; }
+      }, { passive: true });
+      updateHeader();
+
+      // 4. Enlace activo según la sección visible
+      var navLinks = document.querySelectorAll('[data-nav]');
+      if ('IntersectionObserver' in window) {
+        var spy = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            navLinks.forEach(function (link) {
+              link.setAttribute('aria-current', link.getAttribute('data-nav') === entry.target.id ? 'true' : 'false');
+            });
+          });
+        }, { rootMargin: '-45% 0px -50% 0px' });
+        ['inicio', 'carta', 'la-casa', 'reservas'].forEach(function (id) {
+          var section = document.getElementById(id);
+          if (section) spy.observe(section);
+        });
+      }
+
+      // 5. Pestañas de la carta con fundido entre categorías
+      var tabs = Array.prototype.slice.call(document.querySelectorAll('[data-menu-tab]'));
+      var panels = Array.prototype.slice.call(document.querySelectorAll('[data-menu-panel]'));
+      var switching = false;
+
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          var target = tab.getAttribute('data-menu-tab');
+          var current = panels.filter(function (p) { return !p.classList.contains('hidden'); })[0];
+          var next = panels.filter(function (p) { return p.getAttribute('data-menu-panel') === target; })[0];
+          if (!next || next === current || switching) return;
+          switching = true;
+
+          tabs.forEach(function (t) { t.setAttribute('aria-selected', t === tab ? 'true' : 'false'); });
+
+          var fadeTime = reduceMotion ? 0 : 450;
+          if (current) current.classList.add('opacity-0');
+
+          window.setTimeout(function () {
+            if (current) {
+              current.classList.add('hidden');
+              current.classList.remove('opacity-0');
+            }
+            next.classList.add('opacity-0');
+            next.classList.remove('hidden');
+            window.requestAnimationFrame(function () {
+              next.classList.remove('opacity-0');
+              switching = false;
+            });
+          }, fadeTime);
+        });
+      });
+
+      // 6. Menú móvil a pantalla completa
+      var toggle = document.getElementById('menu-toggle');
+      var mobileMenu = document.getElementById('mobile-menu');
+      var mobileLinks = mobileMenu ? mobileMenu.querySelectorAll('.mobile-link') : [];
+
+      function setMenu(open) {
+        if (!toggle || !mobileMenu) return;
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        toggle.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+        mobileMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
+        mobileMenu.classList.toggle('opacity-0', !open);
+        mobileMenu.classList.toggle('pointer-events-none', !open);
+        mobileMenu.classList.toggle('opacity-100', open);
+        mobileMenu.classList.toggle('pointer-events-auto', open);
+        document.body.style.overflow = open ? 'hidden' : '';
+
+        Array.prototype.forEach.call(mobileLinks, function (link, i) {
+          link.style.transitionDelay = open ? (120 + i * 70) + 'ms' : '0ms';
+          link.classList.toggle('opacity-0', !open);
+          link.classList.toggle('translate-y-8', !open);
+          link.classList.toggle('opacity-100', open);
+          link.classList.toggle('translate-y-0', open);
+        });
+      }
+
+      if (toggle && mobileMenu) {
+        setMenu(false);
+        toggle.addEventListener('click', function () {
+          setMenu(toggle.getAttribute('aria-expanded') !== 'true');
+        });
+        Array.prototype.forEach.call(mobileLinks, function (link) {
+          link.addEventListener('click', function () { setMenu(false); });
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') setMenu(false);
+        });
+        window.addEventListener('resize', function () {
+          if (window.innerWidth >= 768) setMenu(false);
+        });
+      }
+    })();
+  </script>
+
+  <!-- Reservas, disponibilidad, textos legales y cookies -->
   <script src="/js/main.js"></script>
 </body>
 </html>
