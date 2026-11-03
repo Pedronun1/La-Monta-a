@@ -1,150 +1,380 @@
 /**
- * RESTAURANTE LA MONTAÑA — SERVIDOR BACKEND RESTful API (Node.js + Express + SQLite)
- * Ubicación: C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid
- * Teléfono: +34 915 47 31 11
- *
- * Endpoints principales:
- *   - GET  /api/menu               -> Carta completa, categorías y precios exactos
- *   - GET  /api/info               -> Datos de contacto, dirección, horarios, mapa y reseñas Google Maps
- *   - POST /api/reservations       -> Crear y persistir nueva reserva de mesa con validación en tiempo real
- *   - GET  /api/reservations       -> Consultar reservas almacenadas
- *   - GET  /api/reservations/:code -> Consultar reserva por código único (ej. LM-2026-4812)
- *   - GET  /api/availability       -> Disponibilidad de plazas en tiempo real por fecha y hora
+ * ============================================================================
+ * RESTAURANTE LA MONTAÑA — SERVIDOR FULL-STACK DE PRODUCCIÓN
+ * C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid | Tel: 915 47 31 11
+ * Stack: Node.js + Express + EJS + express-session + SQLite (node:sqlite)
+ * ============================================================================
  */
 
 const express = require('express');
+const session = require('express-session');
 const path = require('path');
+const crypto = require('crypto');
 const db = require('./database');
 const {
   RESTAURANT_INFO,
   MENU_CATEGORIES,
   MENU_ITEMS,
-  AVAILABLE_TIME_SLOTS
+  TIME_SLOTS
 } = require('./data/restaurantData');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware CORS y JSON
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
-});
+// Configuración de Seguridad y Credenciales de Administración
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'lamontana2026';
+const ADMIN_USER = process.env.ADMIN_USER || 'admin';
+const SESSION_SECRET =
+  process.env.SESSION_SECRET || 'la-montana-rey-francisco-28-secret-session-2026';
 
+// Configuración del Motor de Vistas EJS
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// cabeceras de seguridad y parseo de peticiones
+app.disable('x-powered-by');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Servir archivos estáticos del Frontend React + Tailwind CSS
-app.use(express.static(path.join(__dirname, 'public')));
+// Configuración de Sesiones de Servidor con express-session (Cookie HttpOnly firmada)
+app.use(
+  session({
+    name: 'lamontana.sid',
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 1000 * 60 * 60 * 12 // 12 horas de sesión activa
+    }
+  })
+);
+
+// Archivos estáticos públicos (CSS, JS, imágenes, iconos)
+app.use(express.static(path.join(__dirname, 'public'), { index: false }));
 
 // ============================================================================
-// 1. GET /api/menu — Devuelve la lista completa de platos, categorías y precios reales
+// MIDDLEWARE DE SEGURIDAD ESTRICTA PARA EL PANEL DE ADMINISTRACIÓN
 // ============================================================================
-app.get('/api/menu', (req, res) => {
-  try {
-    const { category, search, popular } = req.query;
-    let filteredItems = [...MENU_ITEMS];
+function verifyPasswordSafe(inputPassword, expectedPassword) {
+  if (typeof inputPassword !== 'string') return false;
+  const inputHash = crypto.createHash('sha256').update(inputPassword).digest();
+  const expectedHash = crypto.createHash('sha256').update(expectedPassword).digest();
+  return crypto.timingSafeEqual(inputHash, expectedHash);
+}
 
-    if (category && category !== 'all') {
-      filteredItems = filteredItems.filter((item) => item.category === category);
-    }
+function requireAdminAuth(req, res, next) {
+  if (req.session && req.session.isAdmin === true) {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    return next();
+  }
 
-    if (popular === 'true') {
-      filteredItems = filteredItems.filter((item) => item.popular);
-    }
+  // Si es una petición AJAX / API JSON, devolver 401 con instrucción de redirección
+  const acceptsJson =
+    req.xhr ||
+    (req.headers.accept && req.headers.accept.includes('application/json')) ||
+    req.path.startsWith('/api/');
 
-    if (search && search.trim() !== '') {
-      const q = search.trim().toLowerCase();
-      filteredItems = filteredItems.filter(
-        (item) =>
-          item.name.toLowerCase().includes(q) ||
-          item.description.toLowerCase().includes(q) ||
-          item.categoryName.toLowerCase().includes(q)
-      );
-    }
-
-    const groupedByCategory = MENU_CATEGORIES.map((cat) => ({
-      ...cat,
-      items: filteredItems.filter((item) => item.category === cat.id)
-    }));
-
-    res.json({
-      success: true,
-      restaurant: RESTAURANT_INFO.name,
-      currency: 'EUR',
-      totalItems: filteredItems.length,
-      categories: MENU_CATEGORIES,
-      items: filteredItems,
-      groupedByCategory
-    });
-  } catch (error) {
-    console.error('Error en GET /api/menu:', error);
-    res.status(500).json({
+  if (acceptsJson) {
+    return res.status(401).json({
       success: false,
-      error: 'Error interno del servidor al obtener la carta del restaurante.'
+      error: 'Sesión no iniciada o expirada. Inicie sesión para acceder al panel.',
+      redirectUrl: '/admin/login'
     });
   }
+
+  // Redirección obligatoria a la pantalla de login si intenta entrar a /admin sin sesión
+  return res.redirect('/admin/login');
+}
+
+// ============================================================================
+// RUTAS DE AUTENTICACIÓN Y PANEL DE ADMINISTRACIÓN PROTEGIDO (/admin)
+// ============================================================================
+
+// 1. Pantalla de Login del Administrador (GET /admin/login)
+app.get('/admin/login', (req, res) => {
+  if (req.session && req.session.isAdmin === true) {
+    return res.redirect('/admin');
+  }
+
+  const errorMsg = req.query.error
+    ? 'Credenciales de acceso incorrectas. Verifique la contraseña de administración.'
+    : null;
+  const logoutMsg = req.query.logout
+    ? 'La sesión se ha cerrado de forma segura.'
+    : null;
+
+  res.setHeader('Cache-Control', 'no-store');
+  res.render('admin-login', {
+    restaurant: RESTAURANT_INFO,
+    error: errorMsg,
+    logoutMessage: logoutMsg
+  });
+});
+
+// 2. Procesamiento de Login (POST /admin/login)
+app.post('/admin/login', (req, res) => {
+  const { username, password } = req.body;
+  const isJsonRequest =
+    req.is('application/json') ||
+    (req.headers.accept && req.headers.accept.includes('application/json'));
+
+  const userOk =
+    !username ||
+    username.trim().toLowerCase() === ADMIN_USER.toLowerCase() ||
+    username.trim().toLowerCase() === 'direccion@restaurantelamontana.es';
+
+  const passwordOk = verifyPasswordSafe(password || '', ADMIN_PASSWORD);
+
+  if (!userOk || !passwordOk) {
+    if (isJsonRequest) {
+      return res.status(401).json({
+        success: false,
+        error: 'Contraseña incorrecta. Acceso denegado al panel privado.'
+      });
+    }
+    return res.redirect('/admin/login?error=1');
+  }
+
+  // Autenticación exitosa: registrar sesión segura
+  req.session.isAdmin = true;
+  req.session.adminUser = (username && username.trim()) || 'Dirección La Montaña';
+  req.session.loginTime = new Date().toISOString();
+
+  req.session.save(() => {
+    if (isJsonRequest) {
+      return res.json({
+        success: true,
+        message: 'Autenticación verificada correctamente.',
+        redirectUrl: '/admin'
+      });
+    }
+    return res.redirect('/admin');
+  });
+});
+
+// 3. Cerrar Sesión y Destruir Cookie de Sesión (POST & GET /admin/logout)
+function handleAdminLogout(req, res) {
+  const isJsonRequest =
+    req.is('application/json') ||
+    (req.headers.accept && req.headers.accept.includes('application/json'));
+
+  if (req.session) {
+    req.session.destroy(() => {
+      res.clearCookie('lamontana.sid', { path: '/' });
+      if (isJsonRequest) {
+        return res.json({ success: true, redirectUrl: '/admin/login?logout=1' });
+      }
+      return res.redirect('/admin/login?logout=1');
+    });
+  } else {
+    res.clearCookie('lamontana.sid', { path: '/' });
+    return res.redirect('/admin/login?logout=1');
+  }
+}
+
+app.post('/admin/logout', handleAdminLogout);
+app.get('/admin/logout', handleAdminLogout);
+
+// 4. Panel de Administración Privado (GET /admin) — ABSOLUTAMENTE PROTEGIDO
+app.get('/admin', requireAdminAuth, (req, res) => {
+  const reservations = db.getAllReservations({});
+  const stats = db.getStats();
+
+  res.render('admin-dashboard', {
+    restaurant: RESTAURANT_INFO,
+    adminUser: req.session.adminUser || 'Dirección La Montaña',
+    loginTime: req.session.loginTime,
+    reservations,
+    stats,
+    timeSlots: [...TIME_SLOTS.lunch, ...TIME_SLOTS.dinner]
+  });
 });
 
 // ============================================================================
-// 2. GET /api/info — Devuelve datos de contacto, horarios y valoraciones de Google Maps
+// API PRIVADA DE ADMINISTRACIÓN (PROTEGIDA CON SESIÓN)
 // ============================================================================
-app.get('/api/info', (req, res) => {
+
+app.get('/api/admin/reservations', requireAdminAuth, (req, res) => {
   try {
+    const { date, status, search } = req.query;
+    const reservations = db.getAllReservations({ date, status, search });
     const stats = db.getStats();
     res.json({
       success: true,
-      ...RESTAURANT_INFO,
-      availableTimeSlots: AVAILABLE_TIME_SLOTS,
-      liveStats: stats
+      stats,
+      total: reservations.length,
+      reservations
     });
   } catch (error) {
-    console.error('Error en GET /api/info:', error);
     res.status(500).json({
       success: false,
-      error: 'Error interno del servidor al obtener la información del establecimiento.'
+      error: 'Error al obtener las reservas desde la base de datos.'
     });
   }
 });
 
-// ============================================================================
-// 3. GET /api/availability — Disponibilidad de mesas en tiempo real por fecha
-// ============================================================================
-app.get('/api/availability', (req, res) => {
+app.patch('/api/admin/reservations/:id/status', requireAdminAuth, (req, res) => {
   try {
-    const date = req.query.date || new Date().toISOString().split('T')[0];
-    const allSlots = [...AVAILABLE_TIME_SLOTS.lunch, ...AVAILABLE_TIME_SLOTS.dinner];
-    const availability = db.getDateAvailability(date, allSlots);
-
-    // Comprobar si es lunes (descanso semanal)
-    const parsedDate = new Date(`${date}T12:00:00`);
-    const isMonday = parsedDate.getDay() === 1;
-
+    const { status } = req.body;
+    if (!['confirmed', 'completed', 'cancelled'].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Estado no válido. Use confirmed, completed o cancelled.'
+      });
+    }
+    const updated = db.updateReservationStatus(req.params.id, status);
+    if (!updated) {
+      return res.status(404).json({ success: false, error: 'Reserva no encontrada.' });
+    }
     res.json({
       success: true,
-      date,
-      isClosedDay: isMonday,
-      closedReason: isMonday ? 'Los lunes permanecemos cerrados por descanso semanal. Abrimos de martes a domingo.' : null,
-      timeSlots: AVAILABLE_TIME_SLOTS,
-      slots: availability
+      reservation: updated,
+      stats: db.getStats()
     });
   } catch (error) {
-    console.error('Error en GET /api/availability:', error);
     res.status(500).json({
       success: false,
-      error: 'Error al consultar la disponibilidad de mesas.'
+      error: 'Error al actualizar el estado de la reserva.'
+    });
+  }
+});
+
+app.delete('/api/admin/reservations/:id', requireAdminAuth, (req, res) => {
+  try {
+    const deleted = db.deleteReservation(req.params.id);
+    res.json({
+      success: true,
+      ...deleted,
+      stats: db.getStats()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Error al eliminar la reserva.'
+    });
+  }
+});
+
+app.post('/api/admin/reservations', requireAdminAuth, (req, res) => {
+  try {
+    const { date, time, guests, diningArea, name, phone, email, notes } = req.body;
+    if (!date || !time || !guests || !name || !phone) {
+      return res.status(400).json({
+        success: false,
+        error: 'Fecha, hora, comensales, nombre y teléfono son obligatorios.'
+      });
+    }
+
+    const areaObj =
+      RESTAURANT_INFO.diningAreas.find((a) => a.id === diningArea) ||
+      RESTAURANT_INFO.diningAreas[0];
+    const year = new Date().getFullYear();
+    const reservationCode = `LM-${year}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    const created = db.createReservation({
+      reservation_code: reservationCode,
+      reservation_date: date,
+      reservation_time: time,
+      guests: Number(guests),
+      dining_area: areaObj.id,
+      dining_area_name: areaObj.name,
+      customer_name: name.trim(),
+      customer_phone: phone.trim(),
+      customer_email: (email && email.trim()) || 'reservas@restaurantelamontana.es',
+      notes: notes ? notes.trim() : 'Reserva telefónica registrada por Dirección',
+      preselected_dishes: [],
+      status: 'confirmed'
+    });
+
+    res.status(201).json({
+      success: true,
+      reservation: created,
+      stats: db.getStats()
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Error al crear la reserva manual.'
     });
   }
 });
 
 // ============================================================================
-// 4. POST /api/reservations — Recibe, valida, procesa y almacena las reservas
+// RUTAS PÚBLICAS WEB Y API RESTful PARA CLIENTES
 // ============================================================================
+
+// Vista Principal Pública (GET /)
+app.get('/', (req, res) => {
+  res.render('index', {
+    restaurant: RESTAURANT_INFO,
+    categories: MENU_CATEGORIES,
+    menuItems: MENU_ITEMS,
+    timeSlots: TIME_SLOTS
+  });
+});
+
+// GET /api/menu — Lista completa de platos, categorías y precios
+app.get('/api/menu', (req, res) => {
+  const { category, search } = req.query;
+  let items = [...MENU_ITEMS];
+
+  if (category && category !== 'all') {
+    items = items.filter((item) => item.category.toLowerCase() === category.toLowerCase());
+  }
+
+  if (search && search.trim() !== '') {
+    const q = search.trim().toLowerCase();
+    items = items.filter(
+      (item) =>
+        item.name.toLowerCase().includes(q) ||
+        item.description.toLowerCase().includes(q) ||
+        item.category.toLowerCase().includes(q)
+    );
+  }
+
+  res.json({
+    success: true,
+    restaurant: RESTAURANT_INFO.name,
+    currency: 'EUR',
+    totalItems: items.length,
+    categories: MENU_CATEGORIES,
+    items
+  });
+});
+
+// GET /api/info — Datos de contacto, horarios y valoraciones
+app.get('/api/info', (req, res) => {
+  res.json({
+    success: true,
+    ...RESTAURANT_INFO,
+    timeSlots: TIME_SLOTS
+  });
+});
+
+// GET /api/availability — Disponibilidad de plazas en tiempo real por fecha
+app.get('/api/availability', (req, res) => {
+  const date = req.query.date || new Date().toISOString().split('T')[0];
+  const allSlots = [...TIME_SLOTS.lunch, ...TIME_SLOTS.dinner];
+  const slots = db.getDateAvailability(date, allSlots);
+  const parsedDate = new Date(`${date}T12:00:00`);
+  const isMonday = parsedDate.getDay() === 1;
+
+  res.json({
+    success: true,
+    date,
+    isClosedDay: isMonday,
+    closedReason: isMonday
+      ? 'Los lunes permanecemos cerrados por descanso semanal. Abrimos de martes a domingo.'
+      : null,
+    timeSlots: TIME_SLOTS,
+    slots
+  });
+});
+
+// POST /api/reservations — Recibe, valida y almacena nuevas reservas de clientes
 app.post('/api/reservations', (req, res) => {
   try {
     const {
@@ -161,42 +391,37 @@ app.post('/api/reservations', (req, res) => {
 
     const errors = {};
 
-    // Validación de Fecha
     if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      errors.date = 'Selecciona una fecha válida para tu reserva (YYYY-MM-DD).';
+      errors.date = 'Seleccione una fecha válida.';
     } else {
-      const selectedDateObj = new Date(`${date}T12:00:00`);
-      if (selectedDateObj.getDay() === 1) {
-        errors.date = 'Los lunes permanecemos cerrados por descanso semanal. Por favor, elige de martes a domingo.';
+      const dObj = new Date(`${date}T12:00:00`);
+      if (dObj.getDay() === 1) {
+        errors.date =
+          'Los lunes permanecemos cerrados por descanso semanal. Por favor, seleccione de martes a domingo.';
       }
     }
 
-    // Validación de Hora
-    const validTimes = [...AVAILABLE_TIME_SLOTS.lunch, ...AVAILABLE_TIME_SLOTS.dinner];
+    const validTimes = [...TIME_SLOTS.lunch, ...TIME_SLOTS.dinner];
     if (!time || !validTimes.includes(time)) {
-      errors.time = 'Selecciona una hora válida dentro de nuestro horario de comidas o cenas.';
+      errors.time = 'Seleccione un turno horario disponible.';
     }
 
-    // Validación de Comensales
     const numGuests = Number(guests);
-    if (!numGuests || Number.isNaN(numGuests) || numGuests < 1 || numGuests > 16) {
-      errors.guests = 'El número de comensales debe estar entre 1 y 16 personas (para grupos mayores llámanos al 915 47 31 11).';
+    if (!numGuests || numGuests < 1 || numGuests > 16) {
+      errors.guests = 'Seleccione entre 1 y 16 comensales.';
     }
 
-    // Validación de Nombre
-    if (!name || typeof name !== 'string' || name.trim().length < 3) {
-      errors.name = 'Introduce tu nombre y apellidos (mínimo 3 caracteres).';
+    if (!name || String(name).trim().length < 3) {
+      errors.name = 'Introduzca su nombre y apellidos completos.';
     }
 
-    // Validación de Teléfono
     const cleanPhone = phone ? String(phone).replace(/\s+/g, '') : '';
     if (!cleanPhone || !/^\+?[0-9]{9,15}$/.test(cleanPhone)) {
-      errors.phone = 'Introduce un número de teléfono válido (mínimo 9 dígitos).';
+      errors.phone = 'Introduzca un teléfono de contacto válido (mínimo 9 dígitos).';
     }
 
-    // Validación de Email
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email).trim())) {
-      errors.email = 'Introduce un correo electrónico válido para enviarte el resguardo de reserva.';
+      errors.email = 'Introduzca un correo electrónico válido.';
     }
 
     if (Object.keys(errors).length > 0) {
@@ -207,32 +432,28 @@ app.post('/api/reservations', (req, res) => {
       });
     }
 
-    // Comprobar aforo disponible en ese turno
     const occupancy = db.getSlotOccupancy(date, time);
     if (occupancy.availableSeats < numGuests) {
       return res.status(409).json({
         success: false,
-        error: `Lo sentimos, para las ${time}h del día ${date} solo quedan ${occupancy.availableSeats} plazas disponibles online. Por favor selecciona otro turno horario o llámanos al 915 47 31 11.`
+        error: `Para el turno de las ${time}h del ${date} solo quedan ${occupancy.availableSeats} plazas disponibles online. Seleccione otra hora o llámenos al 915 47 31 11.`
       });
     }
 
-    // Resolver nombre de zona del restaurante
-    const selectedAreaObj =
+    const areaObj =
       RESTAURANT_INFO.diningAreas.find((a) => a.id === diningArea) ||
       RESTAURANT_INFO.diningAreas[0];
 
-    // Generar código único de reserva (#LM-YYYY-XXXX)
     const year = new Date().getFullYear();
-    const randomDigits = Math.floor(1000 + Math.random() * 9000);
-    const reservationCode = `LM-${year}-${randomDigits}`;
+    const reservationCode = `LM-${year}-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const created = db.createReservation({
       reservation_code: reservationCode,
       reservation_date: date,
       reservation_time: time,
       guests: numGuests,
-      dining_area: selectedAreaObj.id,
-      dining_area_name: selectedAreaObj.name,
+      dining_area: areaObj.id,
+      dining_area_name: areaObj.name,
       customer_name: name.trim(),
       customer_phone: phone.trim(),
       customer_email: email.trim().toLowerCase(),
@@ -241,13 +462,9 @@ app.post('/api/reservations', (req, res) => {
       status: 'confirmed'
     });
 
-    console.log(
-      `✅ [La Montaña] Nueva reserva confirmada ${reservationCode}: ${created.customer_name} (${numGuests} pax) el ${date} a las ${time}h en ${selectedAreaObj.name}`
-    );
-
     res.status(201).json({
       success: true,
-      message: '¡Mesa reservada con éxito en Restaurante La Montaña!',
+      message: 'Reserva confirmada en Restaurante La Montaña.',
       reservationCode,
       reservation: created
     });
@@ -255,114 +472,44 @@ app.post('/api/reservations', (req, res) => {
     console.error('Error en POST /api/reservations:', error);
     res.status(500).json({
       success: false,
-      error: 'Error interno al procesar la reserva en el servidor.'
+      error: 'Error interno al registrar su reserva.'
     });
   }
 });
 
-// ============================================================================
-// 5. GET /api/reservations — Listado de reservas y consulta por código
-// ============================================================================
-app.get('/api/reservations', (req, res) => {
-  try {
-    const { date, status, search } = req.query;
-    const reservations = db.getAllReservations({ date, status, search });
-    const stats = db.getStats();
-    res.json({
-      success: true,
-      total: reservations.length,
-      stats,
-      reservations
-    });
-  } catch (error) {
-    console.error('Error en GET /api/reservations:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Error al consultar las reservas.'
-    });
-  }
-});
-
+// GET /api/reservations/:code — Consulta pública de resguardo por código
 app.get('/api/reservations/:code', (req, res) => {
-  try {
-    const reservation = db.getReservationByCode(req.params.code);
-    if (!reservation) {
-      return res.status(404).json({
-        success: false,
-        error: `No hemos encontrado ninguna reserva con el código "${req.params.code}".`
-      });
-    }
-    res.json({
-      success: true,
-      reservation
-    });
-  } catch (error) {
-    res.status(500).json({
+  const reservation = db.getReservationByCode(req.params.code);
+  if (!reservation) {
+    return res.status(404).json({
       success: false,
-      error: 'Error al buscar la reserva.'
+      error: `No se encontró ninguna reserva con el código ${req.params.code}.`
     });
   }
-});
-
-app.patch('/api/reservations/:id/status', (req, res) => {
-  try {
-    const { status } = req.body;
-    if (!['confirmed', 'completed', 'cancelled'].includes(status)) {
-      return res.status(400).json({
-        success: false,
-        error: 'Estado no válido. Valores permitidos: confirmed, completed, cancelled.'
-      });
+  res.json({
+    success: true,
+    reservation: {
+      reservation_code: reservation.reservation_code,
+      reservation_date: reservation.reservation_date,
+      reservation_time: reservation.reservation_time,
+      guests: reservation.guests,
+      dining_area_name: reservation.dining_area_name,
+      customer_name: reservation.customer_name,
+      status: reservation.status
     }
-    const updated = db.updateReservationStatus(req.params.id, status);
-    if (!updated) {
-      return res.status(404).json({ success: false, error: 'Reserva no encontrada.' });
-    }
-    res.json({
-      success: true,
-      reservation: updated
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: 'Error al actualizar el estado de la reserva.'
-    });
-  }
+  });
 });
 
-app.delete('/api/reservations/:id', (req, res) => {
-  try {
-    const result = db.deleteReservation(req.params.id);
-    res.json({
-      success: true,
-      ...result
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: 'Error al eliminar la reserva.'
-    });
-  }
-});
-
-// Ruta raíz y fallback para SPA React (compatible con Express 4 y 5)
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-app.use((req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
+// Arranque del Servidor
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log('====================================================================');
-    console.log('🍷 RESTAURANTE LA MONTAÑA — FULL-STACK SERVER ACTIVO');
+    console.log('🍷 RESTAURANTE LA MONTAÑA — SERVIDOR ACTIVO');
     console.log('📍 C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid');
-    console.log('📞 Teléfono de Reservas: +34 915 47 31 11');
-    console.log(`🌐 Aplicación Web (React + Tailwind): http://localhost:${PORT}`);
-    console.log(`📡 API Carta:       http://localhost:${PORT}/api/menu`);
-    console.log(`📡 API Información: http://localhost:${PORT}/api/info`);
-    console.log(`📡 API Reservas:    http://localhost:${PORT}/api/reservations`);
+    console.log(`🌐 Web Pública Gastronómica: http://localhost:${PORT}`);
+    console.log(`🔐 Panel Privado Protegido:  http://localhost:${PORT}/admin`);
+    console.log(`🔑 Login Administración:     http://localhost:${PORT}/admin/login`);
+    console.log(`🛡️ Contraseña Admin Activa:  ${ADMIN_PASSWORD} (configurable vía ADMIN_PASSWORD)`);
     console.log('====================================================================');
   });
 }

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acceso Privado Dirección — <%= restaurant.name %> | <%= restaurant.subtitle %></title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#09090b'
+          },
+          fontFamily: {
+            serif: ["'Cormorant Garamond'", 'Georgia', 'serif'],
+            sans: ["'Plus Jakarta Sans'", 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="/css/luxury.css" />
+</head>
+<body class="bg-[#09090b] text-stone-100 font-sans min-h-screen flex flex-col justify-between relative overflow-hidden">
+
+  <!-- Halo ambiental ámbar -->
+  <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+  <!-- Barra superior minimalista -->
+  <header class="backdrop-blur-md bg-stone-950/80 border-b border-stone-800/80 z-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-full bg-stone-900 border border-amber-500/40 flex items-center justify-center">
+          <span class="font-serif text-lg font-bold text-amber-500">LM</span>
+        </div>
+        <div>
+          <span class="block font-serif text-2xl font-semibold text-stone-100 leading-none">
+            <%= restaurant.name %>
+          </span>
+          <span class="block text-[10px] uppercase tracking-[0.24em] text-amber-500 mt-1">
+            Panel de Dirección · <%= restaurant.subtitle %>
+          </span>
+        </div>
+      </a>
+
+      <a
+        href="/"
+        class="px-4 py-2 rounded-full text-xs uppercase tracking-[0.16em] text-stone-300 hover:text-amber-400 border border-stone-800 hover:border-amber-500/40 transition-all duration-300"
+      >
+        ← Volver a la Web Pública
+      </a>
+    </div>
+  </header>
+
+  <!-- Tarjeta Central de Autenticación Protegida -->
+  <main class="flex-1 flex items-center justify-center px-4 py-12 z-10">
+    <div class="w-full max-w-md bg-stone-950/90 backdrop-blur-xl border border-stone-800 rounded-3xl p-8 sm:p-10 shadow-2xl animate-fade-up">
+      <div class="text-center space-y-2 mb-8">
+        <div class="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center mx-auto mb-3">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </div>
+        <span class="text-[10px] uppercase tracking-[0.26em] text-amber-500 font-semibold block">
+          Seguridad por Sesión Activa
+        </span>
+        <h1 class="font-serif text-3xl sm:text-4xl font-semibold text-stone-50">
+          Acceso Administración
+        </h1>
+        <p class="text-stone-400 text-xs leading-relaxed">
+          Área restringida exclusivamente al personal autorizado de Restaurante La Montaña en C. del Rey Francisco, 28.
+        </p>
+      </div>
+
+      <% if (error) { %>
+        <div class="mb-6 p-4 rounded-2xl bg-red-950/80 border border-red-500/40 text-red-200 text-xs flex items-center gap-2.5">
+          <span class="text-base">⚠️</span>
+          <span><%= error %></span>
+        </div>
+      <% } %>
+
+      <% if (logoutMessage) { %>
+        <div class="mb-6 p-4 rounded-2xl bg-emerald-950/70 border border-emerald-500/40 text-emerald-200 text-xs flex items-center gap-2.5">
+          <span class="text-base">✓</span>
+          <span><%= logoutMessage %></span>
+        </div>
+      <% } %>
+
+      <form id="admin-login-form" action="/admin/login" method="POST" class="space-y-5">
+        <div>
+          <label for="username" class="block text-[11px] uppercase tracking-[0.18em] text-stone-300 font-semibold mb-2">
+            Usuario / Identificador
+          </label>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            value="admin"
+            required
+            autocomplete="username"
+            class="w-full px-4 py-3.5 rounded-xl bg-[#09090b] border border-stone-800 text-stone-100 text-sm focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all duration-300 ease-in-out"
+          />
+        </div>
+
+        <div>
+          <label for="password" class="block text-[11px] uppercase tracking-[0.18em] text-stone-300 font-semibold mb-2">
+            Contraseña de Administración *
+          </label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            required
+            autofocus
+            placeholder="Introduzca la clave privada..."
+            autocomplete="current-password"
+            class="w-full px-4 py-3.5 rounded-xl bg-[#09090b] border border-stone-800 text-stone-100 placeholder-stone-600 text-sm focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 transition-all duration-300 ease-in-out"
+          />
+        </div>
+
+        <button
+          id="login-submit-btn"
+          type="submit"
+          class="btn-shine w-full py-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs uppercase tracking-[0.2em] shadow-[0_0_25px_rgba(245,158,11,0.25)] transition-all duration-300 ease-in-out flex items-center justify-center gap-2.5"
+        >
+          <span id="login-spinner" class="hidden spinner-amber"></span>
+          <span id="login-btn-text">Iniciar Sesión Segura</span>
+        </button>
+      </form>
+
+      <div class="mt-7 pt-5 border-t border-stone-900 text-center">
+        <p class="text-[11px] text-stone-500">
+          Protegido con <code class="text-amber-500/90">express-session</code> · Cookie firmada <code class="text-stone-400">HttpOnly</code>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="py-6 text-center text-xs text-stone-600 border-t border-stone-900/80 z-10">
+    <%= restaurant.name %> · <%= restaurant.address.fullAddress %>
+  </footer>
+
+  <script>
+    const loginForm = document.getElementById('admin-login-form');
+    const loginSpinner = document.getElementById('login-spinner');
+    const loginText = document.getElementById('login-btn-text');
+    if (loginForm) {
+      loginForm.addEventListener('submit', () => {
+        if (loginSpinner) loginSpinner.classList.remove('hidden');
+        if (loginText) loginText.textContent = 'Verificando credenciales...';
+      });
+    }
+  </script>
+</body>
+</html>

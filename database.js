@@ -1,7 +1,7 @@
 /**
- * RESTAURANTE LA MONTAÑA — CAPA DE PERSISTENCIA SQLITE (node:sqlite)
+ * RESTAURANTE LA MONTAÑA — PERSISTENCIA SQLITE (node:sqlite)
  * Ubicación: C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid
- * Archivo de base de datos persistente: lamontana.db
+ * Archivo de base de datos: lamontana.db
  */
 
 const path = require('path');
@@ -10,7 +10,7 @@ const { DatabaseSync } = require('node:sqlite');
 const DB_PATH = path.join(__dirname, 'lamontana.db');
 const db = new DatabaseSync(DB_PATH);
 
-const MAX_GUESTS_PER_SLOT = 32; // Capacidad máxima reservable online por turno horario
+const MAX_GUESTS_PER_SLOT = 36;
 
 function initDatabase() {
   db.exec(`
@@ -20,8 +20,8 @@ function initDatabase() {
       reservation_date TEXT NOT NULL,
       reservation_time TEXT NOT NULL,
       guests INTEGER NOT NULL,
-      dining_area TEXT DEFAULT 'salon-castizo',
-      dining_area_name TEXT DEFAULT 'Salón Principal Castizo',
+      dining_area TEXT DEFAULT 'salon-principal',
+      dining_area_name TEXT DEFAULT 'Salón Gastronómico Principal',
       customer_name TEXT NOT NULL,
       customer_phone TEXT NOT NULL,
       customer_email TEXT NOT NULL,
@@ -56,13 +56,13 @@ function seedInitialReservations() {
       today,
       '14:00',
       4,
-      'salon-castizo',
-      'Salón Principal Castizo',
+      'salon-principal',
+      'Salón Gastronómico Principal',
       'Alejandro Mendoza',
       '+34 644 21 89 10',
       'amendoza@gmail.com',
-      'Queremos probar los huevos trufados y las croquetas de jamón ibérico. Un comensal celíaco.',
-      JSON.stringify(['Croquetas de Jamón Ibérico', 'Huevos Trufados', 'Oreja a la Plancha']),
+      'Mesa luminosa. Un comensal celíaco (sin gluten).',
+      JSON.stringify(['Croquetas de Jamón Ibérico 100% Bellota', 'Huevos Camperos Trufados']),
       'confirmed'
     );
 
@@ -71,13 +71,13 @@ function seedInitialReservations() {
       today,
       '21:30',
       2,
-      'cueva-bodega',
-      'Cueva Abovedada de Ladrillo (Bodega)',
+      'cueva-historica',
+      'Cueva Abovedada de Ladrillo (1943)',
       'Lucía Fernández Ochoa',
       '+34 619 82 34 55',
       'lucia.fo@outlook.es',
-      'Cena de aniversario en mesa tranquila de la cueva.',
-      JSON.stringify(['Combo Castizo Rey Francisco', 'Torrija Caramelizada Casera']),
+      'Cena de aniversario en mesa íntima de la cueva histórica.',
+      JSON.stringify(['Verdinas de Llanes con Carabineros', 'Pago de Carraovejas', 'Torrija Caramelizada']),
       'confirmed'
     );
 
@@ -86,17 +86,23 @@ function seedInitialReservations() {
       tomorrow,
       '14:30',
       6,
-      'cueva-bodega',
-      'Cueva Abovedada de Ladrillo (Bodega)',
+      'cueva-historica',
+      'Cueva Abovedada de Ladrillo (1943)',
       'Ignacio Echevarría',
       '+34 670 33 11 90',
       'i.echevarria@empresa.es',
-      'Comida familiar en Argüelles. Sin alergias.',
-      JSON.stringify(['Croquetas de Jamón Ibérico', 'Cazón en Adobo', 'Burger La Montaña Trufada']),
+      'Comida ejecutiva en Moncloa. Preferencia vino Ribera del Duero.',
+      JSON.stringify(['Croquetas de Jamón Ibérico', 'Solomillo de Vaca Rubia Gallega']),
       'confirmed'
     );
+  }
+}
 
-    console.log('🍷 Base de datos SQLite (lamontana.db) inicializada con reservas de ejemplo para Restaurante La Montaña.');
+function safeParseJSON(str, fallback) {
+  try {
+    return JSON.parse(str);
+  } catch {
+    return fallback;
   }
 }
 
@@ -105,9 +111,9 @@ const dbOperations = {
     let query = 'SELECT * FROM reservations WHERE 1=1';
     const params = [];
 
-    if (date) {
+    if (date && date.trim() !== '') {
       query += ' AND reservation_date = ?';
-      params.push(date);
+      params.push(date.trim());
     }
 
     if (status && status !== 'all') {
@@ -117,7 +123,8 @@ const dbOperations = {
 
     if (search && search.trim() !== '') {
       const term = `%${search.trim()}%`;
-      query += ' AND (customer_name LIKE ? OR customer_phone LIKE ? OR customer_email LIKE ? OR reservation_code LIKE ?)';
+      query +=
+        ' AND (customer_name LIKE ? OR customer_phone LIKE ? OR customer_email LIKE ? OR reservation_code LIKE ?)';
       params.push(term, term, term, term);
     }
 
@@ -130,9 +137,10 @@ const dbOperations = {
   },
 
   getReservationByCode: (code) => {
+    if (!code) return null;
     const row = db
       .prepare('SELECT * FROM reservations WHERE UPPER(reservation_code) = UPPER(?)')
-      .get(code.trim());
+      .get(String(code).trim());
     if (!row) return null;
     return {
       ...row,
@@ -146,11 +154,12 @@ const dbOperations = {
         "SELECT COALESCE(SUM(guests), 0) as totalGuests, COUNT(*) as totalTables FROM reservations WHERE reservation_date = ? AND reservation_time = ? AND status != 'cancelled'"
       )
       .get(date, time);
+    const occupied = row ? row.totalGuests : 0;
     return {
-      totalGuests: row ? row.totalGuests : 0,
+      totalGuests: occupied,
       totalTables: row ? row.totalTables : 0,
       maxCapacity: MAX_GUESTS_PER_SLOT,
-      availableSeats: Math.max(0, MAX_GUESTS_PER_SLOT - (row ? row.totalGuests : 0))
+      availableSeats: Math.max(0, MAX_GUESTS_PER_SLOT - occupied)
     };
   },
 
@@ -176,8 +185,8 @@ const dbOperations = {
       data.reservation_date,
       data.reservation_time,
       Number(data.guests),
-      data.dining_area || 'salon-castizo',
-      data.dining_area_name || 'Salón Principal Castizo',
+      data.dining_area || 'salon-principal',
+      data.dining_area_name || 'Salón Gastronómico Principal',
       data.customer_name,
       data.customer_phone,
       data.customer_email,
@@ -206,24 +215,35 @@ const dbOperations = {
 
   getStats: () => {
     const today = new Date().toISOString().split('T')[0];
-    const totalReservations = db.prepare("SELECT COUNT(*) as c FROM reservations WHERE status != 'cancelled'").get().c;
-    const todayReservations = db.prepare("SELECT COUNT(*) as c FROM reservations WHERE reservation_date = ? AND status != 'cancelled'").get(today).c;
-    const totalGuests = db.prepare("SELECT COALESCE(SUM(guests), 0) as g FROM reservations WHERE status != 'cancelled'").get().g;
+    const totalActive = db
+      .prepare("SELECT COUNT(*) as c FROM reservations WHERE status != 'cancelled'")
+      .get().c;
+    const todayCount = db
+      .prepare("SELECT COUNT(*) as c FROM reservations WHERE reservation_date = ? AND status != 'cancelled'")
+      .get(today).c;
+    const confirmedCount = db
+      .prepare("SELECT COUNT(*) as c FROM reservations WHERE status = 'confirmed'")
+      .get().c;
+    const completedCount = db
+      .prepare("SELECT COUNT(*) as c FROM reservations WHERE status = 'completed'")
+      .get().c;
+    const cancelledCount = db
+      .prepare("SELECT COUNT(*) as c FROM reservations WHERE status = 'cancelled'")
+      .get().c;
+    const totalGuests = db
+      .prepare("SELECT COALESCE(SUM(guests), 0) as g FROM reservations WHERE status != 'cancelled'")
+      .get().g;
+
     return {
-      totalReservations,
-      todayReservations,
+      totalReservations: totalActive,
+      todayReservations: todayCount,
+      confirmedReservations: confirmedCount,
+      completedReservations: completedCount,
+      cancelledReservations: cancelledCount,
       totalGuests
     };
   }
 };
-
-function safeParseJSON(str, fallback) {
-  try {
-    return JSON.parse(str);
-  } catch {
-    return fallback;
-  }
-}
 
 initDatabase();
 
