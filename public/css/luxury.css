@@ -3,7 +3,7 @@
  * RESTAURANTE LA MONTAÑA — ALTA COCINA CLÁSICA (MADRID, 1943)
  * Sistema de Diseño Formal, Adaptativo (Mobile-First) y Multi-Plataforma
  * Paleta:
- *   - Fondo Antracita / Pizarra Profundo: #09090b
+ *   - Fondo Antracita / Pizarra Profundo: #050506
  *   - Superficie Elevada Sutil:           #111115
  *   - Dorado Champán / Latón Clásico:     #d4af37
  *   - Marfil / Blanco Cálido:             #f4f1ea / #e5e5e5
@@ -87,7 +87,7 @@ textarea,
 }
 
 ::-webkit-scrollbar-track {
-  background: #09090b;
+  background: #050506;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -242,7 +242,7 @@ textarea,
   bottom: 0;
   z-index: 70;
   width: min(86vw, 360px);
-  background-color: #09090b;
+  background-color: #050506;
   border-left: 1px solid rgba(212, 175, 55, 0.28);
   box-shadow: -20px 0 60px rgba(0, 0, 0, 0.9);
   transform: translateX(100%);
@@ -271,7 +271,7 @@ textarea,
   letter-spacing: 0.22em;
   text-transform: uppercase;
   text-decoration: none;
-  color: #09090b;
+  color: #050506;
   background-color: var(--gold-champagne);
   border: 1px solid var(--gold-champagne);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -311,7 +311,7 @@ textarea,
 }
 
 .lm-btn-outline:hover {
-  color: #09090b;
+  color: #050506;
   background-color: var(--gold-champagne);
   border-color: var(--gold-champagne);
   transform: translateY(-1px);
@@ -342,7 +342,7 @@ textarea,
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #09090b;
+  background-color: #050506;
   overflow: hidden;
 }
 
@@ -362,8 +362,8 @@ textarea,
 .lm-hero-overlay {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at center, rgba(9, 9, 11, 0.38) 0%, rgba(9, 9, 11, 0.92) 78%, #09090b 100%),
-    linear-gradient(to bottom, rgba(9, 9, 11, 0.72) 0%, rgba(9, 9, 11, 0.32) 50%, #09090b 100%);
+  background: radial-gradient(circle at center, rgba(9, 9, 11, 0.38) 0%, rgba(9, 9, 11, 0.92) 78%, #050506 100%),
+    linear-gradient(to bottom, rgba(9, 9, 11, 0.72) 0%, rgba(9, 9, 11, 0.32) 50%, #050506 100%);
 }
 
 .lm-divider-ornament {
@@ -476,7 +476,7 @@ textarea,
 .lm-input {
   width: 100%;
   min-height: 48px;
-  background-color: #09090b;
+  background-color: #050506;
   border: 1px solid rgba(255, 255, 255, 0.14);
   color: var(--ivory);
   padding: 0.85rem 1rem;
@@ -538,7 +538,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   width: 15px;
   height: 15px;
   border: 1.5px solid rgba(9, 9, 11, 0.25);
-  border-top-color: #09090b;
+  border-top-color: #050506;
   border-radius: 50%;
   display: inline-block;
   animation: lmSpin 0.75s linear infinite;

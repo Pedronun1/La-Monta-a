@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                   return `
                     <article
-                      class="table-card bg-[#09090b] border ${st.borderClass} p-6 flex flex-col justify-between transition-all hover:border-[#d4af37]"
+                      class="table-card bg-[#050506] border ${st.borderClass} p-6 flex flex-col justify-between transition-all hover:border-[#d4af37]"
                       data-table-id="${table.id}"
                       data-zone-id="${escapeHtml(table.zone_id)}"
                       data-status="${escapeHtml(table.status)}"
@@ -329,10 +329,10 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', () => {
       activeZoneFilter = btn.getAttribute('data-zone-filter') || 'all';
       zoneFilterBtns.forEach((b) => {
-        b.classList.remove('bg-[#d4af37]', 'text-[#09090b]');
+        b.classList.remove('bg-[#d4af37]', 'text-[#050506]');
         b.classList.add('border', 'border-white/10', 'text-neutral-300');
       });
-      btn.classList.add('bg-[#d4af37]', 'text-[#09090b]');
+      btn.classList.add('bg-[#d4af37]', 'text-[#050506]');
       btn.classList.remove('border', 'border-white/10', 'text-neutral-300');
       renderMap();
     });

@@ -10,11 +10,12 @@ module.exports = {
       colors: {
         obsidian: "#050506",
         ivory: "#f4f4f5",
-        champagne: "#d4af37"
+        gold: "#d4af37"
       },
       fontFamily: {
         serif: ["'Cormorant Garamond'", "Georgia", "serif"],
-        sans: ["'Plus Jakarta Sans'", "system-ui", "sans-serif"]
+        sans: ["'Plus Jakarta Sans'", "system-ui", "sans-serif"],
+        mono: ["'JetBrains Mono'", "monospace"]
       }
     }
   },

@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <select
                   data-action="assign-table"
                   data-reservation-id="${r.id}"
-                  class="assign-table-select bg-[#09090b] border border-white/15 focus:border-[#d4af37] text-[11px] text-[#f4f1ea] px-2.5 py-1.5 outline-none transition"
+                  class="assign-table-select bg-[#050506] border border-white/15 focus:border-[#d4af37] text-[11px] text-[#f4f1ea] px-2.5 py-1.5 outline-none transition"
                 >
                   ${buildTableOptionsHtml(r.table_id)}
                 </select>
