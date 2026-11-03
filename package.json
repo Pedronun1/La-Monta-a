@@ -1,30 +1,17 @@
 {
-  "name": "restaurante-la-montana-madrid",
-  "version": "3.0.0",
-  "description": "Aplicación Web Oficial y Panel de Administración (Silent Luxury) para Restaurante La Montaña — C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid.",
+  "name": "la-montana",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Web del restaurante La Montaña",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js"
   },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "keywords": [
-    "la-montana",
-    "restaurante-madrid",
-    "moncloa-aravaca",
-    "rey-francisco-28",
-    "express",
-    "ejs",
-    "express-session",
-    "tailwindcss"
-  ],
-  "author": "Restaurante La Montaña — Madrid (Fundado en 1943)",
-  "license": "MIT",
+  "engines": { "node": ">=18" },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
-    "express": "^4.21.2",
-    "express-session": "^1.18.1"
+    "express": "^4.21.0"
   }
 }

@@ -3,856 +3,171 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <%
-    const rawRest = (typeof restaurant !== 'undefined' && restaurant) ? restaurant : {};
-    const addressText = (rawRest.address && typeof rawRest.address === 'object')
-      ? (rawRest.address.fullAddress || 'C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid')
-      : (rawRest.address || 'C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid');
-
-    const phoneText = (rawRest.contact && rawRest.contact.phone)
-      ? rawRest.contact.phone
-      : (rawRest.phone || '+34 915 47 31 11');
-
-    const scheduleText = rawRest.schedule || 'Martes a Sábado: 13:00 – 16:30 y 20:30 – 23:30 · Domingo: 13:00 – 16:45 · Lunes cerrado';
-
-    const fmtPrice = (typeof formatPrice === 'function')
-      ? formatPrice
-      : (p) => (p === null || p === undefined || Number.isNaN(Number(p)))
-        ? 'Consultar'
-        : Number(p).toFixed(2).replace('.', ',') + ' €';
-
-    const fallbackCarta = {
-      primeros: [
-        { id: 'consome', name: 'Consomé', description: 'Caldo tradicional clarificado de ave y jarrete cocinado a fuego lento.', price: 5.00 },
-        { id: 'ensaladilla-rusa', name: 'Ensaladilla Rusa', description: 'Receta clásica de la casa con patata seleccionada, bonito del norte y mayonesa suave.', price: 11.50 },
-        { id: 'ensalada-tomate-bonito', name: 'Ensalada de Tomate Bonito', description: 'Tomate natural de huerta acompañado de lomos de bonito del norte y cebolleta.', price: 15.50 },
-        { id: 'ensalada-tomate-raf-bon', name: 'Ensalada Tomate Raf Bon', description: 'Tomate Raf de temporada aliñado con aceite de oliva virgen extra y bonito seleccionado.', price: 18.50 },
-        { id: 'torreznos', name: 'Torreznos', description: 'Torreznos tradicionales dorados con corteza crujiente e interior jugoso.', price: 10.00 },
-        { id: 'lentejas', name: 'Lentejas', description: 'Lentejas caseras estofadas lentamente a la manera tradicional.', price: 9.00 },
-        { id: 'sopa-cocido', name: 'Sopa Cocido', description: 'Sopa reconfortante de fideos finos en el caldo sustancioso de nuestro cocido.', price: 9.00 },
-        { id: 'berenjena-rebozada', name: 'Berenjena Rebozada', description: 'Láminas de berenjena tierna con rebozado fino y dorado al momento.', price: 11.00 },
-        { id: 'pisto-manchego', name: 'Pisto Manchego', description: 'Hortalizas frescas pochadas a fuego pausado según la receta clásica manchega.', price: 11.00 },
-        { id: 'patatas-revolconas', name: 'Patatas Revolconas', description: 'Cremoso rústico de patata al pimentón de la Vera con torreznos crujientes.', price: 11.50 },
-        { id: 'gazpacho', name: 'Gazpacho', description: 'Elaborado en casa con tomates maduros de temporada y aceite de oliva virgen extra.', price: 11.50 },
-        { id: 'salmorejo', name: 'Salmorejo', description: 'Salmorejo tradicional cremoso servido con virutas de jamón ibérico y huevo duro.', price: 12.00 },
-        { id: 'huevos-rellenos', name: 'Huevos Rellenos', description: 'Huevos camperos rellenos de bonito del norte elaborados en nuestra cocina.', price: 14.00 },
-        { id: 'judias-verdes', name: 'Judías Verdes', description: 'Judías verdes tiernas salteadas con jamón ibérico y ajo laminado.', price: 19.50 },
-        { id: 'fabada', name: 'Fabada', description: 'Auténtica fabada asturiana de cuchara con fabes seleccionadas y su compango.', price: 19.50 },
-        { id: 'verdinas-con-carabineros', name: 'Verdinas con Carabineros', description: 'El plato de cuchara más famoso de La Montaña: verdinas estofadas con carabineros.', price: 21.00 },
-        { id: 'cocido', name: 'Cocido', description: 'Servicio / aperitivo tradicional de nuestro cocido madrileño.', price: 1.80 },
-        { id: 'croqueta-de-jamon-unidad', name: 'Croqueta de Jamón (unidad)', description: 'Croqueta casera cremosa de jamón ibérico elaborada a diario (precio por unidad).', price: 2.00 },
-        { id: 'gilda', name: 'Gilda', description: 'Clásico aperitivo de anchoa del Cantábrico, piparra tierna y aceituna.', price: 7.00 },
-        { id: 'patatas-bravas', name: 'Patatas Bravas', description: 'Patatas naturales doradas con nuestra salsa brava tradicional (consultar en sala).', price: null }
-      ],
-      segundos: [
-        { id: 'sardinas-escabeche', name: 'Sardinas Escabeche', description: 'Sardinas preparadas en escabeche casero tradicional de laurel y especias suaves.', price: 11.00 },
-        { id: 'tortilla-de-la-abuela', name: 'Tortilla de la Abuela', description: 'Tortilla casera jugosa elaborada al momento con receta tradicional de la casa.', price: 21.00 },
-        { id: 'calamares-en-su-tinta', name: 'Calamares en su Tinta', description: 'Calamares tiernos guisados lentamente en su tinta con guarnición clásica.', price: 21.50 },
-        { id: 'filetes-de-gallo', name: 'Filetes de Gallo', description: 'Filetes limpios de gallo fresco de lonja preparados a la plancha o rebozados.', price: 23.00 },
-        { id: 'merluza-de-pincho', name: 'Merluza de Pincho', description: 'Corte selecto de merluza de pincho del Cantábrico preparada al gusto.', price: 27.50 },
-        { id: 'delicias-de-merluza', name: 'Delicias de Merluza', description: 'Medallones jugosos de merluza fresca en rebozado fino tradicional.', price: 27.50 },
-        { id: 'cococha-de-bacalao-merluza', name: 'Cococha de Bacalao/Merluza', description: 'Cocochas seleccionadas de primera calidad al pil-pil, rebozadas o en salsa verde.', price: 35.00 },
-        { id: 'filete-de-ternera', name: 'Filete de Ternera', description: 'Filete tierno de ternera nacional a la plancha con patatas fritas caseras.', price: 19.00 },
-        { id: 'escalope-de-ternera', name: 'Escalope de Ternera', description: 'Escalope de ternera con empanado artesano dorado en sartén y guarnición.', price: 20.00 },
-        { id: 'pollo-al-ajillo', name: 'Pollo al Ajillo', description: 'Pollo troceado dorado al ajillo tradicional con ajos tiernos y vino blanco.', price: 14.00 },
-        { id: 'albondigas', name: 'Albóndigas', description: 'Albóndigas caseras de ternera guisadas en salsa española con patatas.', price: 15.00 },
-        { id: 'ternera-en-pepitoria', name: 'Ternera en Pepitoria', description: 'Receta histórica madrileña estofada en salsa ligada de almendra, azafrán y yema.', price: 16.50 },
-        { id: 'redondo-de-ternera', name: 'Redondo de Ternera', description: 'Redondo de ternera asado lentamente en su jugo con guarnición de la casa.', price: 17.50 },
-        { id: 'entrecot-y-patata-frita', name: 'Entrecot y Patata Frita', description: 'Entrecot de vacuno seleccionado al punto deseado con patatas fritas caseras.', price: 20.00 },
-        { id: 'solomillo-de-ternera', name: 'Solomillo de Ternera', description: 'Centro de solomillo de ternera de primera calidad a la plancha o parrilla.', price: 22.00 },
-        { id: 'chuleton-de-vaca', name: 'Chuletón de Vaca', description: 'Gran chuletón de vaca madurada a la brasa ideal para compartir en mesa.', price: 68.00 }
-      ],
-      postres: [
-        { id: 'arroz-con-leche', name: 'Arroz con Leche', description: 'Receta casera cremosa cocinada lentamente con leche entera, canela y limón.', price: 7.00 },
-        { id: 'flan', name: 'Flan', description: 'Flan tradicional de huevo horneado al baño maría en nuestra cocina con caramelo.', price: 7.00 },
-        { id: 'manzana-asada', name: 'Manzana Asada', description: 'Manzana reineta asada lentamente al horno en su propio jugo acaramelado.', price: 7.00 },
-        { id: 'fruta', name: 'Fruta', description: 'Pieza o selección de fruta fresca natural de temporada.', price: 6.50 },
-        { id: 'torrija', name: 'Torrija', description: 'Nuestra célebre torrija casera tradicional de media barra de pan en leche infusionada.', price: 9.00 }
-      ]
-    };
-
-    const primerosList = (typeof carta !== 'undefined' && carta && Array.isArray(carta.primeros) && carta.primeros.length)
-      ? carta.primeros
-      : fallbackCarta.primeros;
-
-    const segundosList = (typeof carta !== 'undefined' && carta && Array.isArray(carta.segundos) && carta.segundos.length)
-      ? carta.segundos
-      : fallbackCarta.segundos;
-
-    const postresList = (typeof carta !== 'undefined' && carta && Array.isArray(carta.postres) && carta.postres.length)
-      ? carta.postres
-      : fallbackCarta.postres;
-
-    let slots = ['13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '21:00', '21:30', '22:00', '22:30'];
-    if (typeof timeSlots !== 'undefined' && timeSlots) {
-      if (Array.isArray(timeSlots) && timeSlots.length) {
-        slots = timeSlots;
-      } else if (Array.isArray(timeSlots.lunch) || Array.isArray(timeSlots.dinner)) {
-        slots = [...(timeSlots.lunch || []), ...(timeSlots.dinner || [])];
-      }
-    }
-  %>
-
-  <title>La Montaña | Alta Cocina Tradicional Castiza en Madrid desde 1943</title>
-  <meta name="description" content="Restaurante La Montaña en C. del Rey Francisco, 28, Moncloa - Aravaca, Madrid. Alta cocina tradicional castiza desde 1943 en salones históricos de azulejos y bóveda de ladrillo visto." />
-
-  <!-- Google Fonts: Cormorant Garamond (Serif) & Plus Jakarta Sans (Sans-Serif) -->
+  <title><%= titulo %></title>
+  <meta name="description" content="La Montaña — cocina de altura. Reserva tu experiencia." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@200;300;400;500&display=swap" rel="stylesheet" />
-
-  <!-- Tailwind CSS CDN -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            obsidian: '#050506',
-            ivory: '#f4f4f5',
-            champagne: '#d4af37'
+            slate: { DEFAULT: '#050506', 900: '#0a0a0c', 800: '#101014' },
+            bone: '#f4efe6',
+            mute: '#8a867d',
+            gold: '#c8b28a'
           },
           fontFamily: {
-            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif']
-          }
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif']
+          },
+          letterSpacing: { widest2: '0.35em' }
         }
       }
     };
   </script>
-
   <style>
-    body {
-      background-color: #050506;
-      color: #f4f4f5;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
+    ::selection { background: #c8b28a; color: #050506; }
+    html { background-color: #050506; }
+    body { font-feature-settings: "liga" 1; }
+    .hairline { border-color: rgba(244,239,230,.12); }
+    .hero-fade {
+      background: linear-gradient(180deg, rgba(5,5,6,.0) 0%, rgba(5,5,6,.85) 78%, #050506 100%);
     }
-
-    ::selection {
-      background: rgba(212, 175, 55, 0.2);
-      color: #f4f4f5;
-    }
-
-    ::-webkit-scrollbar {
-      width: 5px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #050506;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: rgba(212, 175, 55, 0.25);
-    }
-
-    .scroll-reveal {
-      opacity: 0;
-      transform: translateY(2.25rem);
-    }
-    .scroll-reveal.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    input[type="date"]::-webkit-calendar-picker-indicator {
-      filter: invert(0.85) sepia(0.3) saturate(1.5) hue-rotate(10deg);
-      cursor: pointer;
-    }
+    .dish:hover .dish-line { width: 2.5rem; }
+    .dish-line { transition: width .5s cubic-bezier(.22,1,.36,1); }
   </style>
 </head>
+<body class="bg-slate text-bone font-serif antialiased">
 
-<body class="bg-[#050506] text-[#f4f4f5] selection:bg-[#d4af37]/20 selection:text-[#f4f4f5]">
-
-  <!-- ===================================================================== -->
-  <!-- 1. CABECERA (NAVBAR) ULTRA MINIMALISTA Y FLOTANTE                     -->
-  <!-- ===================================================================== -->
-  <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-[#050506]/90 border-b border-white/10 transition-all duration-500">
-    <nav class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 h-24 flex items-center justify-between" aria-label="Navegación principal">
-      
-      <!-- Izquierda: Monograma tipográfico muy fino "L.M" y "LA MONTAÑA" -->
-      <a href="#" class="flex items-center gap-4 group focus:outline-none">
-        <span class="font-serif text-xs sm:text-sm font-light tracking-[0.35em] text-[#d4af37] border border-white/10 px-2.5 py-1.5 transition-colors duration-500 group-hover:border-[#d4af37]/50">
-          L.M
-        </span>
-        <span class="font-serif text-lg sm:text-xl font-light tracking-[0.32em] text-[#f4f4f5] uppercase">
-          LA MONTAÑA
-        </span>
-      </a>
-
-      <!-- Centro: Únicamente tres enlaces esenciales en mayúsculas y tipografía ligera -->
-      <div class="hidden md:flex items-center gap-12 lg:gap-16">
-        <a href="#carta" class="text-[11px] font-light uppercase tracking-[0.3em] text-[#f4f4f5]/75 hover:text-[#d4af37] transition-colors duration-300">
-          CARTA
-        </a>
-        <a href="#la-casa" class="text-[11px] font-light uppercase tracking-[0.3em] text-[#f4f4f5]/75 hover:text-[#d4af37] transition-colors duration-300">
-          LA CASA
-        </a>
-        <a href="#reservas" class="text-[11px] font-light uppercase tracking-[0.3em] text-[#f4f4f5]/75 hover:text-[#d4af37] transition-colors duration-300">
-          RESERVAS
-        </a>
-      </div>
-
-      <!-- Derecha: Un único botón de reserva minimalista (borde fino #d4af37, fondo transparente) -->
-      <div class="flex items-center gap-4">
-        <a href="#reservas" class="inline-flex items-center justify-center px-6 py-2.5 bg-transparent border border-[#d4af37] text-[#f4f4f5] hover:text-[#d4af37] hover:border-[#d4af37]/80 text-[10px] sm:text-[11px] font-light uppercase tracking-[0.28em] transition-all duration-500">
-          Reservar Mesa
-        </a>
-
-        <!-- Botón Menú Móvil Minimalista (Solo visible en móvil) -->
-        <button id="mobile-menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false" class="md:hidden p-2 text-[#f4f4f5]/80 hover:text-[#d4af37] transition-colors focus:outline-none">
-          <svg id="menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16" />
-          </svg>
-          <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-    </nav>
-
-    <!-- Desplegable Móvil Ultra Minimalista (Únicamente los 3 enlaces) -->
-    <div id="mobile-menu" class="hidden md:hidden bg-[#050506]/95 backdrop-blur-xl border-b border-white/10 px-6 py-10">
-      <div class="flex flex-col items-center gap-8">
-        <a href="#carta" class="mobile-nav-link text-xs font-light uppercase tracking-[0.35em] text-[#f4f4f5]/80 hover:text-[#d4af37] transition-colors">
-          CARTA
-        </a>
-        <a href="#la-casa" class="mobile-nav-link text-xs font-light uppercase tracking-[0.35em] text-[#f4f4f5]/80 hover:text-[#d4af37] transition-colors">
-          LA CASA
-        </a>
-        <a href="#reservas" class="mobile-nav-link text-xs font-light uppercase tracking-[0.35em] text-[#f4f4f5]/80 hover:text-[#d4af37] transition-colors">
-          RESERVAS
+  <header class="fixed top-0 inset-x-0 z-50">
+    <div class="mx-auto max-w-6xl px-6 mt-5">
+      <div class="flex items-center justify-between rounded-full border hairline bg-slate/70 backdrop-blur-md px-6 py-3">
+        <a href="#" class="text-2xl font-medium tracking-widest2 uppercase">La Montaña</a>
+        <nav class="hidden md:flex items-center gap-8 text-[13px] uppercase tracking-widest2 text-mute">
+          <a href="#carta" class="hover:text-bone transition-colors">Carta</a>
+          <a href="#reservas" class="hover:text-bone transition-colors">Reservas</a>
+          <a href="#contacto" class="hover:text-bone transition-colors">Contacto</a>
+        </nav>
+        <a href="#reservas"
+           class="hidden md:inline-block rounded-full border border-gold/50 px-5 py-2 text-[12px] uppercase tracking-widest2 text-gold hover:bg-gold hover:text-slate transition-colors duration-300">
+          Reservar
         </a>
       </div>
     </div>
   </header>
 
-  <main>
-    <!-- =================================================================== -->
-    <!-- 2. HERO SECTION CINEMÁTICA E INMERSIVA                              -->
-    <!-- =================================================================== -->
-    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-24">
-      <div class="absolute inset-0 z-0">
-        <img
-          src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=2000&q=85"
-          alt="Salón histórico de alta gastronomía en La Montaña Madrid"
-          class="w-full h-full object-cover object-center opacity-35 scale-105 transition-transform duration-1000 ease-out"
-        />
-        <div class="absolute inset-0 bg-gradient-to-t from-[#050506] via-[#050506]/80 to-transparent"></div>
-        <div class="absolute inset-0 bg-[#050506]/45"></div>
-      </div>
-
-      <div class="relative z-10 max-w-5xl mx-auto px-6 sm:px-10 text-center py-24 md:py-32 scroll-reveal transition-all duration-1000 ease-out">
-        <p class="text-[10px] sm:text-xs font-light uppercase tracking-[0.45em] text-[#d4af37] mb-8">
-          Madrid · Fundado en 1943 · Moncloa - Aravaca
-        </p>
-
-        <h1 class="font-serif text-5xl sm:text-7xl md:text-8xl lg:text-[6.25rem] font-light tracking-[0.04em] text-[#f4f4f5] leading-[1.06] mb-8">
-          El Arte de la Mesa<br />
-          <span class="italic font-normal text-[#d4af37]/90">Castiza y Señorial</span>
-        </h1>
-
-        <p class="max-w-2xl mx-auto text-sm sm:text-base font-light text-[#f4f4f5]/70 tracking-[0.08em] leading-relaxed mb-14">
-          Ochenta años custodiando el recetario clásico madrileño y cántabro entre salones de azulejería histórica y bóvedas subterráneas de ladrillo visto.
-        </p>
-
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-8">
-          <a href="#reservas" class="w-full sm:w-auto px-10 py-4 border border-[#d4af37] bg-transparent text-[#f4f4f5] hover:bg-[#d4af37]/10 text-[11px] font-light uppercase tracking-[0.32em] transition-all duration-500">
-            Reservar Mesa
-          </a>
-          <a href="#carta" class="w-full sm:w-auto px-10 py-4 border border-white/10 bg-transparent text-[#f4f4f5]/80 hover:border-white/30 hover:text-[#f4f4f5] text-[11px] font-light uppercase tracking-[0.32em] transition-all duration-500">
-            Explorar la Carta
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- =================================================================== -->
-    <!-- 3. CARTA DE ALTA COCINA Y PRECIOS                                   -->
-    <!-- =================================================================== -->
-    <section id="carta" class="py-32 md:py-44 px-6 sm:px-10 lg:px-16 max-w-6xl mx-auto border-t border-white/10">
-      
-      <div class="text-center max-w-3xl mx-auto mb-20 md:mb-28 scroll-reveal transition-all duration-1000 ease-out">
-        <span class="block text-[10px] sm:text-xs font-light uppercase tracking-[0.42em] text-[#d4af37] mb-5">
-          Propuesta Gastronómica
-        </span>
-        <h2 class="font-serif text-4xl sm:text-6xl font-light tracking-[0.05em] text-[#f4f4f5] mb-6">
-          Carta Oficial
-        </h2>
-        <div class="w-16 h-px bg-[#d4af37]/40 mx-auto mb-6"></div>
-        <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/60 tracking-[0.08em] leading-relaxed">
-          Producto de lonja diaria, cuchara de fuego lento y carnes seleccionadas en el corazón de Argüelles.
-        </p>
-      </div>
-
-      <!-- Selector Minimalista de Pases (Primeros, Segundos, Postres) -->
-      <div class="flex items-center justify-center gap-8 sm:gap-16 border-b border-white/10 pb-6 mb-20 scroll-reveal transition-all duration-1000 ease-out" role="tablist" aria-label="Secciones de la carta">
-        <button type="button" data-tab-target="primeros" class="menu-tab-btn text-xs sm:text-sm font-light uppercase tracking-[0.35em] pb-6 -mb-[25px] border-b border-[#d4af37] text-[#d4af37] transition-all duration-300">
-          Primeros Platos
-        </button>
-        <button type="button" data-tab-target="segundos" class="menu-tab-btn text-xs sm:text-sm font-light uppercase tracking-[0.35em] pb-6 -mb-[25px] border-b border-transparent text-[#f4f4f5]/50 hover:text-[#f4f4f5] transition-all duration-300">
-          Segundos Platos
-        </button>
-        <button type="button" data-tab-target="postres" class="menu-tab-btn text-xs sm:text-sm font-light uppercase tracking-[0.35em] pb-6 -mb-[25px] border-b border-transparent text-[#f4f4f5]/50 hover:text-[#f4f4f5] transition-all duration-300">
-          Postres Caseros
-        </button>
-      </div>
-
-      <!-- Contenedor de Primeros Platos -->
-      <div id="tab-primeros" class="menu-tab-panel grid grid-cols-1 md:grid-cols-2 gap-x-16 lg:gap-x-24 gap-y-14 scroll-reveal transition-all duration-1000 ease-out">
-        <% primerosList.forEach(function(item) { %>
-          <article class="group border-b border-white/10 pb-8 flex flex-col justify-between">
-            <div class="flex items-baseline justify-between gap-6 mb-3">
-              <h3 class="font-serif text-xl sm:text-2xl font-normal text-[#f4f4f5] group-hover:text-[#d4af37] transition-colors duration-300 leading-snug">
-                <%= item.name %>
-              </h3>
-              <span class="font-serif text-lg sm:text-xl font-normal text-[#d4af37] whitespace-nowrap shrink-0">
-                <%= item.priceText ? item.priceText : fmtPrice(item.price) %>
-              </span>
-            </div>
-            <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/55 leading-relaxed pr-6">
-              <%= item.description %>
-            </p>
-          </article>
-        <% }); %>
-      </div>
-
-      <!-- Contenedor de Segundos Platos -->
-      <div id="tab-segundos" class="menu-tab-panel hidden grid-cols-1 md:grid-cols-2 gap-x-16 lg:gap-x-24 gap-y-14">
-        <% segundosList.forEach(function(item) { %>
-          <article class="group border-b border-white/10 pb-8 flex flex-col justify-between">
-            <div class="flex items-baseline justify-between gap-6 mb-3">
-              <h3 class="font-serif text-xl sm:text-2xl font-normal text-[#f4f4f5] group-hover:text-[#d4af37] transition-colors duration-300 leading-snug">
-                <%= item.name %>
-              </h3>
-              <span class="font-serif text-lg sm:text-xl font-normal text-[#d4af37] whitespace-nowrap shrink-0">
-                <%= item.priceText ? item.priceText : fmtPrice(item.price) %>
-              </span>
-            </div>
-            <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/55 leading-relaxed pr-6">
-              <%= item.description %>
-            </p>
-          </article>
-        <% }); %>
-      </div>
-
-      <!-- Contenedor de Postres -->
-      <div id="tab-postres" class="menu-tab-panel hidden grid-cols-1 md:grid-cols-2 gap-x-16 lg:gap-x-24 gap-y-14">
-        <% postresList.forEach(function(item) { %>
-          <article class="group border-b border-white/10 pb-8 flex flex-col justify-between">
-            <div class="flex items-baseline justify-between gap-6 mb-3">
-              <h3 class="font-serif text-xl sm:text-2xl font-normal text-[#f4f4f5] group-hover:text-[#d4af37] transition-colors duration-300 leading-snug">
-                <%= item.name %>
-              </h3>
-              <span class="font-serif text-lg sm:text-xl font-normal text-[#d4af37] whitespace-nowrap shrink-0">
-                <%= item.priceText ? item.priceText : fmtPrice(item.price) %>
-              </span>
-            </div>
-            <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/55 leading-relaxed pr-6">
-              <%= item.description %>
-            </p>
-          </article>
-        <% }); %>
-      </div>
-
-      <p class="text-center text-[11px] font-light tracking-[0.22em] uppercase text-[#f4f4f5]/40 mt-20">
-        Todos los precios están expresados en euros e incluyen el IVA vigente · Servicio de pan artesano y aperitivo de bienvenida
-      </p>
-    </section>
-
-    <!-- =================================================================== -->
-    <!-- 4. LA CASA (HISTORIA DE 1943 Y SALONES SEÑORIALES)                  -->
-    <!-- =================================================================== -->
-    <section id="la-casa" class="py-32 md:py-44 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto border-t border-white/10">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-20 items-center mb-20 scroll-reveal transition-all duration-1000 ease-out">
-        
-        <div class="lg:col-span-5 space-y-8">
-          <span class="block text-[10px] sm:text-xs font-light uppercase tracking-[0.42em] text-[#d4af37]">
-            Patrimonio Gastronómico · 1943
-          </span>
-          <h2 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-light text-[#f4f4f5] leading-[1.12]">
-            Arquitectura Castiza y Silencio Señorial
-          </h2>
-          <div class="w-14 h-px bg-[#d4af37]/50"></div>
-          <p class="text-sm sm:text-base font-light text-[#f4f4f5]/70 leading-relaxed">
-            Ubicado en el número 28 de la calle del Rey Francisco, en pleno corazón de Argüelles y Moncloa, <strong class="font-normal text-[#f4f4f5]">La Montaña</strong> conserva intacta la atmósfera de las grandes casas de comidas madrileñas de mediados del siglo XX.
-          </p>
-          <p class="text-sm sm:text-base font-light text-[#f4f4f5]/60 leading-relaxed">
-            Cada espacio ha sido concebido para ofrecer intimidad acústica, mantelería de hilo blanco y un servicio de sala clásico donde el tiempo se detiene alrededor del guiso, el asado y la bodega.
-          </p>
-        </div>
-
-        <!-- Dos tarjetas arquitectónicas con bordes ultrafinos border-white/10 -->
-        <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-8">
-          <div class="border border-white/10 bg-[#050506] p-8 sm:p-10 flex flex-col justify-between min-h-[360px] hover:border-[#d4af37]/40 transition-colors duration-500">
-            <div>
-              <span class="text-[10px] font-light uppercase tracking-[0.35em] text-[#d4af37] block mb-4">
-                Planta Calle
-              </span>
-              <h3 class="font-serif text-2xl sm:text-3xl font-light text-[#f4f4f5] mb-4">
-                Salón Principal de Azulejos
-              </h3>
-              <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/60 leading-relaxed">
-                Comedor señorial revestido con zócalos de cerámica talaverana pintada a mano, luz cálida tamizada y mesas vestidas con amplitud para almuerzos de negocios o celebraciones familiares.
-              </p>
-            </div>
-            <div class="pt-8 mt-8 border-t border-white/10 flex items-center justify-between text-[11px] font-light tracking-[0.2em] uppercase text-[#f4f4f5]/50">
-              <span>Capacidad</span>
-              <span class="text-[#d4af37]">Mesas de 2 a 8 comensales</span>
-            </div>
-          </div>
-
-          <div class="border border-white/10 bg-[#050506] p-8 sm:p-10 flex flex-col justify-between min-h-[360px] hover:border-[#d4af37]/40 transition-colors duration-500">
-            <div>
-              <span class="text-[10px] font-light uppercase tracking-[0.35em] text-[#d4af37] block mb-4">
-                Planta Histórica Subterránea
-              </span>
-              <h3 class="font-serif text-2xl sm:text-3xl font-light text-[#f4f4f5] mb-4">
-                La Cueva de Ladrillo Visto
-              </h3>
-              <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/60 leading-relaxed">
-                Antigua bóveda subterránea de ladrillo macizo original del Madrid clásico. Un refugio íntimo, silencioso y climatizado de forma natural, idóneo para veladas privadas y grandes vinos.
-              </p>
-            </div>
-            <div class="pt-8 mt-8 border-t border-white/10 flex items-center justify-between text-[11px] font-light tracking-[0.2em] uppercase text-[#f4f4f5]/50">
-              <span>Privacidad</span>
-              <span class="text-[#d4af37]">Mesas de 2 a 8 comensales</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- =================================================================== -->
-    <!-- 5. RESERVAS (SISTEMA INTELIGENTE CON ASIGNACIÓN DE MESA)            -->
-    <!-- =================================================================== -->
-    <section id="reservas" class="py-32 md:py-44 px-6 sm:px-10 lg:px-16 max-w-5xl mx-auto border-t border-white/10">
-      <div class="scroll-reveal transition-all duration-1000 ease-out">
-        
-        <div class="text-center max-w-2xl mx-auto mb-16 md:mb-20">
-          <span class="block text-[10px] sm:text-xs font-light uppercase tracking-[0.42em] text-[#d4af37] mb-5">
-            Libro de Sala Digital
-          </span>
-          <h2 class="font-serif text-4xl sm:text-6xl font-light tracking-[0.05em] text-[#f4f4f5] mb-6">
-            Reservar Mesa
-          </h2>
-          <div class="w-16 h-px bg-[#d4af37]/40 mx-auto mb-6"></div>
-          <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/60 tracking-[0.06em] leading-relaxed">
-            Confirmación inmediata con asignación automática de salón y mesa según disponibilidad real de aforo.
-          </p>
-        </div>
-
-        <!-- Contenedor del Formulario Minimalista -->
-        <div class="border border-white/10 bg-[#050506] p-8 sm:p-12 md:p-16">
-          <form id="reservation-form" class="space-y-10" novalidate>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10">
-              
-              <!-- Nombre Completo -->
-              <div>
-                <label for="res-nombre" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
-                  Nombre y Apellidos *
-                </label>
-                <input
-                  type="text"
-                  id="res-nombre"
-                  name="nombre"
-                  required
-                  placeholder="Ej. Carlos Mendoza"
-                  class="w-full bg-transparent border-b border-white/10 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] placeholder-[#f4f4f5]/25 focus:outline-none transition-colors"
-                />
-              </div>
-
-              <!-- Teléfono -->
-              <div>
-                <label for="res-telefono" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
-                  Teléfono de Contacto *
-                </label>
-                <input
-                  type="tel"
-                  id="res-telefono"
-                  name="telefono"
-                  required
-                  placeholder="Ej. 600 000 000"
-                  class="w-full bg-transparent border-b border-white/10 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] placeholder-[#f4f4f5]/25 focus:outline-none transition-colors"
-                />
-              </div>
-
-              <!-- Correo Electrónico -->
-              <div>
-                <label for="res-email" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
-                  Correo Electrónico
-                </label>
-                <input
-                  type="email"
-                  id="res-email"
-                  name="email"
-                  placeholder="cliente@dominio.es"
-                  class="w-full bg-transparent border-b border-white/10 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] placeholder-[#f4f4f5]/25 focus:outline-none transition-colors"
-                />
-              </div>
-
-              <!-- Preferencia de Salón -->
-              <div>
-                <label for="res-zona" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
-                  Salón de Preferencia
-                </label>
-                <select
-                  id="res-zona"
-                  name="zonaPreferida"
-                  class="w-full bg-[#050506] border-b border-white/10 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] focus:outline-none transition-colors"
-                >
-                  <option value="salon-senorial">Salón Principal (Azulejos Clásicos)</option>
-                  <option value="boveda-ladrillo">La Cueva / Bóveda (Ladrillo Visto)</option>
-                  <option value="zona-barra-tradicional">Salón de Entrada & Barra Castiza</option>
-                </select>
-              </div>
-
-              <!-- Fecha -->
-              <div>
-                <label for="res-fecha" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
-                  Fecha de Reserva *
-                </label>
-                <input
-                  type="date"
-                  id="res-fecha"
-                  name="fecha"
-                  required
-                  class="w-full bg-transparent border-b border-white/10 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] focus:outline-none transition-colors"
-                />
-              </div>
-
-              <!-- Hora y Comensales en sub-grid -->
-              <div class="grid grid-cols-2 gap-6">
-                <div>
-                  <label for="res-hora" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
-                    Turno / Hora *
-                  </label>
-                  <select
-                    id="res-hora"
-                    name="hora"
-                    required
-                    class="w-full bg-[#050506] border-b border-white/10 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] focus:outline-none transition-colors"
-                  >
-                    <% slots.forEach(function(slot) { %>
-                      <option value="<%= slot %>"><%= slot %> h</option>
-                    <% }); %>
-                  </select>
-                </div>
-
-                <div>
-                  <label for="res-personas" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
-                    Comensales *
-                  </label>
-                  <select
-                    id="res-personas"
-                    name="personas"
-                    required
-                    class="w-full bg-[#050506] border-b border-white/10 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] focus:outline-none transition-colors"
-                  >
-                    <% for (let i = 1; i <= 8; i++) { %>
-                      <option value="<%= i %>" <%= i === 2 ? 'selected' : '' %>><%= i %> <%= i === 1 ? 'Persona' : 'Personas' %></option>
-                    <% } %>
-                  </select>
-                </div>
-              </div>
-
-            </div>
-
-            <!-- Notas o Alergias -->
-            <div>
-              <label for="res-notas" class="block text-[10px] font-light uppercase tracking-[0.3em] text-[#d4af37] mb-3">
-                Peticiones Especiales o Alergias Alimentarias
-              </label>
-              <input
-                type="text"
-                id="res-notas"
-                name="notas"
-                placeholder="Indique intolerancias, celebración especial o preferencia de ubicación..."
-                class="w-full bg-transparent border-b border-white/10 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] placeholder-[#f4f4f5]/25 focus:outline-none transition-colors"
-              />
-            </div>
-
-            <!-- Estado / Respuesta del Servidor -->
-            <div id="reservation-feedback" class="hidden border border-white/10 p-6 text-xs sm:text-sm font-light leading-relaxed"></div>
-
-            <!-- Botón de Envío Sobrio -->
-            <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-6">
-              <p class="text-[11px] font-light text-[#f4f4f5]/45 tracking-[0.06em]">
-                Para grupos superiores a 8 comensales, rogamos contacten directamente con dirección de sala.
-              </p>
-              <button
-                type="submit"
-                id="res-submit-btn"
-                class="w-full sm:w-auto px-12 py-4 border border-[#d4af37] bg-transparent text-[#f4f4f5] hover:bg-[#d4af37]/10 text-[11px] font-light uppercase tracking-[0.32em] transition-all duration-500 shrink-0"
-              >
-                Confirmar Reserva
-              </button>
-            </div>
-          </form>
-        </div>
-
-      </div>
-    </section>
-  </main>
-
-  <!-- ===================================================================== -->
-  <!-- FOOTER MINIMALISTA Y CUMPLIMIENTO LEGAL (RGPD / LSSI-CE)              -->
-  <!-- ===================================================================== -->
-  <footer class="border-t border-white/10 bg-[#050506] py-20 px-6 sm:px-10 lg:px-16">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-12 pb-16 border-b border-white/10">
-      <div>
-        <div class="flex items-center gap-4 mb-4">
-          <span class="font-serif text-xs font-light tracking-[0.35em] text-[#d4af37] border border-white/10 px-2.5 py-1">
-            L.M
-          </span>
-          <span class="font-serif text-lg font-light tracking-[0.32em] text-[#f4f4f5] uppercase">
-            LA MONTAÑA
-          </span>
-        </div>
-        <p class="text-xs font-light text-[#f4f4f5]/50 tracking-[0.08em]">
-          <%= addressText %> · Tel. <%= phoneText %>
-        </p>
-      </div>
-
-      <div class="flex flex-wrap items-center gap-8 text-[11px] font-light uppercase tracking-[0.25em] text-[#f4f4f5]/50">
-        <button type="button" data-legal-modal="aviso" class="hover:text-[#d4af37] transition-colors">Aviso Legal</button>
-        <button type="button" data-legal-modal="privacidad" class="hover:text-[#d4af37] transition-colors">Privacidad</button>
-        <button type="button" data-legal-modal="cookies" class="hover:text-[#d4af37] transition-colors">Cookies</button>
-        <a href="/admin" class="hover:text-[#d4af37] transition-colors">Acceso Dirección</a>
+  <section class="relative h-screen flex items-end overflow-hidden">
+    <div class="absolute inset-0 bg-[url('/img/hero.jpg')] bg-cover bg-center"></div>
+    <div class="absolute inset-0 hero-fade"></div>
+    <div class="relative z-10 mx-auto max-w-6xl w-full px-6 pb-24">
+      <p class="text-[12px] uppercase tracking-widest2 text-gold mb-6">Cocina de altura · Siempre</p>
+      <h1 class="font-light leading-[0.95] text-6xl md:text-8xl">
+        La mesa se encuentra<br /><em class="font-normal">donde la montaña susurra.</em>
+      </h1>
+      <div class="mt-10 flex flex-wrap gap-4">
+        <a href="#reservas" class="rounded-full bg-bone text-slate px-8 py-3 text-[13px] uppercase tracking-widest2 hover:bg-gold transition-colors duration-300">Reservar mesa</a>
+        <a href="#carta" class="rounded-full border hairline px-8 py-3 text-[13px] uppercase tracking-widest2 text-bone hover:border-gold hover:text-gold transition-colors duration-300">Ver carta</a>
       </div>
     </div>
+  </section>
 
-    <div class="max-w-7xl mx-auto pt-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-light text-[#f4f4f5]/35 tracking-[0.12em]">
-      <p>© <%= new Date().getFullYear() %> Restaurante La Montaña · Madrid. Todos los derechos reservados.</p>
-      <p><%= scheduleText %></p>
+  <section class="mx-auto max-w-3xl px-6 py-28 text-center">
+    <p class="text-2xl md:text-3xl font-light leading-relaxed text-bone/90">
+      «Menos ruido, más materia. Cocinamos el silencio de la montaña:
+      producto honesto, fuego paciente y una sobriedad que no necesita gritar.»
+    </p>
+    <p class="mt-8 text-[12px] uppercase tracking-widest2 text-mute">— Martín Cuesta, chef</p>
+  </section>
+
+  <section id="carta" class="border-t hairline">
+    <div class="mx-auto max-w-6xl px-6 py-24">
+      <div class="flex items-end justify-between mb-16">
+        <h2 class="text-4xl md:text-5xl font-light">La carta</h2>
+        <span class="text-[11px] uppercase tracking-widest2 text-mute">Temporada · Otoño 2026</span>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-x-16 gap-y-12">
+        <% platosDestacados.forEach(plato => { %>
+          <article class="dish group cursor-default">
+            <div class="flex items-baseline gap-4">
+              <span class="dish-line inline-block h-px w-6 bg-gold"></span>
+              <h3 class="text-2xl font-normal flex-1"><%= plato.nombre %></h3>
+              <span class="text-xl text-gold"><%= plato.precio %> €</span>
+            </div>
+            <p class="mt-2 pl-10 text-mute font-light"><%= plato.desc %></p>
+          </article>
+        <% }) %>
+      </div>
+
+      <p class="mt-20 text-center text-[12px] uppercase tracking-widest2 text-mute">
+        Menú degustación · 7 tiempos · 145 € — maridaje + 85 €
+      </p>
+    </div>
+  </section>
+
+  <section id="reservas" class="border-t hairline bg-slate-900">
+    <div class="mx-auto max-w-6xl px-6 py-24 grid md:grid-cols-2 gap-16">
+      <div>
+        <p class="text-[12px] uppercase tracking-widest2 text-gold mb-6">Reservas</p>
+        <h2 class="text-4xl md:text-5xl font-light leading-tight">Su mesa le está esperando.</h2>
+        <p class="mt-6 text-mute font-light leading-relaxed max-w-md">
+          Aceptamos reservas para comidas y cenas. Para grupos de más de ocho personas o
+          peticiones especiales, escríbanos directamente.
+        </p>
+        <div class="mt-12 space-y-4 text-sm">
+          <p class="text-mute"><span class="text-bone">Dirección</span> · Calle Altos de Soria 14, 28001</p>
+          <p class="text-mute"><span class="text-bone">Teléfono</span> · +34 910 555 214</p>
+          <p class="text-mute"><span class="text-bone">Horario</span> · Mar–Dom, 13:30–15:30 / 20:00–23:00</p>
+        </div>
+      </div>
+
+      <form hx-post="/reservas" hx-target="#reserva-resultado" hx-swap="innerHTML"
+            class="space-y-8 border hairline rounded-2xl p-8 bg-slate/60 backdrop-blur">
+        <div class="grid grid-cols-2 gap-6">
+          <label class="block">
+            <span class="text-[11px] uppercase tracking-widest2 text-mute">Nombre</span>
+            <input type="text" name="nombre" required placeholder="Nombre y apellido"
+                   class="mt-2 w-full bg-transparent border-b hairline focus:border-gold outline-none py-2 font-light placeholder:text-mute/50" />
+          </label>
+          <label class="block">
+            <span class="text-[11px] uppercase tracking-widest2 text-mute">Email</span>
+            <input type="email" name="email" required placeholder="tu@email.com"
+                   class="mt-2 w-full bg-transparent border-b hairline focus:border-gold outline-none py-2 font-light placeholder:text-mute/50" />
+          </label>
+          <label class="block">
+            <span class="text-[11px] uppercase tracking-widest2 text-mute">Fecha</span>
+            <input type="date" name="fecha" required
+                   class="mt-2 w-full bg-transparent border-b hairline focus:border-gold outline-none py-2 font-light [color-scheme:dark]" />
+          </label>
+          <label class="block">
+            <span class="text-[11px] uppercase tracking-widest2 text-mute">Hora</span>
+            <input type="time" name="hora" required
+                   class="mt-2 w-full bg-transparent border-b hairline focus:border-gold outline-none py-2 font-light [color-scheme:dark]" />
+          </label>
+          <label class="block col-span-2">
+            <span class="text-[11px] uppercase tracking-widest2 text-mute">Comensales</span>
+            <input type="number" name="comensales" min="1" max="12" required placeholder="2"
+                   class="mt-2 w-full bg-transparent border-b hairline focus:border-gold outline-none py-2 font-light placeholder:text-mute/50" />
+          </label>
+        </div>
+        <button type="submit"
+                class="w-full rounded-full bg-bone text-slate py-3 text-[13px] uppercase tracking-widest2 hover:bg-gold transition-colors duration-300">
+          Confirmar reserva
+        </button>
+        <div id="reserva-resultado"></div>
+      </form>
+    </div>
+  </section>
+
+  <footer id="contacto" class="border-t hairline">
+    <div class="mx-auto max-w-6xl px-6 py-14 flex flex-col md:flex-row items-center justify-between gap-6">
+      <span class="text-xl tracking-widest2 uppercase">La Montaña</span>
+      <p class="text-[11px] uppercase tracking-widest2 text-mute">© 2026 La Montaña — Todos los derechos reservados</p>
     </div>
   </footer>
 
-  <!-- ===================================================================== -->
-  <!-- MODAL LEGAL UNIFICADO (AVISO LEGAL, PRIVACIDAD, COOKIES)              -->
-  <!-- ===================================================================== -->
-  <div id="legal-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-[#050506]/90 backdrop-blur-md p-6" role="dialog" aria-modal="true">
-    <div class="max-w-2xl w-full border border-white/10 bg-[#050506] p-8 sm:p-12 relative max-h-[85vh] overflow-y-auto">
-      <button type="button" id="close-legal-modal" class="absolute top-6 right-6 text-[#f4f4f5]/50 hover:text-[#d4af37] text-xs uppercase tracking-[0.25em]">
-        Cerrar [×]
-      </button>
-      <h3 id="legal-modal-title" class="font-serif text-3xl font-light text-[#d4af37] mb-6"></h3>
-      <div id="legal-modal-body" class="text-xs sm:text-sm font-light text-[#f4f4f5]/70 space-y-4 leading-relaxed"></div>
-    </div>
-  </div>
-
-  <!-- ===================================================================== -->
-  <!-- SCRIPTS: SCROLL REVEAL, TABS DE CARTA Y RESERVAS                      -->
-  <!-- ===================================================================== -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      // 1. Inicializar fecha mínima de reserva a hoy
-      const dateInput = document.getElementById('res-fecha');
-      if (dateInput) {
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.min = today;
-        if (!dateInput.value) dateInput.value = today;
-      }
-
-      // 2. Transiciones de Scroll Fluidas (IntersectionObserver)
-      const revealElements = document.querySelectorAll('.scroll-reveal');
-      if ('IntersectionObserver' in window) {
-        const observer = new IntersectionObserver(function (entries) {
-          entries.forEach(function (entry) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-visible');
-              observer.unobserve(entry.target);
-            }
-          });
-        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-
-        revealElements.forEach(function (el) {
-          observer.observe(el);
-        });
-      } else {
-        revealElements.forEach(function (el) {
-          el.classList.add('is-visible');
-        });
-      }
-
-      // 3. Menú Móvil Minimalista
-      const mobileBtn = document.getElementById('mobile-menu-btn');
-      const mobileMenu = document.getElementById('mobile-menu');
-      const iconOpen = document.getElementById('menu-icon-open');
-      const iconClose = document.getElementById('menu-icon-close');
-
-      if (mobileBtn && mobileMenu) {
-        mobileBtn.addEventListener('click', function () {
-          const isHidden = mobileMenu.classList.contains('hidden');
-          mobileMenu.classList.toggle('hidden', !isHidden);
-          iconOpen.classList.toggle('hidden', isHidden);
-          iconClose.classList.toggle('hidden', !isHidden);
-          mobileBtn.setAttribute('aria-expanded', String(isHidden));
-        });
-
-        document.querySelectorAll('.mobile-nav-link').forEach(function (link) {
-          link.addEventListener('click', function () {
-            mobileMenu.classList.add('hidden');
-            iconOpen.classList.remove('hidden');
-            iconClose.classList.add('hidden');
-            mobileBtn.setAttribute('aria-expanded', 'false');
-          });
-        });
-      }
-
-      // 4. Pestañas de la Carta (Primeros, Segundos, Postres)
-      const tabButtons = document.querySelectorAll('.menu-tab-btn');
-      const tabPanels = {
-        primeros: document.getElementById('tab-primeros'),
-        segundos: document.getElementById('tab-segundos'),
-        postres: document.getElementById('tab-postres')
-      };
-
-      tabButtons.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          const target = btn.getAttribute('data-tab-target');
-
-          tabButtons.forEach(function (b) {
-            const active = b.getAttribute('data-tab-target') === target;
-            b.classList.toggle('border-[#d4af37]', active);
-            b.classList.toggle('text-[#d4af37]', active);
-            b.classList.toggle('border-transparent', !active);
-            b.classList.toggle('text-[#f4f4f5]/50', !active);
-          });
-
-          Object.keys(tabPanels).forEach(function (key) {
-            const panel = tabPanels[key];
-            if (!panel) return;
-            if (key === target) {
-              panel.classList.remove('hidden');
-              panel.classList.add('grid');
-            } else {
-              panel.classList.add('hidden');
-              panel.classList.remove('grid');
-            }
-          });
-        });
-      });
-
-      // 5. Envío del Formulario de Reserva
-      const form = document.getElementById('reservation-form');
-      const feedback = document.getElementById('reservation-feedback');
-      const submitBtn = document.getElementById('res-submit-btn');
-
-      if (form) {
-        form.addEventListener('submit', async function (e) {
-          e.preventDefault();
-          feedback.classList.add('hidden');
-
-          const payload = {
-            nombre: document.getElementById('res-nombre').value.trim(),
-            telefono: document.getElementById('res-telefono').value.trim(),
-            email: document.getElementById('res-email').value.trim(),
-            diningArea: document.getElementById('res-zona').value,
-            zonaPreferida: document.getElementById('res-zona').value,
-            fecha: document.getElementById('res-fecha').value,
-            hora: document.getElementById('res-hora').value,
-            guests: parseInt(document.getElementById('res-personas').value, 10),
-            personas: parseInt(document.getElementById('res-personas').value, 10),
-            notas: document.getElementById('res-notas').value.trim()
-          };
-
-          if (!payload.nombre || !payload.telefono || !payload.fecha || !payload.hora) {
-            feedback.className = 'border border-[#d4af37]/50 bg-[#050506] p-6 text-xs sm:text-sm font-light text-[#d4af37]';
-            feedback.textContent = 'Por favor, complete su nombre, teléfono, fecha y turno de reserva.';
-            feedback.classList.remove('hidden');
-            return;
-          }
-
-          submitBtn.disabled = true;
-          submitBtn.textContent = 'Procesando...';
-
-          try {
-            const response = await fetch('/api/reservar', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload)
-            });
-            const data = await response.json();
-
-            if (response.ok && data.success) {
-              const resInfo = data.reserva || data.reservation || {};
-              const codigo = resInfo.codigo || resInfo.reservation_code || '';
-              const mesa = resInfo.mesaNumero || resInfo.table_number || 'Asignada en sala';
-              const zona = resInfo.zona || resInfo.dining_area_name || '';
-
-              feedback.className = 'border border-[#d4af37] bg-[#050506] p-6 text-xs sm:text-sm font-light text-[#f4f4f5]';
-              feedback.innerHTML =
-                '<p class="font-serif text-xl text-[#d4af37] mb-2">Reserva Confirmada</p>' +
-                '<p>' + (data.message || 'Su mesa ha sido reservada correctamente.') + '</p>' +
-                '<p class="mt-2 text-[#f4f4f5]/70">Asignación: <strong>Mesa ' + mesa + '</strong>' +
-                (zona ? ' · ' + zona : '') +
-                (codigo ? ' · Código: ' + codigo : '') +
-                '</p>';
-              form.reset();
-              if (dateInput) dateInput.value = payload.fecha;
-            } else {
-              feedback.className = 'border border-white/20 bg-[#050506] p-6 text-xs sm:text-sm font-light text-[#d4af37]';
-              feedback.textContent = data.message || data.error || 'No ha sido posible completar la reserva en este horario.';
-            }
-          } catch (err) {
-            feedback.className = 'border border-white/20 bg-[#050506] p-6 text-xs sm:text-sm font-light text-[#d4af37]';
-            feedback.textContent = 'Error de conexión con el servidor. Puede reservar directamente en el +34 915 47 31 11.';
-          } finally {
-            feedback.classList.remove('hidden');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Confirmar Reserva';
-          }
-        });
-      }
-
-      // 6. Modales Legales (LSSI-CE / RGPD)
-      const legalModal = document.getElementById('legal-modal');
-      const legalTitle = document.getElementById('legal-modal-title');
-      const legalBody = document.getElementById('legal-modal-body');
-      const closeLegal = document.getElementById('close-legal-modal');
-
-      const legalTexts = {
-        aviso: {
-          title: 'Aviso Legal (LSSI-CE)',
-          body: '<p>En cumplimiento de la Ley 34/2002 de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa que el presente sitio web es titularidad de <strong>Restaurante Clásico La Montaña S.L.</strong>, con domicilio social en C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid.</p><p>Teléfono de contacto: +34 915 47 31 11 · Correo electrónico: reservas@restaurantelamontana.es.</p>'
-        },
-        privacidad: {
-          title: 'Política de Privacidad (RGPD)',
-          body: '<p>De conformidad con el Reglamento (UE) 2016/679 (RGPD) y la LOPDGDD 3/2018, los datos personales facilitados en el formulario de reservas serán tratados exclusivamente con la finalidad de gestionar su mesa y garantizar la calidad del servicio en sala.</p><p>No se cederán datos a terceros salvo obligación legal. Puede ejercer sus derechos de acceso, rectificación, supresión y oposición escribiendo a nuestra dirección postal en C. del Rey Francisco, 28, 28008 Madrid.</p>'
-        },
-        cookies: {
-          title: 'Política de Cookies',
-          body: '<p>Este sitio web utiliza únicamente cookies técnicas estrictamente necesarias para el funcionamiento de la sesión y la gestión de reservas, sin emplear cookies publicitarias ni de rastreo de terceros.</p>'
-        }
-      };
-
-      document.querySelectorAll('[data-legal-modal]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          const key = btn.getAttribute('data-legal-modal');
-          const content = legalTexts[key];
-          if (content && legalModal) {
-            legalTitle.textContent = content.title;
-            legalBody.innerHTML = content.body;
-            legalModal.classList.remove('hidden');
-            legalModal.classList.add('flex');
-          }
-        });
-      });
-
-      if (closeLegal && legalModal) {
-        closeLegal.addEventListener('click', function () {
-          legalModal.classList.add('hidden');
-          legalModal.classList.remove('flex');
-        });
-        legalModal.addEventListener('click', function (e) {
-          if (e.target === legalModal) {
-            legalModal.classList.add('hidden');
-            legalModal.classList.remove('flex');
-          }
-        });
-      }
-    });
-  </script>
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 </body>
 </html>
