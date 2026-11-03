@@ -1,0 +1,27 @@
+{
+  "name": "restaurante-la-montana-madrid",
+  "version": "1.0.0",
+  "description": "Aplicación Web Full-Stack (React / Next.js + Tailwind CSS + Node.js / Express + SQLite) para el Restaurante La Montaña en C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "la-montana",
+    "restaurante-madrid",
+    "moncloa-aravaca",
+    "rey-francisco-28",
+    "cocina-castiza",
+    "react",
+    "nextjs",
+    "tailwindcss",
+    "express",
+    "sqlite"
+  ],
+  "author": "Restaurante La Montaña - Madrid",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
