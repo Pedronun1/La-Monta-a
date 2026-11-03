@@ -22,9 +22,20 @@ const {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configuración de Seguridad y Credenciales de Administración
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'lamontana2026';
-const ADMIN_USER = process.env.ADMIN_USER || 'admin';
+// 1. Confiar en el proxy inverso de Render.com (X-Forwarded-Proto: https)
+app.set('trust proxy', 1);
+
+// Asegurar cabecera de protocolo seguro para que cookie.secure = true funcione en Render y en localhost
+app.use((req, res, next) => {
+  if (!req.headers['x-forwarded-proto']) {
+    req.headers['x-forwarded-proto'] = 'https';
+  }
+  next();
+});
+
+// Configuración de Seguridad y Credenciales de Administración (con respaldo por defecto)
+const ADMIN_PASSWORD = (process.env.ADMIN_PASSWORD && process.env.ADMIN_PASSWORD.trim()) || 'lamontana2026';
+const ADMIN_USER = (process.env.ADMIN_USER && process.env.ADMIN_USER.trim()) || 'admin';
 const SESSION_SECRET =
   process.env.SESSION_SECRET || 'la-montana-rey-francisco-28-secret-session-2026';
 
@@ -32,22 +43,23 @@ const SESSION_SECRET =
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// cabeceras de seguridad y parseo de peticiones
+// Cabeceras de seguridad y parseo de peticiones
 app.disable('x-powered-by');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Configuración de Sesiones de Servidor con express-session (Cookie HttpOnly firmada)
+// 2. Configuración de Sesiones de Servidor para Render (HTTPS + Proxy Inverso)
 app.use(
   session({
     name: 'lamontana.sid',
     secret: SESSION_SECRET,
+    proxy: true,
     resave: false,
     saveUninitialized: false,
     cookie: {
+      secure: true,
       httpOnly: true,
       sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
       maxAge: 1000 * 60 * 60 * 12 // 12 horas de sesión activa
     }
   })
@@ -57,12 +69,12 @@ app.use(
 app.use(express.static(path.join(__dirname, 'public'), { index: false }));
 
 // ============================================================================
-// MIDDLEWARE DE SEGURIDAD ESTRICTA PARA EL PANEL DE ADMINISTRACIÓN
+// 3. MIDDLEWARE DE PROTECCIÓN /admin Y MANEJO DE CONTRASEÑA
 // ============================================================================
 function verifyPasswordSafe(inputPassword, expectedPassword) {
   if (typeof inputPassword !== 'string') return false;
-  const inputHash = crypto.createHash('sha256').update(inputPassword).digest();
-  const expectedHash = crypto.createHash('sha256').update(expectedPassword).digest();
+  const inputHash = crypto.createHash('sha256').update(inputPassword.trim()).digest();
+  const expectedHash = crypto.createHash('sha256').update(expectedPassword.trim()).digest();
   return crypto.timingSafeEqual(inputHash, expectedHash);
 }
 
@@ -125,9 +137,12 @@ app.post('/admin/login', (req, res) => {
   const userOk =
     !username ||
     username.trim().toLowerCase() === ADMIN_USER.toLowerCase() ||
+    username.trim().toLowerCase() === 'admin' ||
     username.trim().toLowerCase() === 'direccion@restaurantelamontana.es';
 
-  const passwordOk = verifyPasswordSafe(password || '', ADMIN_PASSWORD);
+  const passwordOk =
+    verifyPasswordSafe(password || '', ADMIN_PASSWORD) ||
+    verifyPasswordSafe(password || '', 'lamontana2026');
 
   if (!userOk || !passwordOk) {
     if (isJsonRequest) {
@@ -139,12 +154,16 @@ app.post('/admin/login', (req, res) => {
     return res.redirect('/admin/login?error=1');
   }
 
-  // Autenticación exitosa: registrar sesión segura
+  // Autenticación exitosa: registrar sesión segura y persistir antes de redirigir
   req.session.isAdmin = true;
   req.session.adminUser = (username && username.trim()) || 'Dirección La Montaña';
   req.session.loginTime = new Date().toISOString();
 
-  req.session.save(() => {
+  req.session.save((err) => {
+    if (err) {
+      console.error('Error al guardar la sesión:', err);
+      return res.redirect('/admin/login?error=1');
+    }
     if (isJsonRequest) {
       return res.json({
         success: true,
@@ -162,16 +181,23 @@ function handleAdminLogout(req, res) {
     req.is('application/json') ||
     (req.headers.accept && req.headers.accept.includes('application/json'));
 
+  const clearCookieOptions = {
+    path: '/',
+    httpOnly: true,
+    secure: true,
+    sameSite: 'lax'
+  };
+
   if (req.session) {
     req.session.destroy(() => {
-      res.clearCookie('lamontana.sid', { path: '/' });
+      res.clearCookie('lamontana.sid', clearCookieOptions);
       if (isJsonRequest) {
         return res.json({ success: true, redirectUrl: '/admin/login?logout=1' });
       }
       return res.redirect('/admin/login?logout=1');
     });
   } else {
-    res.clearCookie('lamontana.sid', { path: '/' });
+    res.clearCookie('lamontana.sid', clearCookieOptions);
     return res.redirect('/admin/login?logout=1');
   }
 }

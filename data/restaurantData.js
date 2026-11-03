@@ -1,90 +1,106 @@
 /**
- * RESTAURANTE LA MONTAÑA — ALTA COCINA CLÁSICA EN MADRID (DESDE 1943)
+ * ============================================================================
+ * RESTAURANTE LA MONTAÑA — CARTA OFICIAL Y DATOS DEL ESTABLECIMIENTO
  * C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid | Tel: +34 915 47 31 11
+ * ============================================================================
  */
 
 const RESTAURANT_INFO = {
   name: "Restaurante La Montaña",
   shortName: "La Montaña",
   monogram: "L.M",
-  legalName: "Restaurante Clásico La Montaña S.L.",
+  legalName: "Restaurante La Montaña S.L.",
   cif: "B-82941038",
   subtitle: "C. del Rey Francisco, 28 · Moncloa - Aravaca · Madrid",
-  tagline: "Alta Cocina Tradicional & Legado Gastronómico desde 1943",
+  tagline: "Alta Cocina Tradicional Castiza & Casa de Comidas desde 1943",
   description:
-    "Fundado en 1943 en el señorial barrio de Argüelles, Restaurante La Montaña preserva la excelencia de las grandes casas de comidas de Madrid. Producto de lonja y dehesa, fuego lento, mantelería de hilo y una bodega histórica bajo bóveda de ladrillo.",
+    "Ubicado en el número 28 de la calle del Rey Francisco, en el corazón de Argüelles (Moncloa - Aravaca), La Montaña es un emblema de la gastronomía madrileña y norteña desde 1943. Salones señoriales con zócalos de azulejería clásica, mantelería de hilo y nuestra histórica cueva abovedada de ladrillo visto.",
   foundedYear: 1943,
-  priceRange: "45 € – 75 €",
+  priceRange: "30 € – 45 €",
   address: {
     street: "C. del Rey Francisco, 28",
     district: "Moncloa - Aravaca",
-    neighborhood: "Argüelles · Paseo del Pintor Rosales",
+    neighborhood: "Barrio de Argüelles · Pintor Rosales",
     postalCode: "28008",
     city: "Madrid",
     country: "España",
     fullAddress: "C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid",
-    googleMapsUrl: "https://www.google.com/maps/search/?api=1&query=Calle+del+Rey+Francisco+28+28008+Madrid",
-    googleMapsEmbedUrl: "https://www.google.com/maps?q=Calle+del+Rey+Francisco,+28,+28008+Madrid&output=embed",
+    googleMapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=Calle+del+Rey+Francisco+28+28008+Madrid",
+    googleMapsEmbedUrl:
+      "https://www.google.com/maps?q=Calle+del+Rey+Francisco,+28,+28008+Madrid&output=embed",
     accessDetails: [
-      { label: "Servicio de Aparcacoches", detail: "Concertado en Parking Marqués de Urquijo (a 120 metros)" },
-      { label: "Metro Cercano", detail: "Ventura Rodríguez (Línea 3) y Argüelles (Líneas 3, 4 y 6)" },
-      { label: "Entorno", detail: "A dos minutos a pie del Paseo del Pintor Rosales y Templo de Debod" }
+      {
+        label: "Metro Cercano",
+        detail: "Ventura Rodríguez (Línea 3) y Argüelles (Líneas 3, 4 y 6)"
+      },
+      {
+        label: "Autobuses EMT",
+        detail: "Líneas 1, 2, 44, 74, C1 y C2 (Princesa / Marqués de Urquijo)"
+      },
+      {
+        label: "Entorno",
+        detail: "Junto al Paseo del Pintor Rosales, Parque del Oeste y Templo de Debod"
+      }
     ]
   },
   contact: {
     phone: "+34 915 47 31 11",
     phoneClean: "+34915473111",
-    email: "reservas@restaurantelamontana.es",
-    pressEmail: "direccion@restaurantelamontana.es"
+    email: "reservas@restaurantelamontana.es"
   },
   hours: [
-    { day: "Martes a Sábado · Almuerzos", schedule: "13:30 – 16:00 h", status: "open" },
-    { day: "Martes a Sábado · Cenas", schedule: "20:30 – 23:30 h", status: "open" },
-    { day: "Domingos · Servicio de Mediodía", schedule: "13:30 – 16:30 h", status: "open" },
-    { day: "Domingos Noche y Lunes", schedule: "Cerrado por descanso de sala", status: "closed" }
+    { day: "Martes a Viernes · Comidas y Cenas", schedule: "13:00 – 16:00 h · 21:00 – 23:00 h", status: "open" },
+    { day: "Domingos · Comidas y Cenas", schedule: "13:00 – 16:00 h · 21:00 – 23:00 h", status: "open" },
+    { day: "Sábados y Eventos Privados", schedule: "Consultar disponibilidad en sala", status: "open" },
+    { day: "Descanso Semanal", schedule: "Según turno de descanso · Confirmar en el 915 47 31 11", status: "closed" }
   ],
   heritage: {
-    yearsOfHistory: 83,
-    title: "Ocho décadas de alta tradición madrileña en Rey Francisco, 28",
-    lead: "Desde que abrió sus puertas en 1943, La Montaña ha sido punto de encuentro de familias, escritores, diplomáticos y amantes de la buena mesa en Moncloa - Aravaca.",
+    title: "Salones señoriales, azulejería tradicional y bóvedas de ladrillo visto desde 1943",
+    lead: "Más de ocho décadas conservando intacto el recetario clásico español, la cocina de cuchara y el trato cercano de toda la vida en el barrio de Argüelles.",
     paragraphs: [
-      "Nuestra filosofía culinaria rechaza el artificio innecesario para centrarse en la pureza de la materia prima: verduras de temporada de la ribera del Ebro, pescados salvajes seleccionados cada madrugada del Cantábrico y cortes nobles de vacuno mayor madurados en cámara propia.",
-      "El restaurante se articula en dos espacios de carácter único: el Salón Principal en planta calle, vestido con lino blanco y maderas nobles, y nuestra emblemática Cueva Abovedada de Ladrillo del siglo pasado, un refugio de silencio y sobriedad ideal para veladas íntimas y recepciones privadas."
+      "Cruzar el umbral de La Montaña en la calle del Rey Francisco, 28 es adentrarse en la historia viva de la restauración madrileña. Nuestro comedor principal conserva el encanto señorial de los zócalos de azulejo clásico, la madera noble y las mesas vestidas donde generaciones de clientes disfrutan a diario de nuestras verdinas con carabineros, la fabada, la merluza de pincho o la ternera en pepitoria.",
+      "En la planta inferior se abre nuestra célebre Cueva Histórica Abovedada de ladrillo visto: un espacio acogedor, íntimo y de acústica pausada, predilecto para comidas familiares, tertulias y celebraciones privadas en torno a la buena mesa."
     ]
   },
   diningAreas: [
     {
-      id: "salon-principal",
-      name: "Salón Principal de Planta Calle",
-      description: "Luz natural tamizada, mantelería de hilo egipcio y separación generosa entre mesas para una privacidad absoluta.",
-      capacity: "Hasta 42 comensales"
+      id: "salon-senorial",
+      name: "Salón Señorial de Azulejería Clásica",
+      description:
+        "Comedor principal en planta calle con zócalos de cerámica tradicional, madera noble, luz natural y mantelería clásica.",
+      capacity: "Hasta 45 comensales"
     },
     {
-      id: "cueva-boveda",
-      name: "La Cueva Histórica Abovedada (1943)",
-      description: "Salón subterráneo de ladrillo visto centenario y acústica envolvente, junto a nuestro botellero histórico.",
-      capacity: "Hasta 32 comensales"
+      id: "boveda-ladrillo",
+      name: "Bóveda Histórica de Ladrillo Visto (Cueva)",
+      description:
+        "Nuestro emblemático salón subterráneo abovedado de ladrillo antiguo, cálido y reservado para comidas tranquilas y grupos.",
+      capacity: "Hasta 36 comensales"
     },
     {
-      id: "reservado-privado",
-      name: "Reservado Privado Rey Francisco",
-      description: "Mesa imperial privada para almuerzos ejecutivos, consejos de administración o celebraciones familiares discretas.",
-      capacity: "De 6 a 14 comensales"
+      id: "zona-barra-tradicional",
+      name: "Salón de Entrada & Barra Castiza",
+      description:
+        "Espacio tradicional para disfrutar de una Gilda, nuestras croquetas caseras de jamón o unos torreznos recién hechos.",
+      capacity: "Hasta 20 comensales"
     }
   ],
   ratings: {
-    score: "4.7",
-    totalReviews: 684,
+    score: "4.6",
+    totalReviews: 648,
     quotes: [
       {
-        quote: "Una lección de clasicismo y elegancia en pleno Argüelles. Sus verdinas con carabineros y el punto del solomillo recuerdan por qué los clásicos nunca pasan de moda.",
+        quote:
+          "Un clásico imprescindible de Madrid en la calle Rey Francisco. Las verdinas con carabineros, las cocochas y sus famosas torrijas de media barra siguen siendo insuperables.",
         author: "Carlos R. Mendoza",
-        publication: "Crónica Gastronómica de Madrid"
+        publication: "Guía de Casas de Comidas de Madrid"
       },
       {
-        quote: "El servicio de sala conserva esa cortesía silenciosa y precisa de los grandes restaurantes europeos. Imprescindible su torrija caramelizada de brioche.",
+        quote:
+          "Comer en su cueva de ladrillo abovedada o en el salón de azulejos clásicos es sentirte como en casa. Cocina honesta, producto excelente y servicio de toda la vida.",
         author: "Elena Valdés Gómez",
-        publication: "Sommelier & Guía de Mesa"
+        publication: "Crónica Gastronómica · Moncloa - Argüelles"
       }
     ]
   }
@@ -92,217 +108,415 @@ const RESTAURANT_INFO = {
 
 const MENU_CATEGORIES = [
   {
-    id: "Entrantes",
-    title: "Entrantes",
-    subtitle: "Preludios de temporada, fondos de cocción lenta y clásicos de nuestra casa"
+    id: "Primeros",
+    title: "Primeros",
+    subtitle: "Platos de cuchara, huerta seleccionada, entrantes castizos y clásicos de la casa"
   },
   {
-    id: "Pescados",
-    title: "Pescados",
-    subtitle: "Piezas salvajes de lonja del Cantábrico y recetas marineras de precisión"
+    id: "Segundos",
+    title: "Segundos",
+    subtitle: "Pescados frescos de lonja, recetas tradicionales de cazuela y carnes seleccionadas"
   },
   {
-    id: "Carnes rojas maduradas",
-    title: "Carnes Rojas Maduradas",
-    subtitle: "Cortes seleccionados de vacuno mayor a la brasa de encina y guisos históricos"
-  },
-  {
-    id: "Postres de autor",
-    title: "Postres de Autor",
-    subtitle: "Repostería fina elaborada al momento en nuestro obrador"
+    id: "Postres",
+    title: "Postres",
+    subtitle: "Repostería casera tradicional elaborada a diario en nuestra cocina"
   }
 ];
 
 const MENU_ITEMS = [
   // =========================================================================
-  // 1. ENTRANTES
+  // 1. PRIMEROS (20 Platos Oficiales con Precios Exactos)
   // =========================================================================
   {
-    id: "croquetas-jamon-bellota",
-    category: "Entrantes",
-    name: "Croquetas de Jamón Ibérico de Bellota 100%",
-    description: "Bechamel etérea infusionada en hueso de jamón de Guijuelo y velo de panceta curada (6 piezas).",
-    price: 16.00,
-    highlight: "Clásico desde 1943"
+    id: "consome",
+    category: "Primeros",
+    name: "Consomé",
+    description: "Caldo tradicional clarificado de ave y jarrete cocinado a fuego lento.",
+    price: 5.00,
+    priceText: "5,00 €",
+    highlight: null
   },
   {
-    id: "huevos-camperos-trufados",
-    category: "Entrantes",
-    name: "Huevos de Caserío Trufados con Patata Confitada y Tuber Melanosporum",
-    description: "Yema templada sobre milhojas de patata agria, jugo reducido de ave y trufa negra laminada en mesa.",
-    price: 21.00,
+    id: "ensaladilla-rusa",
+    category: "Primeros",
+    name: "Ensaladilla Rusa",
+    description: "Receta clásica de la casa con patata seleccionada, bonito y mayonesa suave.",
+    price: 11.50,
+    priceText: "11,50 €",
+    highlight: null
+  },
+  {
+    id: "ensalada-tomate-bonito",
+    category: "Primeros",
+    name: "Ensalada de Tomate Bonito",
+    description: "Tomate natural de huerta acompañado de lomos de bonito del norte y cebolleta.",
+    price: 15.50,
+    priceText: "15,50 €",
+    highlight: null
+  },
+  {
+    id: "ensalada-tomate-raf-bon",
+    category: "Primeros",
+    name: "Ensalada Tomate Raf Bon",
+    description: "Tomate Raf de temporada aliñado con aceite de oliva virgen extra y bonito seleccionado.",
+    price: 18.50,
+    priceText: "18,50 €",
     highlight: "Temporada"
   },
   {
-    id: "verdinas-llanes-carabineros",
-    category: "Entrantes",
-    name: "Verdinas de Llanes Estofadas con Carabinero de Huelva",
-    description: "Cuchara histórica de la casa ligada con el coral del propio crustáceo a la brasa y manzanilla pasada.",
-    price: 26.50,
-    highlight: "Plato Insignia"
-  },
-  {
-    id: "oreja-confitada-crujiente",
-    category: "Entrantes",
-    name: "Terrina Crujiente de Oreja Ibérica Confitada al Pimentón de la Vera",
-    description: "Confitada 12 horas a baja temperatura, marcada al hierro con emulsión de ajo negro y perejil.",
-    price: 17.50,
-    highlight: null
-  },
-  {
-    id: "tomate-rosa-ventresca",
-    category: "Entrantes",
-    name: "Corazón de Tomate Rosa de Barbastro con Ventresca de Bonito del Norte",
-    description: "Lomos de ventresca en conserva artesana, cebolleta tierna, pimiento de cristal al sarmiento y AOVE temprano.",
-    price: 19.50,
-    highlight: null
-  },
-  {
-    id: "alcachofas-tudela-foie",
-    category: "Entrantes",
-    name: "Flores de Alcachofa de Tudela a la Brasa con Foie Fresco y Cecina de León",
-    description: "Confitadas en aceite arbequina, marcadas al carbón con virutas de foie micuit y sal de Añana.",
-    price: 22.00,
-    highlight: null
-  },
-
-  // =========================================================================
-  // 2. PESCADOS
-  // =========================================================================
-  {
-    id: "cocochas-merluza-pilpil",
-    category: "Pescados",
-    name: "Cocochas de Merluza de Pincho del Cantábrico al Pil-Pil o a la Brasa",
-    description: "Ligadas a mano en cazuela de barro con aceite virgen extra y láminas de ajo morado de Las Pedroñeras.",
-    price: 29.00,
-    highlight: "Lonja del Día"
-  },
-  {
-    id: "merluza-celeiro-almejas",
-    category: "Pescados",
-    name: "Lomo de Merluza de Celeiro en Salsa Verde con Almejas de Carril",
-    description: "Corte central de merluza de anzuelo, almeja fina gallega, espárrago blanco fresco y fumet de roca.",
-    price: 28.50,
-    highlight: null
-  },
-  {
-    id: "rodaballo-salvaje-brasa",
-    category: "Pescados",
-    name: "Rodaballo Salvaje Asado al Carbón de Encina con Bilbaína Suave",
-    description: "Asado con su piel gelatinosa, refrito tradicional de ajos dorados, vinagre de sidra y patata panadera.",
-    price: 32.00,
-    highlight: "Recomendación del Chef"
-  },
-  {
-    id: "cazon-adobo-fino",
-    category: "Pescados",
-    name: "Tacos de Cazón de Almadraba en Adobo Antiguo y Mayonesa de Limón Asado",
-    description: "Marinado 24 horas en especias suaves y vinagre viejo de Jerez, fritura limpia en harina de garbanzo.",
-    price: 19.00,
-    highlight: null
-  },
-  {
-    id: "chipirones-anzuelo-tinta",
-    category: "Pescados",
-    name: "Chipirones de Anzuelo Rellenos en su Tinta con Arroz Blanco Cremoso",
-    description: "Guisados lentamente según el recetario clásico del norte con cebolla pochada durante cuatro horas.",
-    price: 25.50,
-    highlight: null
-  },
-
-  // =========================================================================
-  // 3. CARNES ROJAS MADURADAS
-  // =========================================================================
-  {
-    id: "solomillo-rubia-gallega-foie",
-    category: "Carnes rojas maduradas",
-    name: "Solomillo de Vaca Rubia Gallega a la Brasa con Escalope de Foie y Pedro Ximénez",
-    description: "Centro de solomillo al carbón, foie gras fresco marcado en sartén, reducción de vino viejo y gratén de patata.",
-    price: 31.00,
-    highlight: "Corte Estrella"
-  },
-  {
-    id: "chuleta-vaca-madurada-60",
-    category: "Carnes rojas maduradas",
-    name: "Lomo Alto de Vaca Mayor Madurado 60 Días (Dry-Aged) al Sarmiento",
-    description: "Trinchado en sala sobre plato refractario templado, acompañado de pimientos de Lodosa asados a la leña (500 g).",
-    price: 38.00,
-    highlight: "Maduración 60 Días"
-  },
-  {
-    id: "rabo-toro-vino-tinto",
-    category: "Carnes rojas maduradas",
-    name: "Rabo de Toro Estofado al Vino Tinto Reserva y Parmentier Trufado",
-    description: "Deshuesado en cilindro tras siete horas de cocción lenta, glaseado brillante en su jugo de reducción.",
-    price: 26.00,
-    highlight: "Receta Histórica"
-  },
-  {
-    id: "callos-madrilena-tradicion",
-    category: "Carnes rojas maduradas",
-    name: "Callos a la Madrileña de Casa La Montaña en Cazuela de Barro",
-    description: "Pata, morro y tripa seleccionados, morcilla y chorizo ahumado asturiano con salsa melosa ligeramente picante.",
-    price: 22.50,
-    highlight: "Tradición 1943"
-  },
-  {
-    id: "paletilla-lechazo-igp",
-    category: "Carnes rojas maduradas",
-    name: "Paletilla de Lechazo Churro I.G.P. Castilla y León Asada a Baja Temperatura",
-    description: "Piel dorada y crujiente, carne tierna en su propio jugo de asado y ensalada de brotes de la huerta.",
-    price: 33.50,
-    highlight: null
-  },
-
-  // =========================================================================
-  // 4. POSTRES DE AUTOR
-  // =========================================================================
-  {
-    id: "torrija-brioche-bourbon",
-    category: "Postres de autor",
-    name: "Torrija Caramelizada de Pan Brioche en Leche Merengada y Vainilla Bourbon",
-    description: "Infusionada 12 horas en leche fresca con canela en rama y piel de cítricos, caramelizada al hierro en mesa.",
-    price: 10.50,
-    highlight: "Postre Insignia"
-  },
-  {
-    id: "tarta-queso-artesana-fundente",
-    category: "Postres de autor",
-    name: "Tarta Fluida de Quesos Artesanos de la Sierra de Madrid y Gamoneu",
-    description: "Horneada a diario con corazón cremoso, base sableé de mantequilla tostada y compota suave de frutos silvestres.",
+    id: "torreznos",
+    category: "Primeros",
+    name: "Torreznos",
+    description: "Torreznos tradicionales dorados con corteza crujiente e interior jugoso.",
     price: 10.00,
+    priceText: "10,00 €",
     highlight: null
   },
   {
-    id: "arroz-leche-asturiano",
-    category: "Postres de autor",
-    name: "Arroz con Leche Cremoso al Estilo del Principado con Costra de Azúcar",
-    description: "Tres horas de cocción pausada para lograr un grano mantecoso, quemado al momento con hierro candente.",
+    id: "lentejas",
+    category: "Primeros",
+    name: "Lentejas",
+    description: "Lentejas caseras estofadas lentamente a la manera tradicional.",
     price: 9.00,
+    priceText: "9,00 €",
+    highlight: "Cuchara"
+  },
+  {
+    id: "sopa-cocido",
+    category: "Primeros",
+    name: "Sopa Cocido",
+    description: "Sopa reconfortante de fideos finos en el caldo sustancioso de nuestro cocido.",
+    price: 9.00,
+    priceText: "9,00 €",
     highlight: null
   },
   {
-    id: "milhojas-crema-diplomatica",
-    category: "Postres de autor",
-    name: "Milhojas Crujiente de Hojaldre Invertido con Crema Diplomática y Toffee",
-    description: "Láminas de hojaldre caramelizadas al horno, crema ligera de vainilla de Madagascar y caramelo salado.",
+    id: "berenjena-rebozada",
+    category: "Primeros",
+    name: "Berenjena Rebozada",
+    description: "Láminas de berenjena tierna con rebozado fino y dorado al momento.",
     price: 11.00,
-    highlight: "Obrador Propio"
+    priceText: "11,00 €",
+    highlight: null
+  },
+  {
+    id: "pisto-manchego",
+    category: "Primeros",
+    name: "Pisto Manchego",
+    description: "Hortalizas frescas pochadas a fuego pausado según la receta clásica manchega.",
+    price: 11.00,
+    priceText: "11,00 €",
+    highlight: null
+  },
+  {
+    id: "patatas-revolconas",
+    category: "Primeros",
+    name: "Patatas Revolconas",
+    description: "Cremoso rústico de patata al pimentón de la Vera con torreznos crujientes.",
+    price: 11.50,
+    priceText: "11,50 €",
+    highlight: "Tradición"
+  },
+  {
+    id: "gazpacho",
+    category: "Primeros",
+    name: "Gazpacho",
+    description: "Elaborado en casa con tomates maduros de temporada y aceite de oliva virgen extra.",
+    price: 11.50,
+    priceText: "11,50 €",
+    highlight: null
+  },
+  {
+    id: "salmorejo",
+    category: "Primeros",
+    name: "Salmorejo",
+    description: "Salmorejo tradicional cremoso servido con virutas de jamón ibérico y huevo duro.",
+    price: 12.00,
+    priceText: "12,00 €",
+    highlight: null
+  },
+  {
+    id: "huevos-rellenos",
+    category: "Primeros",
+    name: "Huevos Rellenos",
+    description: "Huevos camperos rellenos de bonito del norte elaborados en nuestra cocina.",
+    price: 14.00,
+    priceText: "14,00 €",
+    highlight: null
+  },
+  {
+    id: "judias-verdes",
+    category: "Primeros",
+    name: "Judías Verdes",
+    description: "Judías verdes tiernas salteadas con jamón ibérico y ajo laminado.",
+    price: 19.50,
+    priceText: "19,50 €",
+    highlight: null
+  },
+  {
+    id: "fabada",
+    category: "Primeros",
+    name: "Fabada",
+    description: "Auténtica fabada asturiana de cuchara con fabes seleccionadas y su compango.",
+    price: 19.50,
+    priceText: "19,50 €",
+    highlight: "Especialidad"
+  },
+  {
+    id: "verdinas-con-carabineros",
+    category: "Primeros",
+    name: "Verdinas con Carabineros",
+    description: "El plato de cuchara más famoso de La Montaña: verdinas estofadas con carabineros.",
+    price: 21.00,
+    priceText: "21,00 €",
+    highlight: "Estrella de la Casa"
+  },
+  {
+    id: "cocido",
+    category: "Primeros",
+    name: "Cocido",
+    description: "Servicio / aperitivo tradicional de nuestro cocido madrileño.",
+    price: 1.80,
+    priceText: "1,80 €",
+    highlight: null
+  },
+  {
+    id: "croqueta-de-jamon-unidad",
+    category: "Primeros",
+    name: "Croqueta de Jamón (unidad)",
+    description: "Croqueta casera cremosa de jamón ibérico elaborada a diario (precio por unidad).",
+    price: 2.00,
+    priceText: "2,00 €",
+    highlight: "Casera"
+  },
+  {
+    id: "gilda",
+    category: "Primeros",
+    name: "Gilda",
+    description: "Clásico aperitivo de anchoa del Cantábrico, piparra tierna y aceituna.",
+    price: 7.00,
+    priceText: "7,00 €",
+    highlight: null
+  },
+  {
+    id: "patatas-bravas",
+    category: "Primeros",
+    name: "Patatas Bravas",
+    description: "Patatas naturales doradas con nuestra salsa brava tradicional (consultar en sala).",
+    price: null,
+    priceText: "Consultar",
+    highlight: null
+  },
+
+  // =========================================================================
+  // 2. SEGUNDOS (16 Platos Oficiales con Precios Exactos)
+  // =========================================================================
+  {
+    id: "sardinas-escabeche",
+    category: "Segundos",
+    name: "Sardinas Escabeche",
+    description: "Sardinas preparadas en escabeche casero tradicional de laurel y especias suaves.",
+    price: 11.00,
+    priceText: "11,00 €",
+    highlight: null
+  },
+  {
+    id: "tortilla-de-la-abuela",
+    category: "Segundos",
+    name: "Tortilla de la Abuela",
+    description: "Tortilla casera jugosa elaborada al momento con receta tradicional de la casa.",
+    price: 21.00,
+    priceText: "21,00 €",
+    highlight: "Tradición"
+  },
+  {
+    id: "calamares-en-su-tinta",
+    category: "Segundos",
+    name: "Calamares en su Tinta",
+    description: "Calamares tiernos guisados lentamente en su tinta con guarnición clásica.",
+    price: 21.50,
+    priceText: "21,50 €",
+    highlight: "Clásico"
+  },
+  {
+    id: "filetes-de-gallo",
+    category: "Segundos",
+    name: "Filetes de Gallo",
+    description: "Filetes limpios de gallo fresco de lonja preparados a la plancha o rebozados.",
+    price: 23.00,
+    priceText: "23,00 €",
+    highlight: null
+  },
+  {
+    id: "merluza-de-pincho",
+    category: "Segundos",
+    name: "Merluza de Pincho",
+    description: "Corte selecto de merluza de pincho del Cantábrico preparada al gusto.",
+    price: 27.50,
+    priceText: "27,50 €",
+    highlight: "Lonja"
+  },
+  {
+    id: "delicias-de-merluza",
+    category: "Segundos",
+    name: "Delicias de Merluza",
+    description: "Medallones jugosos de merluza fresca en rebozado fino tradicional.",
+    price: 27.50,
+    priceText: "27,50 €",
+    highlight: null
+  },
+  {
+    id: "cococha-de-bacalao-merluza",
+    category: "Segundos",
+    name: "Cococha de Bacalao/Merluza",
+    description: "Cocochas seleccionadas de primera calidad al pil-pil, rebozadas o en salsa verde.",
+    price: 35.00,
+    priceText: "35,00 €",
+    highlight: "Especialidad"
+  },
+  {
+    id: "filete-de-ternera",
+    category: "Segundos",
+    name: "Filete de Ternera",
+    description: "Filete tierno de ternera nacional a la plancha con patatas fritas caseras.",
+    price: 19.00,
+    priceText: "19,00 €",
+    highlight: null
+  },
+  {
+    id: "escalope-de-ternera",
+    category: "Segundos",
+    name: "Escalope de Ternera",
+    description: "Escalope de ternera con empanado artesano dorado en sartén y guarnición.",
+    price: 20.00,
+    priceText: "20,00 €",
+    highlight: null
+  },
+  {
+    id: "pollo-al-ajillo",
+    category: "Segundos",
+    name: "Pollo al Ajillo",
+    description: "Pollo troceado dorado al ajillo tradicional con ajos tiernos y vino blanco.",
+    price: 14.00,
+    priceText: "14,00 €",
+    highlight: null
+  },
+  {
+    id: "albondigas",
+    category: "Segundos",
+    name: "Albóndigas",
+    description: "Albóndigas caseras de ternera guisadas en salsa española con patatas.",
+    price: 15.00,
+    priceText: "15,00 €",
+    highlight: null
+  },
+  {
+    id: "ternera-en-pepitoria",
+    category: "Segundos",
+    name: "Ternera en Pepitoria",
+    description: "Receta histórica madrileña estofada en salsa ligada de almendra, azafrán y yema.",
+    price: 16.50,
+    priceText: "16,50 €",
+    highlight: "Receta Castiza"
+  },
+  {
+    id: "redondo-de-ternera",
+    category: "Segundos",
+    name: "Redondo de Ternera",
+    description: "Redondo de ternera asado lentamente en su jugo con guarnición de la casa.",
+    price: 17.50,
+    priceText: "17,50 €",
+    highlight: null
+  },
+  {
+    id: "entrecot-y-patata-frita",
+    category: "Segundos",
+    name: "Entrecot y Patata Frita",
+    description: "Entrecot de vacuno seleccionado al punto deseado con patatas fritas caseras.",
+    price: 20.00,
+    priceText: "20,00 €",
+    highlight: null
+  },
+  {
+    id: "solomillo-de-ternera",
+    category: "Segundos",
+    name: "Solomillo de Ternera",
+    description: "Centro de solomillo de ternera de primera calidad a la plancha o parrilla.",
+    price: 22.00,
+    priceText: "22,00 €",
+    highlight: "Corte Noble"
+  },
+  {
+    id: "chuleton-de-vaca",
+    category: "Segundos",
+    name: "Chuletón de Vaca",
+    description: "Gran chuletón de vaca madurada a la brasa ideal para compartir en mesa.",
+    price: 68.00,
+    priceText: "68,00 €",
+    highlight: "Para Compartir"
+  },
+
+  // =========================================================================
+  // 3. POSTRES (5 Postres Caseros Oficiales con Precios Exactos)
+  // =========================================================================
+  {
+    id: "arroz-con-leche",
+    category: "Postres",
+    name: "Arroz con Leche",
+    description: "Receta casera cremosa cocinada lentamente con leche entera, canela y limón.",
+    price: 7.00,
+    priceText: "7,00 €",
+    highlight: "Casero"
+  },
+  {
+    id: "flan",
+    category: "Postres",
+    name: "Flan",
+    description: "Flan tradicional de huevo horneado al baño maría en nuestra cocina con caramelo.",
+    price: 7.00,
+    priceText: "7,00 €",
+    highlight: null
+  },
+  {
+    id: "manzana-asada",
+    category: "Postres",
+    name: "Manzana Asada",
+    description: "Manzana reineta asada lentamente al horno en su propio jugo acaramelado.",
+    price: 7.00,
+    priceText: "7,00 €",
+    highlight: null
+  },
+  {
+    id: "fruta",
+    category: "Postres",
+    name: "Fruta",
+    description: "Pieza o selección de fruta fresca natural de temporada.",
+    price: 6.50,
+    priceText: "6,50 €",
+    highlight: null
+  },
+  {
+    id: "torrija",
+    category: "Postres",
+    name: "Torrija",
+    description: "Nuestra célebre torrija casera tradicional de media barra de pan en leche infusionada.",
+    price: 9.00,
+    priceText: "9,00 €",
+    highlight: "Famosa desde 1943"
   }
 ];
 
 const WINE_PAIRINGS = [
-  { name: "Vega Sicilia Valbuena 5º Año · D.O. Ribera del Duero", price: "165,00 €" },
-  { name: "Pago de Carraovejas · D.O. Ribera del Duero", price: "48,00 €" },
-  { name: "La Rioja Alta Gran Reserva 904 · D.O.Ca. Rioja", price: "76,00 €" },
-  { name: "Marqués de Murrieta Reserva · D.O.Ca. Rioja", price: "36,00 €" },
-  { name: "Pazo Señorans Selección de Añada · D.O. Rías Baixas", price: "54,00 €" },
-  { name: "Louis Roederer Collection 244 · A.O.C. Champagne", price: "82,00 €" }
+  { name: "Marqués de Murrieta Reserva · D.O.Ca. Rioja", price: "34,00 €" },
+  { name: "Pago de Carraovejas · D.O. Ribera del Duero", price: "46,00 €" },
+  { name: "Viña Ardanza Reserva · La Rioja Alta", price: "42,00 €" },
+  { name: "Pazo de Señorans · D.O. Rías Baixas (100% Albariño)", price: "27,50 €" }
 ];
 
 const TIME_SLOTS = {
-  lunch: ["13:30", "14:00", "14:30", "15:00", "15:30"],
-  dinner: ["20:30", "21:00", "21:30", "22:00", "22:30", "23:00"]
+  lunch: ["13:00", "13:30", "14:00", "14:30", "15:00", "15:30"],
+  dinner: ["21:00", "21:30", "22:00", "22:30"]
 };
 
 module.exports = {
