@@ -480,8 +480,14 @@ function procesarNuevaReserva(req, res) {
     const body = req.body || {};
     const date = body.date || body.fecha || todayISO;
     const time = body.time || body.hora || '14:00';
-    const guests = Number(body.guests || body.comensales || 2);
-    const diningArea = body.diningArea || body.salon || 'salon-senorial';
+    const guests = Number(body.guests || body.comensales || body.personas || 2);
+    const rawZone = body.diningArea || body.salon || body.zonaPreferida || 'salon-senorial';
+    const diningArea =
+      rawZone === 'La Cueva / Bóveda' || String(rawZone).toLowerCase().includes('cueva')
+        ? 'boveda-ladrillo'
+        : rawZone === 'Salón Principal' || String(rawZone).toLowerCase().includes('principal')
+          ? 'salon-senorial'
+          : rawZone;
     const name = String(body.name || body.nombre || '').trim();
     const phone = String(body.phone || body.telefono || '').trim();
     const email = String(body.email || body.correo || 'cliente@lamontana.es').trim();
@@ -491,6 +497,7 @@ function procesarNuevaReserva(req, res) {
     if (!name || !phone) {
       return res.status(400).json({
         success: false,
+        message: 'Por favor indique su nombre completo y teléfono de contacto para confirmar la mesa.',
         error: 'Por favor indique su nombre completo y teléfono de contacto para confirmar la mesa.'
       });
     }
@@ -499,12 +506,13 @@ function procesarNuevaReserva(req, res) {
     if (parsedDate.getDay() === 1) {
       return res.status(400).json({
         success: false,
+        message: 'Restaurante La Montaña permanece cerrado los lunes por descanso semanal.',
         error: 'Restaurante La Montaña permanece cerrado los lunes por descanso semanal.'
       });
     }
 
     const areaObj =
-      RESTAURANT_INFO.diningAreas.find((a) => a.id === diningArea) ||
+      RESTAURANT_INFO.diningAreas.find((a) => a.id === diningArea || a.name === rawZone) ||
       RESTAURANT_INFO.diningAreas[0];
     const reservationCode = `LM-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
 
@@ -557,11 +565,18 @@ function procesarNuevaReserva(req, res) {
     return res.status(201).json({
       success: true,
       message: 'Reserva confirmada oficialmente en sala.',
-      reservation: created
+      reservation: created,
+      reserva: {
+        ...created,
+        codigo: created.reservation_code,
+        mesaNumero: created.table_number || 'Asignada en sala',
+        zona: created.dining_area_name || areaObj.name
+      }
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
+      message: 'Error al procesar la solicitud de reserva en el servidor.',
       error: 'Error al procesar la solicitud de reserva en el servidor.'
     });
   }

@@ -13,9 +13,9 @@
  */
 
 :root {
-  --bg-anthracite: #09090b;
-  --bg-surface: #111115;
-  --bg-surface-elevated: #16161c;
+  --bg-anthracite: #050506;
+  --bg-surface: #0a0a0d;
+  --bg-surface-elevated: #111115;
   --gold-champagne: #d4af37;
   --gold-muted: rgba(212, 175, 55, 0.32);
   --gold-subtle: rgba(212, 175, 55, 0.12);
@@ -24,8 +24,8 @@
   --stone-muted: #a1a1aa;
   --border-hairline: rgba(255, 255, 255, 0.1);
   --border-gold: rgba(212, 175, 55, 0.35);
-  --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-  --font-sans: 'Montserrat', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Plus Jakarta Sans', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 

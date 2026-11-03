@@ -4,50 +4,70 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <%
-    const rest = (typeof restaurant !== 'undefined' && restaurant) ? restaurant : {
-      name: 'La Montaña',
-      address: 'C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid',
-      phone: '915 47 10 53',
-      phoneClean: '+34915471053',
-      Schedule: 'Martes a Sábado: 13:30 – 16:30 y 20:30 – 23:30 · Domingo: 13:30 – 16:30 · Lunes cerrado'
-    };
+    const rawRest = (typeof restaurant !== 'undefined' && restaurant) ? restaurant : {};
+    const addressText = (rawRest.address && typeof rawRest.address === 'object')
+      ? (rawRest.address.fullAddress || 'C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid')
+      : (rawRest.address || 'C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid');
+
+    const phoneText = (rawRest.contact && rawRest.contact.phone)
+      ? rawRest.contact.phone
+      : (rawRest.phone || '+34 915 47 31 11');
+
+    const scheduleText = rawRest.schedule || 'Martes a Sábado: 13:00 – 16:30 y 20:30 – 23:30 · Domingo: 13:00 – 16:45 · Lunes cerrado';
 
     const fmtPrice = (typeof formatPrice === 'function')
       ? formatPrice
-      : (p) => Number(p).toFixed(2).replace('.', ',') + ' €';
+      : (p) => (p === null || p === undefined || Number.isNaN(Number(p)))
+        ? 'Consultar'
+        : Number(p).toFixed(2).replace('.', ',') + ' €';
 
     const fallbackCarta = {
       primeros: [
-        { id: 1, name: 'Sopa Castellana de la Casa con Huevo Escalfado', description: 'Caldo tradicional de jamón ibérico, pan candeal tostado, ajo morado de Las Pedroñeras y pimentón de la Vera.', price: 14.50 },
-        { id: 2, name: 'Jamón Ibérico de Bellota 100% Cortado a Cuchillo', description: 'Selección de dehesa extremeña con curación mínima de 36 meses, acompañado de picos artesanos.', price: 28.00 },
-        { id: 3, name: 'Croquetas Cremosas de Jamón Ibérico (8 uds.)', description: 'Bechamel reposada de leche fresca de caserío con virutas de jamón de bellota y rebozado crujiente.', price: 15.00 },
-        { id: 4, name: 'Alcachofas de Tudela Confitadas con Velouté y Crujiente de Jamón', description: 'Corazones tiernos confitados a baja temperatura en aceite de oliva virgen extra.', price: 18.50 },
-        { id: 5, name: 'Pulpo a la Brasa sobre Parmentier Trufado', description: 'Pata de pulpo del Cantábrico marcada al carbón de encina con crema fina de patata y pimentón.', price: 24.50 },
-        { id: 6, name: 'Puerros Asados al Carbón con Vinagreta de Avellanas y Trufa', description: 'Puerros tiernos de huerta asados lentamente a la brasa con emulsión templada de frutos secos.', price: 17.00 },
-        { id: 7, name: 'Gambas Blancas de Huelva al Ajillo en Cazuela de Barro', description: 'Gamba blanca fresca salteada al momento en aceite de oliva virgen extra con láminas de ajo y guindilla.', price: 23.00 },
-        { id: 8, name: 'Zamburiñas Gallegas Gratinadas al Horno (6 uds.)', description: 'Asadas en su propia concha con majado suave de ajo, perejil fresco y vino albariño.', price: 21.00 },
-        { id: 9, name: 'Judiones de La Granja Estofados con Almejas de Carril', description: 'Guiso reposado a fuego lento con almeja fina gallega y sofrito tradicional.', price: 19.50 },
-        { id: 10, name: 'Huevos Rotos de Corral con Foie Fresco a la Plancha', description: 'Patata agria confitada, huevos camperos y escalope de foie micuit caramelizado.', price: 22.00 }
+        { id: 'consome', name: 'Consomé', description: 'Caldo tradicional clarificado de ave y jarrete cocinado a fuego lento.', price: 5.00 },
+        { id: 'ensaladilla-rusa', name: 'Ensaladilla Rusa', description: 'Receta clásica de la casa con patata seleccionada, bonito del norte y mayonesa suave.', price: 11.50 },
+        { id: 'ensalada-tomate-bonito', name: 'Ensalada de Tomate Bonito', description: 'Tomate natural de huerta acompañado de lomos de bonito del norte y cebolleta.', price: 15.50 },
+        { id: 'ensalada-tomate-raf-bon', name: 'Ensalada Tomate Raf Bon', description: 'Tomate Raf de temporada aliñado con aceite de oliva virgen extra y bonito seleccionado.', price: 18.50 },
+        { id: 'torreznos', name: 'Torreznos', description: 'Torreznos tradicionales dorados con corteza crujiente e interior jugoso.', price: 10.00 },
+        { id: 'lentejas', name: 'Lentejas', description: 'Lentejas caseras estofadas lentamente a la manera tradicional.', price: 9.00 },
+        { id: 'sopa-cocido', name: 'Sopa Cocido', description: 'Sopa reconfortante de fideos finos en el caldo sustancioso de nuestro cocido.', price: 9.00 },
+        { id: 'berenjena-rebozada', name: 'Berenjena Rebozada', description: 'Láminas de berenjena tierna con rebozado fino y dorado al momento.', price: 11.00 },
+        { id: 'pisto-manchego', name: 'Pisto Manchego', description: 'Hortalizas frescas pochadas a fuego pausado según la receta clásica manchega.', price: 11.00 },
+        { id: 'patatas-revolconas', name: 'Patatas Revolconas', description: 'Cremoso rústico de patata al pimentón de la Vera con torreznos crujientes.', price: 11.50 },
+        { id: 'gazpacho', name: 'Gazpacho', description: 'Elaborado en casa con tomates maduros de temporada y aceite de oliva virgen extra.', price: 11.50 },
+        { id: 'salmorejo', name: 'Salmorejo', description: 'Salmorejo tradicional cremoso servido con virutas de jamón ibérico y huevo duro.', price: 12.00 },
+        { id: 'huevos-rellenos', name: 'Huevos Rellenos', description: 'Huevos camperos rellenos de bonito del norte elaborados en nuestra cocina.', price: 14.00 },
+        { id: 'judias-verdes', name: 'Judías Verdes', description: 'Judías verdes tiernas salteadas con jamón ibérico y ajo laminado.', price: 19.50 },
+        { id: 'fabada', name: 'Fabada', description: 'Auténtica fabada asturiana de cuchara con fabes seleccionadas y su compango.', price: 19.50 },
+        { id: 'verdinas-con-carabineros', name: 'Verdinas con Carabineros', description: 'El plato de cuchara más famoso de La Montaña: verdinas estofadas con carabineros.', price: 21.00 },
+        { id: 'cocido', name: 'Cocido', description: 'Servicio / aperitivo tradicional de nuestro cocido madrileño.', price: 1.80 },
+        { id: 'croqueta-de-jamon-unidad', name: 'Croqueta de Jamón (unidad)', description: 'Croqueta casera cremosa de jamón ibérico elaborada a diario (precio por unidad).', price: 2.00 },
+        { id: 'gilda', name: 'Gilda', description: 'Clásico aperitivo de anchoa del Cantábrico, piparra tierna y aceituna.', price: 7.00 },
+        { id: 'patatas-bravas', name: 'Patatas Bravas', description: 'Patatas naturales doradas con nuestra salsa brava tradicional (consultar en sala).', price: null }
       ],
       segundos: [
-        { id: 11, name: 'Cocido Madrileño Completo en Tres Vuelcos', description: 'Sopa de fideos finos, garbanzos de Fuentesaúco con verdura de temporada y bandeja de carnes selectas.', price: 29.50 },
-        { id: 12, name: 'Rabo de Toro Estofado al Vino Tinto Reserva', description: 'Guiso tradicional cordobés deshuesado y glaseado en su propio jugo durante seis horas.', price: 26.50 },
-        { id: 13, name: 'Callos a la Madrileña con Pata, Morro y Chorizo Asturiano', description: 'Receta histórica de la casa de 1943 con gelatina natural y un toque sutilmente picante.', price: 22.50 },
-        { id: 14, name: 'Solomillo de Vaca Vieja a la Brasa con Foie y Reducción de Oporto', description: 'Centro de solomillo madurado a la parrilla de carbón, coronado con foie fresco.', price: 31.00 },
-        { id: 15, name: 'Chuletón de Vaca Rubia Gallega Madurado 45 Días (por kg)', description: 'Trinchado en mesa sobre plato refractario con pimientos de Padrón y patatas panadera.', price: 68.00 },
-        { id: 16, name: 'Cochinillo Asado al Estilo Segoviano en Horno de Leña', description: 'Cuarto de cochinillo de piel crujiente y carne melosa asado lentamente.', price: 29.00 },
-        { id: 17, name: 'Paletilla de Cordero Lechal Asada a Baja Temperatura', description: 'Cordero lechal de Castilla asado en su jugo con patatas panadera y ensalada verde.', price: 32.00 },
-        { id: 18, name: 'Merluza de Pincho del Cantábrico a la Romana o en Salsa Verde', description: 'Lomo central de merluza de anzuelo con almejas finas, espárragos blancos y huevo duro.', price: 27.50 },
-        { id: 19, name: 'Bacalao Confitado al Pil-Pil Tradicional', description: 'Lomo de bacalao Gadus Morhua ligado a mano en emulsión sedosa de aceite y ajos.', price: 26.50 },
-        { id: 20, name: 'Pixín (Rape Negro) Asado al Horno con Refrito de Ajos y Guindilla', description: 'Medallones de rape del Cantábrico asados con bilbaína tradicional de vinagre de Jerez.', price: 29.50 }
+        { id: 'sardinas-escabeche', name: 'Sardinas Escabeche', description: 'Sardinas preparadas en escabeche casero tradicional de laurel y especias suaves.', price: 11.00 },
+        { id: 'tortilla-de-la-abuela', name: 'Tortilla de la Abuela', description: 'Tortilla casera jugosa elaborada al momento con receta tradicional de la casa.', price: 21.00 },
+        { id: 'calamares-en-su-tinta', name: 'Calamares en su Tinta', description: 'Calamares tiernos guisados lentamente en su tinta con guarnición clásica.', price: 21.50 },
+        { id: 'filetes-de-gallo', name: 'Filetes de Gallo', description: 'Filetes limpios de gallo fresco de lonja preparados a la plancha o rebozados.', price: 23.00 },
+        { id: 'merluza-de-pincho', name: 'Merluza de Pincho', description: 'Corte selecto de merluza de pincho del Cantábrico preparada al gusto.', price: 27.50 },
+        { id: 'delicias-de-merluza', name: 'Delicias de Merluza', description: 'Medallones jugosos de merluza fresca en rebozado fino tradicional.', price: 27.50 },
+        { id: 'cococha-de-bacalao-merluza', name: 'Cococha de Bacalao/Merluza', description: 'Cocochas seleccionadas de primera calidad al pil-pil, rebozadas o en salsa verde.', price: 35.00 },
+        { id: 'filete-de-ternera', name: 'Filete de Ternera', description: 'Filete tierno de ternera nacional a la plancha con patatas fritas caseras.', price: 19.00 },
+        { id: 'escalope-de-ternera', name: 'Escalope de Ternera', description: 'Escalope de ternera con empanado artesano dorado en sartén y guarnición.', price: 20.00 },
+        { id: 'pollo-al-ajillo', name: 'Pollo al Ajillo', description: 'Pollo troceado dorado al ajillo tradicional con ajos tiernos y vino blanco.', price: 14.00 },
+        { id: 'albondigas', name: 'Albóndigas', description: 'Albóndigas caseras de ternera guisadas en salsa española con patatas.', price: 15.00 },
+        { id: 'ternera-en-pepitoria', name: 'Ternera en Pepitoria', description: 'Receta histórica madrileña estofada en salsa ligada de almendra, azafrán y yema.', price: 16.50 },
+        { id: 'redondo-de-ternera', name: 'Redondo de Ternera', description: 'Redondo de ternera asado lentamente en su jugo con guarnición de la casa.', price: 17.50 },
+        { id: 'entrecot-y-patata-frita', name: 'Entrecot y Patata Frita', description: 'Entrecot de vacuno seleccionado al punto deseado con patatas fritas caseras.', price: 20.00 },
+        { id: 'solomillo-de-ternera', name: 'Solomillo de Ternera', description: 'Centro de solomillo de ternera de primera calidad a la plancha o parrilla.', price: 22.00 },
+        { id: 'chuleton-de-vaca', name: 'Chuletón de Vaca', description: 'Gran chuletón de vaca madurada a la brasa ideal para compartir en mesa.', price: 68.00 }
       ],
       postres: [
-        { id: 21, name: 'Torrija Caramelizada de Brioche en Leche Infusionada', description: 'Pan brioche artesano empapado en crema inglesa de canela y cítricos, acompañado de helado de vainilla Bourbon.', price: 9.50 },
-        { id: 22, name: 'Tarta Cremosa de Queso Idiazábal al Horno', description: 'Elaborada a diario con corazón fundente de quesos artesanos y coulis de frutos rojos.', price: 9.50 },
-        { id: 23, name: 'Milhojas Crujiente de Crema Pastelera y Nata Montada', description: 'Hojaldre inverso caramelizado al momento con crema de vainilla de Madagascar.', price: 9.00 },
-        { id: 24, name: 'Arroz con Leche Cremosísimo Requemaíllo al Estilo Asturiano', description: 'Cocinado lentamente durante tres horas con corteza de limón y azúcar quemado al hierro.', price: 8.50 },
-        { id: 25, name: 'Filloas Rellenas de Crema Templada de Manzana Reineta', description: 'Finas crepes tradicionales flambeadas al orujo gallego.', price: 9.00 },
-        { id: 26, name: 'Tabla de Quesos Artesanos Españoles con Membrillo Casero', description: 'Selección afinada de Manchego curado, Cabrales de cueva, Torta del Casar e Idiazábal.', price: 16.50 }
+        { id: 'arroz-con-leche', name: 'Arroz con Leche', description: 'Receta casera cremosa cocinada lentamente con leche entera, canela y limón.', price: 7.00 },
+        { id: 'flan', name: 'Flan', description: 'Flan tradicional de huevo horneado al baño maría en nuestra cocina con caramelo.', price: 7.00 },
+        { id: 'manzana-asada', name: 'Manzana Asada', description: 'Manzana reineta asada lentamente al horno en su propio jugo acaramelado.', price: 7.00 },
+        { id: 'fruta', name: 'Fruta', description: 'Pieza o selección de fruta fresca natural de temporada.', price: 6.50 },
+        { id: 'torrija', name: 'Torrija', description: 'Nuestra célebre torrija casera tradicional de media barra de pan en leche infusionada.', price: 9.00 }
       ]
     };
 
@@ -63,9 +83,14 @@
       ? carta.postres
       : fallbackCarta.postres;
 
-    const slots = (typeof timeSlots !== 'undefined' && Array.isArray(timeSlots) && timeSlots.length)
-      ? timeSlots
-      : ['13:30', '14:00', '14:30', '15:00', '15:30', '20:30', '21:00', '21:30', '22:00', '22:30'];
+    let slots = ['13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '21:00', '21:30', '22:00', '22:30'];
+    if (typeof timeSlots !== 'undefined' && timeSlots) {
+      if (Array.isArray(timeSlots) && timeSlots.length) {
+        slots = timeSlots;
+      } else if (Array.isArray(timeSlots.lunch) || Array.isArray(timeSlots.dinner)) {
+        slots = [...(timeSlots.lunch || []), ...(timeSlots.dinner || [])];
+      }
+    }
   %>
 
   <title>La Montaña | Alta Cocina Tradicional Castiza en Madrid desde 1943</title>
@@ -110,7 +135,6 @@
       color: #f4f4f5;
     }
 
-    /* Custom subtle scrollbar */
     ::-webkit-scrollbar {
       width: 5px;
     }
@@ -121,7 +145,6 @@
       background: rgba(212, 175, 55, 0.25);
     }
 
-    /* Progressive scroll reveal containers */
     .scroll-reveal {
       opacity: 0;
       transform: translateY(2.25rem);
@@ -131,7 +154,6 @@
       transform: translateY(0);
     }
 
-    /* Dark native date & select controls */
     input[type="date"]::-webkit-calendar-picker-indicator {
       filter: invert(0.85) sepia(0.3) saturate(1.5) hue-rotate(10deg);
       cursor: pointer;
@@ -142,7 +164,7 @@
 <body class="bg-[#050506] text-[#f4f4f5] selection:bg-[#d4af37]/20 selection:text-[#f4f4f5]">
 
   <!-- ===================================================================== -->
-  <!-- 1. CABECERA (NAVBAR) FLOTANTE E IMPECABLE                             -->
+  <!-- 1. CABECERA (NAVBAR) ULTRA MINIMALISTA Y FLOTANTE                     -->
   <!-- ===================================================================== -->
   <header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-[#050506]/90 border-b border-white/10 transition-all duration-500">
     <nav class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 h-24 flex items-center justify-between" aria-label="Navegación principal">
@@ -209,7 +231,6 @@
     <!-- 2. HERO SECTION CINEMÁTICA E INMERSIVA                              -->
     <!-- =================================================================== -->
     <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-24">
-      <!-- Imagen de fondo oscura con degradado sutil -->
       <div class="absolute inset-0 z-0">
         <img
           src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=2000&q=85"
@@ -220,7 +241,6 @@
         <div class="absolute inset-0 bg-[#050506]/45"></div>
       </div>
 
-      <!-- Contenido Central Hero -->
       <div class="relative z-10 max-w-5xl mx-auto px-6 sm:px-10 text-center py-24 md:py-32 scroll-reveal transition-all duration-1000 ease-out">
         <p class="text-[10px] sm:text-xs font-light uppercase tracking-[0.45em] text-[#d4af37] mb-8">
           Madrid · Fundado en 1943 · Moncloa - Aravaca
@@ -235,7 +255,6 @@
           Ochenta años custodiando el recetario clásico madrileño y cántabro entre salones de azulejería histórica y bóvedas subterráneas de ladrillo visto.
         </p>
 
-        <!-- Dos botones de llamada a la acción sobrios y sofisticados -->
         <div class="flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-8">
           <a href="#reservas" class="w-full sm:w-auto px-10 py-4 border border-[#d4af37] bg-transparent text-[#f4f4f5] hover:bg-[#d4af37]/10 text-[11px] font-light uppercase tracking-[0.32em] transition-all duration-500">
             Reservar Mesa
@@ -252,17 +271,16 @@
     <!-- =================================================================== -->
     <section id="carta" class="py-32 md:py-44 px-6 sm:px-10 lg:px-16 max-w-6xl mx-auto border-t border-white/10">
       
-      <!-- Encabezado de Carta -->
       <div class="text-center max-w-3xl mx-auto mb-20 md:mb-28 scroll-reveal transition-all duration-1000 ease-out">
         <span class="block text-[10px] sm:text-xs font-light uppercase tracking-[0.42em] text-[#d4af37] mb-5">
           Propuesta Gastronómica
         </span>
         <h2 class="font-serif text-4xl sm:text-6xl font-light tracking-[0.05em] text-[#f4f4f5] mb-6">
-          Carta de Temporada
+          Carta Oficial
         </h2>
         <div class="w-16 h-px bg-[#d4af37]/40 mx-auto mb-6"></div>
         <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/60 tracking-[0.08em] leading-relaxed">
-          Producto de lonja, dehesa y huerta seleccionado a diario. Cocciones lentas y respeto absoluto por el sabor original.
+          Producto de lonja diaria, cuchara de fuego lento y carnes seleccionadas en el corazón de Argüelles.
         </p>
       </div>
 
@@ -275,7 +293,7 @@
           Segundos Platos
         </button>
         <button type="button" data-tab-target="postres" class="menu-tab-btn text-xs sm:text-sm font-light uppercase tracking-[0.35em] pb-6 -mb-[25px] border-b border-transparent text-[#f4f4f5]/50 hover:text-[#f4f4f5] transition-all duration-300">
-          Postres de la Casa
+          Postres Caseros
         </button>
       </div>
 
@@ -288,7 +306,7 @@
                 <%= item.name %>
               </h3>
               <span class="font-serif text-lg sm:text-xl font-normal text-[#d4af37] whitespace-nowrap shrink-0">
-                <%= fmtPrice(item.price) %>
+                <%= item.priceText ? item.priceText : fmtPrice(item.price) %>
               </span>
             </div>
             <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/55 leading-relaxed pr-6">
@@ -307,7 +325,7 @@
                 <%= item.name %>
               </h3>
               <span class="font-serif text-lg sm:text-xl font-normal text-[#d4af37] whitespace-nowrap shrink-0">
-                <%= fmtPrice(item.price) %>
+                <%= item.priceText ? item.priceText : fmtPrice(item.price) %>
               </span>
             </div>
             <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/55 leading-relaxed pr-6">
@@ -326,7 +344,7 @@
                 <%= item.name %>
               </h3>
               <span class="font-serif text-lg sm:text-xl font-normal text-[#d4af37] whitespace-nowrap shrink-0">
-                <%= fmtPrice(item.price) %>
+                <%= item.priceText ? item.priceText : fmtPrice(item.price) %>
               </span>
             </div>
             <p class="text-xs sm:text-sm font-light text-[#f4f4f5]/55 leading-relaxed pr-6">
@@ -345,7 +363,7 @@
     <!-- 4. LA CASA (HISTORIA DE 1943 Y SALONES SEÑORIALES)                  -->
     <!-- =================================================================== -->
     <section id="la-casa" class="py-32 md:py-44 px-6 sm:px-10 lg:px-16 max-w-7xl mx-auto border-t border-white/10">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-20 items-center mb-32 scroll-reveal transition-all duration-1000 ease-out">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-20 items-center mb-20 scroll-reveal transition-all duration-1000 ease-out">
         
         <div class="lg:col-span-5 space-y-8">
           <span class="block text-[10px] sm:text-xs font-light uppercase tracking-[0.42em] text-[#d4af37]">
@@ -379,7 +397,7 @@
             </div>
             <div class="pt-8 mt-8 border-t border-white/10 flex items-center justify-between text-[11px] font-light tracking-[0.2em] uppercase text-[#f4f4f5]/50">
               <span>Capacidad</span>
-              <span class="text-[#d4af37]">Mesas de 2 a 6 comensales</span>
+              <span class="text-[#d4af37]">Mesas de 2 a 8 comensales</span>
             </div>
           </div>
 
@@ -483,9 +501,9 @@
                   name="zonaPreferida"
                   class="w-full bg-[#050506] border-b border-white/10 focus:border-[#d4af37] py-3.5 text-sm font-light text-[#f4f4f5] focus:outline-none transition-colors"
                 >
-                  <option value="Cualquiera">Sin preferencia (Mejor mesa disponible)</option>
-                  <option value="Salón Principal">Salón Principal (Azulejos Clásicos)</option>
-                  <option value="La Cueva / Bóveda">La Cueva / Bóveda (Ladrillo Visto)</option>
+                  <option value="salon-senorial">Salón Principal (Azulejos Clásicos)</option>
+                  <option value="boveda-ladrillo">La Cueva / Bóveda (Ladrillo Visto)</option>
+                  <option value="zona-barra-tradicional">Salón de Entrada & Barra Castiza</option>
                 </select>
               </div>
 
@@ -592,7 +610,7 @@
           </span>
         </div>
         <p class="text-xs font-light text-[#f4f4f5]/50 tracking-[0.08em]">
-          <%= rest.address %> · Tel. <%= rest.phone %>
+          <%= addressText %> · Tel. <%= phoneText %>
         </p>
       </div>
 
@@ -606,7 +624,7 @@
 
     <div class="max-w-7xl mx-auto pt-10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-light text-[#f4f4f5]/35 tracking-[0.12em]">
       <p>© <%= new Date().getFullYear() %> Restaurante La Montaña · Madrid. Todos los derechos reservados.</p>
-      <p><%= rest.Schedule %></p>
+      <p><%= scheduleText %></p>
     </div>
   </footer>
 
@@ -730,9 +748,11 @@
             nombre: document.getElementById('res-nombre').value.trim(),
             telefono: document.getElementById('res-telefono').value.trim(),
             email: document.getElementById('res-email').value.trim(),
+            diningArea: document.getElementById('res-zona').value,
             zonaPreferida: document.getElementById('res-zona').value,
             fecha: document.getElementById('res-fecha').value,
             hora: document.getElementById('res-hora').value,
+            guests: parseInt(document.getElementById('res-personas').value, 10),
             personas: parseInt(document.getElementById('res-personas').value, 10),
             notas: document.getElementById('res-notas').value.trim()
           };
@@ -756,23 +776,28 @@
             const data = await response.json();
 
             if (response.ok && data.success) {
-              const resInfo = data.reserva || {};
+              const resInfo = data.reserva || data.reservation || {};
+              const codigo = resInfo.codigo || resInfo.reservation_code || '';
+              const mesa = resInfo.mesaNumero || resInfo.table_number || 'Asignada en sala';
+              const zona = resInfo.zona || resInfo.dining_area_name || '';
+
               feedback.className = 'border border-[#d4af37] bg-[#050506] p-6 text-xs sm:text-sm font-light text-[#f4f4f5]';
               feedback.innerHTML =
                 '<p class="font-serif text-xl text-[#d4af37] mb-2">Reserva Confirmada</p>' +
                 '<p>' + (data.message || 'Su mesa ha sido reservada correctamente.') + '</p>' +
-                (resInfo.mesaNumero
-                  ? '<p class="mt-2 text-[#f4f4f5]/70">Asignación: <strong>Mesa ' + resInfo.mesaNumero + '</strong> · ' + (resInfo.zona || '') + ' · Código: ' + (resInfo.codigo || '') + '</p>'
-                  : '');
+                '<p class="mt-2 text-[#f4f4f5]/70">Asignación: <strong>Mesa ' + mesa + '</strong>' +
+                (zona ? ' · ' + zona : '') +
+                (codigo ? ' · Código: ' + codigo : '') +
+                '</p>';
               form.reset();
               if (dateInput) dateInput.value = payload.fecha;
             } else {
               feedback.className = 'border border-white/20 bg-[#050506] p-6 text-xs sm:text-sm font-light text-[#d4af37]';
-              feedback.textContent = data.message || 'No ha sido posible completar la reserva en este horario.';
+              feedback.textContent = data.message || data.error || 'No ha sido posible completar la reserva en este horario.';
             }
           } catch (err) {
             feedback.className = 'border border-white/20 bg-[#050506] p-6 text-xs sm:text-sm font-light text-[#d4af37]';
-            feedback.textContent = 'Error de conexión con el servidor. Puede reservar directamente en el 915 47 10 53.';
+            feedback.textContent = 'Error de conexión con el servidor. Puede reservar directamente en el +34 915 47 31 11.';
           } finally {
             feedback.classList.remove('hidden');
             submitBtn.disabled = false;
@@ -790,7 +815,7 @@
       const legalTexts = {
         aviso: {
           title: 'Aviso Legal (LSSI-CE)',
-          body: '<p>En cumplimiento de la Ley 34/2002 de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa que el presente sitio web es titularidad de <strong>Restaurante La Montaña</strong>, con domicilio social en C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid.</p><p>Teléfono de contacto: 915 47 10 53. Correo electrónico: reservas@resturantelamontana.es.</p>'
+          body: '<p>En cumplimiento de la Ley 34/2002 de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa que el presente sitio web es titularidad de <strong>Restaurante Clásico La Montaña S.L.</strong>, con domicilio social en C. del Rey Francisco, 28, Moncloa - Aravaca, 28008 Madrid.</p><p>Teléfono de contacto: +34 915 47 31 11 · Correo electrónico: reservas@restaurantelamontana.es.</p>'
         },
         privacidad: {
           title: 'Política de Privacidad (RGPD)',
